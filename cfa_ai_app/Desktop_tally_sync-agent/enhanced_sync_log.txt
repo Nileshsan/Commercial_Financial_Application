@@ -1,0 +1,309 @@
+[2025-07-12 13:27:24] Loaded TALLY_URL: http://localhost:9000
+[2025-07-12 13:27:24] 🧪 Testing Enhanced Tally Connector
+[2025-07-12 13:27:24] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:27:24] Fetching company name
+[2025-07-12 13:27:24] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:27:24] ❌ Tally returned error: <RESPONSE>
+ <LINEERROR>Could not find Report &apos;List of Companies&apos;!</LINEERROR>
+</RESPONSE>
+...
+[2025-07-12 13:27:24] ❌ Invalid response format
+[2025-07-12 13:27:24] ❌ Could not fetch company name
+[2025-07-12 13:27:24] Fetching client ledgers
+[2025-07-12 13:27:24] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:28:24] ❌ Timeout on attempt 1
+[2025-07-12 13:28:24] Retry attempt 2/3
+[2025-07-12 13:28:24] Loaded TALLY_URL: http://localhost:9000
+[2025-07-12 13:28:24] 🧪 Testing Enhanced Tally Connector
+[2025-07-12 13:28:24] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:28:24] Fetching company name
+[2025-07-12 13:28:24] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:28:46] ❌ Tally returned error: <RESPONSE>
+ <LINEERROR>Could not find Report &apos;List of Companies&apos;!</LINEERROR>
+</RESPONSE>
+...
+[2025-07-12 13:28:46] ❌ Invalid response format
+[2025-07-12 13:28:46] ❌ Could not fetch company name
+[2025-07-12 13:28:46] Fetching client ledgers
+[2025-07-12 13:28:46] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:29:15] ❌ Parse error: not well-formed (invalid token): line 4671, column 26
+[2025-07-12 13:29:15] Retry attempt 3/3
+[2025-07-12 13:29:46] ❌ Timeout on attempt 1
+[2025-07-12 13:29:46] Retry attempt 2/3
+[2025-07-12 13:30:19] ❌ Timeout on attempt 3
+[2025-07-12 13:30:19] ❌ All 3 attempts failed. Last error: Timeout
+[2025-07-12 13:30:19] ❌ Invalid response format for client ledgers
+[2025-07-12 13:30:19] Fetching company name
+[2025-07-12 13:30:19] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:30:48] ❌ Timeout on attempt 2
+[2025-07-12 13:30:48] Retry attempt 3/3
+[2025-07-12 13:31:19] ❌ Timeout on attempt 1
+[2025-07-12 13:31:19] Retry attempt 2/3
+[2025-07-12 13:31:52] ❌ Timeout on attempt 3
+[2025-07-12 13:31:52] ❌ All 3 attempts failed. Last error: Timeout
+[2025-07-12 13:31:52] ❌ Invalid response format for client ledgers
+[2025-07-12 13:31:52] Fetching company name
+[2025-07-12 13:31:52] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:32:21] ❌ Timeout on attempt 2
+[2025-07-12 13:32:21] Retry attempt 3/3
+[2025-07-12 13:32:57] ❌ Tally returned error: <RESPONSE>
+ <LINEERROR>Could not find Report &apos;List of Companies&apos;!</LINEERROR>
+</RESPONSE>
+...
+[2025-07-12 13:32:57] ❌ Invalid response format
+[2025-07-12 13:32:57] 🔍 Fetching comprehensive client data from 20250612 to 20250712
+[2025-07-12 13:32:57] Fetching company name
+[2025-07-12 13:32:57] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:32:57] ❌ Tally returned error: <RESPONSE>
+ <LINEERROR>Could not find Report &apos;List of Companies&apos;!</LINEERROR>
+</RESPONSE>
+...
+[2025-07-12 13:32:57] ❌ Invalid response format
+[2025-07-12 13:32:57] Fetching client ledgers
+[2025-07-12 13:32:57] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:33:57] ❌ Timeout on attempt 1
+[2025-07-12 13:33:57] Retry attempt 2/3
+[2025-07-12 13:34:59] ❌ Timeout on attempt 2
+[2025-07-12 13:34:59] Retry attempt 3/3
+[2025-07-12 13:36:03] ❌ Timeout on attempt 3
+[2025-07-12 13:36:03] ❌ All 3 attempts failed. Last error: Timeout
+[2025-07-12 13:36:03] ❌ Invalid response format for client ledgers
+[2025-07-12 13:36:03] ✅ Successfully processed 0 clients
+[2025-07-12 13:36:03] ✅ Data exported to client_data_export_20250712_133603.json
+[2025-07-12 13:36:03] 🔍 Fetching comprehensive client data from 20250705 to 20250712
+[2025-07-12 13:36:03] Fetching company name
+[2025-07-12 13:36:03] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:36:58] ❌ Tally returned error: <RESPONSE>
+ <LINEERROR>Could not find Report &apos;List of Companies&apos;!</LINEERROR>
+</RESPONSE>
+...
+[2025-07-12 13:36:58] ❌ Invalid response format
+[2025-07-12 13:36:58] Fetching client ledgers
+[2025-07-12 13:36:58] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:37:58] ❌ Timeout on attempt 1
+[2025-07-12 13:37:58] Retry attempt 2/3
+[2025-07-12 13:39:00] ❌ Timeout on attempt 2
+[2025-07-12 13:39:00] Retry attempt 3/3
+[2025-07-12 13:40:04] ❌ Timeout on attempt 3
+[2025-07-12 13:40:04] ❌ All 3 attempts failed. Last error: Timeout
+[2025-07-12 13:40:04] ❌ Invalid response format for client ledgers
+[2025-07-12 13:40:04] ✅ Successfully processed 0 clients
+[2025-07-12 13:52:48] Loaded TALLY_URL: http://localhost:9000
+[2025-07-12 13:52:48] 🧪 Testing Enhanced Tally Connector
+[2025-07-12 13:52:48] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:52:48] Fetching company name
+[2025-07-12 13:52:48] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:52:48] ✅ Company name: bd9d731b-d3c9-4771-8880-e4baca94aeaa
+[2025-07-12 13:52:48] ✅ Connected to company: bd9d731b-d3c9-4771-8880-e4baca94aeaa
+[2025-07-12 13:52:48] Fetching client ledgers
+[2025-07-12 13:52:48] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:53:54] ❌ Parse error: not well-formed (invalid token): line 4671, column 26
+[2025-07-12 13:53:54] Retry attempt 2/3
+[2025-07-12 13:54:28] ❌ Parse error: not well-formed (invalid token): line 4671, column 26
+[2025-07-12 13:54:28] Retry attempt 3/3
+[2025-07-12 13:55:02] ❌ Parse error: not well-formed (invalid token): line 4671, column 26
+[2025-07-12 13:55:02] ❌ All 3 attempts failed. Last error: not well-formed (invalid token): line 4671, column 26
+[2025-07-12 13:55:02] ❌ Invalid response format for client ledgers
+[2025-07-12 13:55:02] ❌ No client ledgers found
+[2025-07-12 13:55:02] Fetching client ledgers
+[2025-07-12 13:55:02] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:56:02] ❌ Timeout on attempt 1
+[2025-07-12 13:56:02] Retry attempt 2/3
+[2025-07-12 13:57:04] ❌ Timeout on attempt 2
+[2025-07-12 13:57:04] Retry attempt 3/3
+[2025-07-12 13:58:08] ❌ Timeout on attempt 3
+[2025-07-12 13:58:08] ❌ All 3 attempts failed. Last error: Timeout
+[2025-07-12 13:58:08] ❌ Invalid response format for client ledgers
+[2025-07-12 13:58:08] Fetching company name
+[2025-07-12 13:58:08] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:58:47] ✅ Company name: bd9d731b-d3c9-4771-8880-e4baca94aeaa
+[2025-07-12 13:58:47] Fetching client ledgers
+[2025-07-12 13:58:47] ✅ Tally service is running on localhost:9000
+[2025-07-12 13:59:47] ❌ Timeout on attempt 1
+[2025-07-12 13:59:47] Retry attempt 2/3
+[2025-07-12 14:00:49] ❌ Timeout on attempt 2
+[2025-07-12 14:00:49] Retry attempt 3/3
+[2025-07-12 14:01:53] ❌ Timeout on attempt 3
+[2025-07-12 14:01:53] ❌ All 3 attempts failed. Last error: Timeout
+[2025-07-12 14:01:53] ❌ Invalid response format for client ledgers
+[2025-07-12 14:01:53] 🔍 Fetching comprehensive client data from 20250612 to 20250712
+[2025-07-12 14:01:53] Fetching company name
+[2025-07-12 14:01:53] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:02:31] ✅ Company name: bd9d731b-d3c9-4771-8880-e4baca94aeaa
+[2025-07-12 14:02:31] Fetching client ledgers
+[2025-07-12 14:02:31] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:03:31] ❌ Timeout on attempt 1
+[2025-07-12 14:03:31] Retry attempt 2/3
+[2025-07-12 14:04:33] ❌ Timeout on attempt 2
+[2025-07-12 14:04:33] Retry attempt 3/3
+[2025-07-12 14:05:37] ❌ Timeout on attempt 3
+[2025-07-12 14:05:37] ❌ All 3 attempts failed. Last error: Timeout
+[2025-07-12 14:05:37] ❌ Invalid response format for client ledgers
+[2025-07-12 14:05:37] ✅ Successfully processed 0 clients
+[2025-07-12 14:05:37] ✅ Data exported to client_data_export_20250712_140537.json
+[2025-07-12 14:05:37] 🔍 Fetching comprehensive client data from 20250705 to 20250712
+[2025-07-12 14:05:37] Fetching company name
+[2025-07-12 14:05:37] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:05:54] ✅ Company name: bd9d731b-d3c9-4771-8880-e4baca94aeaa
+[2025-07-12 14:05:54] Fetching client ledgers
+[2025-07-12 14:05:54] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:06:20] ❌ Parse error: not well-formed (invalid token): line 4671, column 26
+[2025-07-12 14:06:20] Retry attempt 2/3
+[2025-07-12 14:06:32] ❌ Parse error: not well-formed (invalid token): line 4671, column 26
+[2025-07-12 14:06:32] Retry attempt 3/3
+[2025-07-12 14:06:46] ❌ Parse error: not well-formed (invalid token): line 4671, column 26
+[2025-07-12 14:06:46] ❌ All 3 attempts failed. Last error: not well-formed (invalid token): line 4671, column 26
+[2025-07-12 14:06:46] ❌ Invalid response format for client ledgers
+[2025-07-12 14:06:46] ✅ Successfully processed 0 clients
+[2025-07-12 14:10:49] Loaded TALLY_URL: http://localhost:9000
+[2025-07-12 14:10:49] Fetching client ledgers
+[2025-07-12 14:10:49] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:10:49] ✅ Found 0 client ledgers
+[2025-07-12 14:13:36] Loaded TALLY_URL: http://localhost:9000
+[2025-07-12 14:13:36] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:18:40] Loaded TALLY_URL: http://localhost:9000
+[2025-07-12 14:18:40] Fetching company name
+[2025-07-12 14:18:40] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:18:40] ✅ Company name: bd9d731b-d3c9-4771-8880-e4baca94aeaa
+[2025-07-12 14:18:40] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:19:42] Loaded TALLY_URL: http://localhost:9000
+[2025-07-12 14:19:42] Fetching company name
+[2025-07-12 14:19:42] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:19:43] ✅ Company name: bd9d731b-d3c9-4771-8880-e4baca94aeaa
+[2025-07-12 14:19:43] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:27:00] Loaded TALLY_URL: http://localhost:9000
+[2025-07-12 14:27:00] 🧪 Testing Enhanced Tally Connector
+[2025-07-12 14:27:00] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:27:00] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:27:00] ✅ Connected to company: All Masters
+[2025-07-12 14:27:00] Fetching client ledgers
+[2025-07-12 14:27:00] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:27:00] ✅ Found 0 client ledgers
+[2025-07-12 14:27:00] ❌ No client ledgers found
+[2025-07-12 14:27:00] Fetching client ledgers
+[2025-07-12 14:27:00] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:27:00] ✅ Found 0 client ledgers
+[2025-07-12 14:27:00] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:27:00] Fetching client ledgers
+[2025-07-12 14:27:00] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:27:00] ✅ Found 0 client ledgers
+[2025-07-12 14:27:00] 🔍 Fetching comprehensive client data from 20250612 to 20250712
+[2025-07-12 14:27:00] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:27:00] Fetching client ledgers
+[2025-07-12 14:27:00] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:27:00] ✅ Found 0 client ledgers
+[2025-07-12 14:27:00] ✅ Successfully processed 0 clients
+[2025-07-12 14:27:00] ✅ Data exported to client_data_export_20250712_142700.json
+[2025-07-12 14:27:00] 🔍 Fetching comprehensive client data from 20250705 to 20250712
+[2025-07-12 14:27:00] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:27:00] Fetching client ledgers
+[2025-07-12 14:27:00] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:27:00] ✅ Found 0 client ledgers
+[2025-07-12 14:27:00] ✅ Successfully processed 0 clients
+[2025-07-12 14:27:42] Loaded TALLY_URL: http://localhost:9000
+[2025-07-12 14:30:42] Loaded TALLY_URL: http://localhost:9000
+[2025-07-12 14:30:46] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:30:46] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:30:46] Fetching all transactions from 20240401 to 20250630 (Day Book)
+[2025-07-12 14:30:46] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:30:48] Fetched 27 transactions from Day Book
+[2025-07-12 14:33:23] Loaded TALLY_URL: http://localhost:9000
+[2025-07-12 14:35:31] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:35:31] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:35:31] Fetching all transactions from 20240401 to 20250630 (Day Book)
+[2025-07-12 14:35:31] ✅ Tally service is running on localhost:9000
+[2025-07-12 14:35:32] Fetched 27 transactions from Day Book
+[2025-07-12 17:02:39] Loaded TALLY_URL: http://localhost:9000
+[2025-07-12 17:02:39] 🧪 Testing Enhanced Tally Connector
+[2025-07-12 17:02:39] ✅ Tally service is running on localhost:9000
+[2025-07-12 17:02:39] ✅ Tally service is running on localhost:9000
+[2025-07-12 17:02:39] ✅ Connected to company: All Masters
+[2025-07-12 17:02:39] Fetching client ledgers
+[2025-07-12 17:02:39] ✅ Tally service is running on localhost:9000
+[2025-07-12 17:02:39] ✅ Found 0 client ledgers
+[2025-07-12 17:02:39] ❌ No client ledgers found
+[2025-07-12 17:02:39] Fetching client ledgers
+[2025-07-12 17:02:39] ✅ Tally service is running on localhost:9000
+[2025-07-12 17:02:39] ✅ Found 0 client ledgers
+[2025-07-12 17:02:39] ✅ Tally service is running on localhost:9000
+[2025-07-12 17:02:39] Fetching client ledgers
+[2025-07-12 17:02:39] ✅ Tally service is running on localhost:9000
+[2025-07-12 17:02:39] ✅ Found 0 client ledgers
+[2025-07-12 17:02:39] 🔍 Fetching comprehensive client data from 20250612 to 20250712
+[2025-07-12 17:02:39] ✅ Tally service is running on localhost:9000
+[2025-07-12 17:02:39] Fetching client ledgers
+[2025-07-12 17:02:39] ✅ Tally service is running on localhost:9000
+[2025-07-12 17:02:39] ✅ Found 0 client ledgers
+[2025-07-12 17:02:39] ✅ Successfully processed 0 clients
+[2025-07-12 17:02:39] ✅ Data exported to client_data_export_20250712_170239.json
+[2025-07-12 17:02:39] 🔍 Fetching comprehensive client data from 20250705 to 20250712
+[2025-07-12 17:02:39] ✅ Tally service is running on localhost:9000
+[2025-07-12 17:02:39] Fetching client ledgers
+[2025-07-12 17:02:39] ✅ Tally service is running on localhost:9000
+[2025-07-12 17:02:39] ✅ Found 0 client ledgers
+[2025-07-12 17:02:39] ✅ Successfully processed 0 clients
+[2025-07-15 12:37:29] Loaded TALLY_URL: http://localhost:9000
+[2025-07-15 12:37:29] 🧪 Testing Enhanced Tally Connector
+[2025-07-15 12:37:29] ✅ Tally service is running on localhost:9000
+[2025-07-15 12:37:29] ✅ Tally service is running on localhost:9000
+[2025-07-15 12:37:30] ✅ Connected to company: All Masters
+[2025-07-15 12:37:30] Fetching client ledgers
+[2025-07-15 12:37:30] ✅ Tally service is running on localhost:9000
+[2025-07-15 12:37:30] ✅ Found 0 client ledgers
+[2025-07-15 12:37:30] ❌ No client ledgers found
+[2025-07-15 13:06:59] Loaded TALLY_URL: http://localhost:9000
+[2025-07-15 13:06:59] 🧪 Testing Enhanced Tally Connector
+[2025-07-15 13:06:59] ✅ Tally service is running on localhost:9000
+[2025-07-15 13:06:59] ✅ Tally service is running on localhost:9000
+[2025-07-15 13:06:59] ✅ Connected to company: All Masters
+[2025-07-15 13:06:59] Fetching client ledgers
+[2025-07-15 13:06:59] ✅ Tally service is running on localhost:9000
+[2025-07-15 13:06:59] ✅ Found 0 client ledgers
+[2025-07-15 13:06:59] ❌ No client ledgers found
+[2025-07-15 13:06:59] Fetching client ledgers
+[2025-07-15 13:06:59] ✅ Tally service is running on localhost:9000
+[2025-07-15 13:06:59] ✅ Found 0 client ledgers
+[2025-07-15 13:06:59] ✅ Tally service is running on localhost:9000
+[2025-07-15 13:06:59] Fetching client ledgers
+[2025-07-15 13:06:59] ✅ Tally service is running on localhost:9000
+[2025-07-15 13:06:59] ✅ Found 0 client ledgers
+[2025-07-15 13:06:59] 🔍 Fetching comprehensive client data (no date filter)
+[2025-07-15 13:06:59] ✅ Tally service is running on localhost:9000
+[2025-07-15 13:06:59] Fetching client ledgers
+[2025-07-15 13:06:59] ✅ Tally service is running on localhost:9000
+[2025-07-15 13:06:59] ✅ Found 0 client ledgers
+[2025-07-15 13:06:59] ✅ Successfully processed 0 clients
+[2025-07-15 13:06:59] 🔍 Fetching comprehensive client data (no date filter)
+[2025-07-15 13:06:59] ✅ Tally service is running on localhost:9000
+[2025-07-15 13:06:59] Fetching client ledgers
+[2025-07-15 13:06:59] ✅ Tally service is running on localhost:9000
+[2025-07-15 13:06:59] ✅ Found 0 client ledgers
+[2025-07-15 13:06:59] ✅ Successfully processed 0 clients
+[2025-07-16 11:16:01] Loaded TALLY_URL: http://localhost:9000
+[2025-07-16 11:16:01] 🧪 Testing Enhanced Tally Connector
+[2025-07-16 11:16:01] ✅ Tally service is running on localhost:9000
+[2025-07-16 11:16:01] ✅ Tally service is running on localhost:9000
+[2025-07-16 11:16:01] ✅ Connected to company: All Masters
+[2025-07-16 11:16:01] Fetching client ledgers
+[2025-07-16 11:16:01] ✅ Tally service is running on localhost:9000
+[2025-07-16 11:16:01] ✅ Found 0 client ledgers
+[2025-07-16 11:16:01] ❌ No client ledgers found
+[2025-07-16 11:16:01] Fetching client ledgers
+[2025-07-16 11:16:01] ✅ Tally service is running on localhost:9000
+[2025-07-16 11:16:01] ✅ Found 0 client ledgers
+[2025-07-16 11:16:01] ✅ Tally service is running on localhost:9000
+[2025-07-16 11:16:01] Fetching client ledgers
+[2025-07-16 11:16:01] ✅ Tally service is running on localhost:9000
+[2025-07-16 11:16:01] ✅ Found 0 client ledgers
+[2025-07-16 11:16:01] 🔍 Fetching comprehensive client data (no date filter)
+[2025-07-16 11:16:01] ✅ Tally service is running on localhost:9000
+[2025-07-16 11:16:01] Fetching client ledgers
+[2025-07-16 11:16:01] ✅ Tally service is running on localhost:9000
+[2025-07-16 11:16:01] ✅ Found 0 client ledgers
+[2025-07-16 11:16:01] ✅ Successfully processed 0 clients
+[2025-07-16 11:16:01] 🔍 Fetching comprehensive client data (no date filter)
+[2025-07-16 11:16:01] ✅ Tally service is running on localhost:9000
+[2025-07-16 11:16:01] Fetching client ledgers
+[2025-07-16 11:16:01] ✅ Tally service is running on localhost:9000
+[2025-07-16 11:16:01] ✅ Found 0 client ledgers
+[2025-07-16 11:16:01] ✅ Successfully processed 0 clients

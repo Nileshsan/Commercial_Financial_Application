@@ -1,0 +1,50 @@
+2025-08-01 17:54:36,717 - INFO - Fetching data for company: Fluidtecq Pneumatics Private Limited (2022-23)
+2025-08-01 17:54:36,717 - INFO - Period: 2025-04-01 to 2025-08-01
+2025-08-01 17:55:15,397 - INFO - Total Receivables: 0.00
+2025-08-01 17:55:15,398 - INFO - Total Payables: 0.00
+2025-08-01 17:55:15,399 - INFO - Analysis completed - Receivables: 0.00, Payables: 0.00
+2025-08-01 18:16:44,937 - INFO - Fetching data for company: Fluidtecq Pneumatics Private Limited (2022-23)
+2025-08-01 18:16:44,938 - INFO - Period: 2025-04-01 to 2025-08-01
+2025-08-01 18:16:44,938 - ERROR - Error in main execution: get_ledger_balances() takes from 0 to 1 positional arguments but 3 were given
+Traceback (most recent call last):
+  File "C:\Users\Admin\Nilesh_Projects\CFA\cfa_ai_app\Desktop_tally_sync-agent\test_enhanced_connector.py", line 221, in main
+    ledger_balances = get_ledger_balances(company_name, from_date, today)
+TypeError: get_ledger_balances() takes from 0 to 1 positional arguments but 3 were given
+2025-08-01 18:19:57,036 - INFO - Fetching data for company: Fluidtecq Pneumatics Private Limited (2022-23)
+2025-08-01 18:19:57,036 - INFO - Period: 2025-04-01 to 2025-08-01
+2025-08-01 18:19:57,037 - INFO - Fetching ledger data from Tally for period: 2025-04-01 to 2025-08-01
+2025-08-01 18:19:57,151 - WARNING - No ledger entries found in response
+2025-08-01 18:19:57,151 - ERROR - No ledger data found
+2025-08-01 18:22:50,398 - INFO - Fetching data for company: Fluidtecq Pneumatics Private Limited (2022-23)
+2025-08-01 18:22:50,398 - INFO - Period: 2025-04-01 to 2025-08-01
+2025-08-01 18:22:50,399 - INFO - Fetching ledger data from Tally for period: 2025-04-01 to 2025-08-01
+2025-08-01 18:22:51,585 - WARNING - No ledger entries found in response
+2025-08-01 18:22:51,586 - ERROR - No ledger data found
+2025-08-01 18:28:19,441 - INFO - Fetching ledger data from Tally for period: 2025-04-01 to 2025-08-01
+2025-08-01 18:28:19,612 - INFO - Raw XML response saved to raw_tally_response.xml
+2025-08-01 18:28:19,613 - WARNING - No ledger data found in response. Check if company name is correct and Tally is running.
+2025-08-01 18:28:19,613 - INFO - Found 0 ledger entries
+2025-08-01 18:31:45,949 - INFO - Trying XML request format 1...
+2025-08-01 18:31:46,026 - INFO - Response saved to tally_response_format_1.xml
+2025-08-01 18:31:46,029 - INFO - Searching for any elements with balance information...
+2025-08-01 18:31:46,029 - INFO - Trying XML request format 2...
+2025-08-01 18:31:46,602 - INFO - Response saved to tally_response_format_2.xml
+2025-08-01 18:31:46,665 - INFO - Searching for any elements with balance information...
+2025-08-01 18:31:46,719 - INFO - Successfully parsed 553 ledger entries using format 2
+2025-08-01 18:31:46,729 - INFO - Analysis completed - Total ledgers: 553
+2025-08-01 18:35:36,547 - INFO - Trying XML request format 1...
+2025-08-01 18:35:36,581 - INFO - Response saved to tally_response_format_1.xml
+2025-08-01 18:35:36,584 - INFO - Searching for any elements with balance information...
+2025-08-01 18:35:36,584 - INFO - Trying XML request format 2...
+2025-08-01 18:35:36,997 - INFO - Response saved to tally_response_format_2.xml
+2025-08-01 18:35:37,067 - INFO - Searching for any elements with balance information...
+2025-08-01 18:35:37,129 - INFO - Successfully parsed 553 ledger entries using format 2
+2025-08-01 18:35:37,140 - INFO - Analysis completed - Total ledgers: 553
+2025-08-01 18:47:55,488 - INFO - Trying XML request format 1...
+2025-08-01 18:47:56,530 - INFO - Response saved to tally_response_format_1.xml
+2025-08-01 18:47:56,533 - INFO - Searching for any elements with balance information...
+2025-08-01 18:47:56,533 - INFO - Trying XML request format 2...
+2025-08-01 18:47:56,814 - INFO - Response saved to tally_response_format_2.xml
+2025-08-01 18:47:56,872 - INFO - Searching for any elements with balance information...
+2025-08-01 18:47:56,937 - INFO - Successfully parsed 553 ledger entries using format 2
+2025-08-01 18:47:56,946 - INFO - Analysis completed - Total ledgers: 553

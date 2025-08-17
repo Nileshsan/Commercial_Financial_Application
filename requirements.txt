@@ -1,0 +1,4 @@
+requests
+xmltodict
+python-dotenv
+tk
