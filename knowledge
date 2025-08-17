@@ -1,0 +1,11 @@
+mobile/ 
+app - the main pages of the application 
+        aside main pages like login register 
+
+
+
+components - reusable ui pieces not whole pages, they are imported into the main pages like main page and app pages 
+
+
+screens - other main pages, having real pages 
+

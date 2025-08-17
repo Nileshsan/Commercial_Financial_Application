@@ -1,0 +1,683 @@
+New project buddy 
+Problem statement: 
+You know business and how it works 
+It's full of trust and money flow 
+So we are going to work on that 
+Mostly all the things of of business are recorded in tally 
+In tally we have 4 things 
+Sales 
+Purchase 
+Receipt 
+Payment 
+
+We get this individual report 
+
+We will take from tally add them to our data base 
+We will have some insights according to time lapse 
+Like at 1 month time we will have this much money in account 
+
+And 
+
+We will divide the clients according to there habit of payments 
+If they delay we will give them discounts 
+And make them more deciplined clients 
+And alll 
+
+
+
+The main focus is 
+We will have perfect specs 
+On 17 we are supposed to get thsi much debit and this much credit 
+
+This money flow we need to understand 
+
+
+The application we will app for mobile 
+We need very best dashboard to give analysis 
+
+We will use tally 
+
+Database are most important in this application we will go according to which will perform best 
+
+
+If you have doubt ask me to clear 
+
+
+
+We will get direct access of tally from each client 
+
+I really want real time but i will prefer 0 cost to all
+
+Cash flow ,what will in my account at 1 month tomorrow and whatever we want to know 
+
+Yes deficits and alll alarts and all  the most important is how much will in bank account and what is going to come and go from which date 
+
+Yes we will have admin taht is us 
+Accountant who will integrate data and see 
+And client for whom we are doing insights for 
+
+
+
+We should allow users to edit entries but we will pass key for that too 
+
+
+
+I want to go with ml 
+
+And we will use top tier ai here
+
+We will train deep learning models 
+AI model like llms for this 
+
+We will do best 
+
+Listen we can't train model like before and then we will put in model 
+This is all real world data all the names or clients will be different with different habits 
+I am host 
+I will give this service to client which will see there clients record 
+
+
+
+Do you have any tutorial for me about tally data integration to app   
+  
+Please first you give me as much as info you have about it 
+
+And understand me 
+
+We are making an application which will pull data from that clients whole company tally data 
+Which includes every transaction advance payment receipts payments 
+Sales and credits 
+Also exception we will detect in data 
+
+We will predict cash flow from this data 
+So data base comes as most absolutely important thing in this 
+This will be saas so I want that application capabilities 
+
+It should be best 
+
+Data base i think we will use postgresql 
+
+We have hostinger server 8gb ram and 2 cpu cores 
+
+We can do postgresql database there to right 
+
+Think about everything and tell me if this is not Enough 
+
+
+
+
+i will tell me in details 
+we are creating mobile applicstion 
+in which we we will be  host and this application for businesses 
+we will go to thwm give our app and then 
+then process of flow will be 
+application we will set with there tally destop or web they can have any right
+then we will request all the data such as sales credit receipt and payment 
+then we will from that data we will predit there cashflow 
+divide there clients into catagory according to there payment behaviour 
+
+we will make a system that will giev specific discount to the clients 
+like if a client pay late we will say if you pay today this you have pay discount 
+adn that discount we will graducally decrease till the date our system predictad on an average at which that client payes the bill 
+
+and most things will be done for accountants 
+and we qill make insights adn dashboard for owners 
+
+
+
+
+In the current work flow we have in mobile that is front end we have app which can closed tap which includes in desktop tsx and other files we have components which have you I which contain some files also we have many chart.sx collapse external links theme view and so on transaction card.ts then we have a folder name navigation which consist of staff navigator tsx then we have creams which consist of plan and profile screen dashboard screen forecast screen login screen so how does it actually decide which component falls under which where will be login compare will be the main page come like another application of that particular app how does that define
+
+
+
+[media pointer="file-service://file-HFosfaRc2qB55TCAfxEzvS"]
+I was thinking we enter the app pbs logo came   
+Then we will initiate the user for first timers the application start authentication process which includes system will ask for login credentials login with Google   
+We will provide user with 2 layer login access that is 2 google accounts for 1 company   
+1 for owner with more freedom  
+2 for accountant who will use application i.e see there clients discount and and alarts and send them email and all we will set the exact thing later   
+We will give them google accounts   
+That will also feel good from user side right   
+Like something new that feeling   
+  
+Next step in authentication process will be integrating tally data  we will take all the data of that company and make database of that   
+  
+Next step we will use that data and train the dl ml models   
+We will predefined the ratio of data to epoch   
+See each client will have different kinda clients with different paying habits and for them ideal will ge different and we will train model for there 1 year data and know there clients divide them into criteria according to there data   
+Like if industry average is 30 days   
+For some it may be 15 for some it may be 60   
+So the late payer is different in different cases   
+  
+Soo we will define the machine learning deep learning logic with perfection so we won't do mess of system 
+
+
+After model training we will know in which criteria to divide the clients in 
+Like for someone 5 days 15 days 30 days 45 days 
+So we will convert 45 days people to 30 days by giving them discounts so they will pay early 
+
+I don't know if we need to train the model for cash flow of the business 
+
+
+After all the positive confirmation from above process
+
+
+We will redirect to main page 
+In absolute main page where the user will come directly from second time 
+
+This page will consist of main 
+On top we will face side bar tab button on left then beside that PBS  on left profile and other services or something we roll out 
+
+On main page first big box will be of cash flow dashboard we will give button on taht somewhere or even if we click on that we will be taken to cash flow main page we will define more about it later 
+
+Under that another box which will have client distinguish and there behaviour of payment list 
+With that written will be there today's discount and if they pay today what will be there amount and total amount display 
+We won't show everything here 
+When we click on it we will taken to that main page where everything will be 
+
+We will have more function understand that we will do that later 
+And on screen on bottom wr will have llm ai to chat with 
+We will touch on that to type and it will open a page from bottom taht is to chat and we will give voice assist too 
+
+
+Let's have this for now 
+Please help me with working and how and how should I execute this in details and do you best of best 
+Iw have given you photo of that's totally the most basic sample 
+Most important thing in this application will be smoothness and beautiful ui 
+So user experience should be ideal and they will enjoy our insights and work 
+
+
+
+
+i wnat to make sure the flow 
+see we are not going to do anything indivisually for ml training
+
+and most imp we are not goimg get tally data manually 
+we will request through and xml then to json then to backend request to database 
+
+we will set everythinig in code trainig and all 
+we will set the ration of data to epoch 
+we will find ideal ratio which perform best 
+
+i want to full proof solution
+
+
+what I am saying the data we will get from tally then that tally data by XML and just on and all we will get into our database then in our database we will fetch some things to train our model those will be client name amount then the day at which the transaction was done and where is the amount was paid that difference is important and one will be product of different date and the amount that will give us weighted some and that we will like of course there will be multiple transaction for one single clan so we will do the average of that and get some values and we will over that value and they will get some middle value that which these are the late clients this are the good clients okay we are helping plans to get the payment earlier then we will do unique of client column and get the names of the clients and the unique values are there and from the model the estimate some values those are the range of each category and we will now do the parsing and get a task for each client 
+
+
+
+So you are telling me 
+We will create a mobile application main work 
+There will be desktop small application .exe or something 
+There will be tally of user company
+
+So now 
+We will give access to user for our app
+He login 
+Then integrate the tally by using this desktop application 
+Our app will request that application data somehow 
+Then that application request it to user tally 
+Then we get that data on our server json 
+We integrate tht data into our database and then from there later process 
+
+Now we need to programme our application such a way 
+
+Where will api keys will generate and all 
+How will it match 
+Will we give them api keys 
+
+There are multiple companies 
+
+Each will have there application in desktop that will have key 
+And our application will have key 
+When for what company api key match we will push data there 
+
+See if we are making this then let's be proper 
+
+We will make an .exe application with gui 
+It will also have .env to store 
+And i want it such a way that 
+User will only click integrate button and all the process will happen 
+Of first time it will be different 
+
+But we will create a wonderful and sustainable solution 
+
+
+
+
+
+How will this code connect with main app code 
+Django server it will align right 
+
+
+See the django backend then that will be server 
+Postgresql our data base where we will have everything saved 
+
+We have ui of mobile 
+We have desktop .exe ui 
+We have user tally thing 
+
+
+Mobile application downloaded 
+.exe loaded 
+
+Mobile app open 
+We given login credentials enter 
+And authentication process step 2 
+
+We wil make an api key 
+Display it to copy as well as scan as qr 
+
+Then we will open .exe in desktop 
+It will ask for api key 
+We will enter it or open camera to scan phone qr and auto fill 
+Then now this api key will be stored in .env 
+So from second time it will automatically load and then connect with tally and get data 
+Then we will send taht data to django backend and integrate it to database 
+
+In mobile app we will get the successfully linked with the tally and desktop application 
+And data is fetched and training the ai for customisation 
+
+Then we will ask data from database convert it and train our models as well as make rag of that data base and also the data that we made from logic to llm so our chatvot will be functional 
+
+
+But how will we set it up in desktop   
+  
+Like as much as i know   
+The whole code works as package right 
+
+Now that we come to this make me understand the who application 
+Where how we will use 
+Like
+App we do it by apk so how will we get that apk 
+
+We will deploy the backend on server right that will be render or hostinger 
+
+Desktop will be in user desktop 
+
+How will we distinguish the code to each part 
+I don't know anything of that 
+
+
+
+
+
+
+Suppose I complete the mobile backend agent and all 
+Now it's time to deploy how will things work now 
+How will i seperate the code and make it work 
+
+2nd
+Suppose I have app in my phone 
+Agent in desktop 
+And backend on server and postgresql on database 
+
+
+
+I understand 
+I want to talk about a serious thing 
+Suppose we got the data till postgresql 
+It's store in db 
+
+Now authentication process step 3 
+Training the model for insights 
+
+Let's talk about will the things I am thinking actually happen 
+
+I was thinking app will means of course backend 
+Get the data which we require make csv of it 
+Then flow the ml script and at end get results 
+Then according to the purpose of model do things 
+
+I wanted to ask 
+
+We have business sales recept purchase payment data from which we are going to predict the clients behaviour 
+Like according to data when this client give money and accordingly we will do for every client 
+And make a cash flow which will most close to actual money coming 
+Which ai ml dl most best suited to this task 
+
+
+We will from data understand clients behaviour when he actually pays and when is supposed date 
+And after getting taht we will give them discounts per early day 
+I what to know which is the best way to do this by ai 
+
+
+I want to know 
+For each model we will have to decide epoch 
+And we will theortically decide the ideal ration of data quantity to how many epoch data should train 
+It's important to know time 
+Client set up can't wait forever 
+
+
+
+And i want to know is it possible to have this all seamlessly 
+
+
+
+
+From data we are going to predict the cash flow of user according to there clients paying habits 
+If we go manually 
+We will find the clients date diff in between invoice and paid then multiply with amount and then make average average of all transactions with that client 
+Of course thsi value will be not in days we will make it into days 
+And this is basic approch 
+
+And another one is lstms how will that work 
+
+
+And final result is a cash flow for user according to there clients paying behaviour 
+
+
+
+
+
+
+
+
+We need opening balance too 
+Because tally is mostly divides in years 
+
+
+So i was thinking to take data from day entry there voucher will be all 4 sales and all 
+Then we will get the annual data of each company 
+Like tally breaks on April 2024 
+we will get data from April 2024 and later from setting range of  April 2024 to till now 
+And we will get opening balance for them 
+Like we done transaction with them before April 2024 so that cr or dr we should know 
+That will come from chart of accounting 
+We have to take all this information from tally put it perfectly on database do you understand 
+Now point is how we are going to do that 
+
+
+
+Our users will have clients too many 
+We will get there client vise transaction data from daybook in tally where we will select range of years or if we can we will request all the data there is from all 2 3 years 
+
+Second is mostly data is too much for tally and it will get slow with more data so business break them by years mostly 2 3 years or else accordingly 
+So we have in chart of accounting ledger where we have details of each client with opening balance 
+
+So If we break at 31 march 2024 
+Here we have closing balance 
+Which will be in new tally of April 2024 will be opening balance 
+Which is saved in chart of accounting 
+Ledger and for each client there is data for 
+
+You said:
+but we dont just want daybook 
+we also need chart of accounting 
+
+see we want the data 
+we are host 
+there are users
+each user have many clients 
+from tally we will get the data of all the transaction like there is daybook think in tally 
+i want to see according to user set the range of daybook i want to get all the data thta is available like from the break and with that we will also ask for chart of accoumtoing ledger for each client in details because from that data we will get opening balance 
+so we will know user x user with y client had 2987322 cr transacion before the data which we got from after the break 
+
+and then we need to store this data to back end 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Company & User</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        form { margin-bottom: 40px; padding: 20px; border: 1px solid #ccc; border-radius: 8px; max-width: 400px; }
+        label { display: block; margin-top: 10px; }
+        input, select { width: 100%; padding: 8px; margin-top: 4px; }
+        button { margin-top: 16px; padding: 10px 20px; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h2>Add New Company</h2>
+    <form id="companyForm">
+        <label>Company Name</label>
+        <input type="text" name="name" required>
+        <label>User Company</label>
+        <input type="text" name="user_company" required>
+        <label>API Key</label>
+        <input type="text" name="api_key" required>
+        <label>Address</label>
+        <input type="text" name="address">
+        <button type="submit">Add Company</button>
+        <div id="companyMsg"></div>
+    </form>
+
+    <h2>Add New User</h2>
+    <form id="userForm">
+        <label>Email</label>
+        <input type="email" name="email" required>
+        <label>Username</label>
+        <input type="text" name="username" required>
+        <label>Password</label>
+        <input type="password" name="password" required>
+        <label>User Company</label>
+        <input type="text" name="user_company" required>
+        <label>Company</label>
+        <input type="text" name="company" required>
+        <label>Client</label>
+        <input type="text" name="client">
+        <label>Role</label>
+        <select name="role">
+            <option value="owner">Owner</option>
+            <option value="employee">Employee</option>
+        </select>
+        <button type="submit">Add User</button>
+        <div id="userMsg"></div>
+    </form>
+
+    <script>
+    document.getElementById('companyForm').onsubmit = async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const data = {
+            name: form.name.value,
+            user_company: form.user_company.value,
+            api_key: form.api_key.value,
+            address: form.address.value
+        };
+        const res = await fetch('/api/create-company/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const msg = document.getElementById('companyMsg');
+        if (res.ok) {
+            msg.textContent = 'Company added successfully!';
+            msg.className = 'success';
+            form.reset();
+        } else {
+            const err = await res.json();
+            msg.textContent = err.error || 'Error adding company.';
+            msg.className = 'error';
+        }
+    };
+    document.getElementById('userForm').onsubmit = async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const data = {
+            email: form.email.value,
+            username: form.username.value,
+            password: form.password.value,
+            user_company: form.user_company.value,
+            company: form.company.value,
+            client: form.client.value,
+            role: form.role.value
+        };
+        const res = await fetch('/api/create-user/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const msg = document.getElementById('userMsg');
+        if (res.ok) {
+            msg.textContent = 'User added successfully!';
+            msg.className = 'success';
+            form.reset();
+        } else {
+            const err = await res.json();
+            msg.textContent = err.error || 'Error adding user.';
+            msg.className = 'error';
+        }
+    };
+    </script>
+</body>
+</html>

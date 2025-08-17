@@ -1,0 +1,39 @@
+;; Enhanced TDL for Company Name Export
+[#Menu: Gateway of Tally]
+    Add: Item: Export Company Name : Display : Export Company Name Report
+
+[Report: Export Company Name Report]
+    Form: Export Company Name Form
+
+[Form: Export Company Name Form]
+    Part: Company Name Part
+
+[Part: Company Name Part]
+    Line: Company Name Line
+
+[Line: Company Name Line]
+    Field: Company Name Field
+
+[Field: Company Name Field]
+    Use: Name Field
+    Set as: ##SVCurrentCompany
+    XMLTag: "CompanyName"
+
+;; Alternative simpler approach
+[Report: Current Company Info]
+    Form: Current Company Form
+    Object: Company: ##SVCurrentCompany
+
+[Form: Current Company Form]
+    Part: Current Company Part
+
+[Part: Current Company Part]
+    Line: Current Company Line
+
+[Line: Current Company Line]
+    Field: Current Company Field
+
+[Field: Current Company Field]
+    Use: Name Field  
+    Set as: $Name
+    XMLTag: "COMPANYNAME"

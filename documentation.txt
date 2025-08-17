@@ -1,0 +1,229 @@
+Business Owner downloads app → onboard them
+
+Step 1: Connect Tally
+- Local: Python Sync Agent connects to Tally desktop
+- Cloud: Tally Web Export → CSV/XML Upload
+
+Step 2: Data Sync
+- Auto-fetch sales, purchases, payments, receipts
+- Push to your backend API (secure)
+
+Step 3: AI & Insights Engine
+- Forecast cash flow (Prophet / XGBoost / LSTM)
+- Segment clients (good payers, late payers, risky)
+- Predict when clients pay
+
+Step 4: Smart Discount Logic
+- For late payers: 
+  - If average delay = 14 days → Offer early-pay discount with timer
+  - Show: “Pay today to save 3% — drops to 1% in 5 days”
+
+Step 5: Dashboards
+- 📱 Accountants: Sync stats, data corrections, reports
+- 👑 Owners: Insights → What’s coming in/out, risky clients, alerts
+
+Step 6: Notifications & Nudges
+- SMS / WhatsApp / Email reminders (API)
+- Push notifications on mobile
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+# CFA AI App – Project Summary & Technical Blueprint
+
+## 1. Vision & Goal
+- **Mobile-first SaaS** for businesses to connect their Tally ERP, extract all financial transactions, and use AI to:
+  - Predict cash flow
+  - Categorize clients by payment behavior
+  - Automate discount recommendations
+  - Empower accountants and business owners with dashboards and an LLM assistant
+
+---
+
+## 2. System Architecture Overview
+
+### Main Components
+- **Mobile App (React Native/Expo):** For owners/accountants to view dashboards, insights, and interact with AI.
+- **Django Backend (API Server):** Receives data, manages users/companies, runs ML, and serves the mobile app.
+- **PostgreSQL Database (Neon):** Stores all company, client, and transaction data.
+- **Desktop Sync Agent (.exe):** Python app installed on each client’s Tally PC, fetches Tally data and pushes to backend.
+- **Tally ERP (Client-side):** Local accounting software, exposes data via XML HTTP API.
+- **AI/ML Engine:** Trains per-company models for client categorization and cashflow prediction.
+- **LLM Assistant:** (Optional) Chatbot for business queries, powered by RAG and LLM.
+
+---
+
+## 3. Data Flow (End-to-End)
+
+1. **User Onboarding:**
+   - Owner/accountant signs up in the mobile app (Google OAuth).
+   - Registers company; backend generates a unique API key.
+   - API key is shown in the app (text + QR code).
+
+2. **Tally Integration:**
+   - User installs the desktop sync agent (.exe) on their Tally PC.
+   - On first run, user enters or scans the API key.
+   - Agent stores the key in `.env` and validates with backend.
+
+3. **Automated Data Sync:**
+   - Agent fetches data from Tally (XML over HTTP).
+   - Converts XML to JSON.
+   - Pushes data to Django backend via `/api/sync-tally/` with the API key.
+
+4. **Backend Processing:**
+   - Django matches API key to company.
+   - Saves transactions, clients, and company data in PostgreSQL.
+   - Triggers ML training (Celery) for client categorization and cashflow prediction.
+
+5. **Mobile App Dashboard:**
+   - Shows cashflow, client categories, discount offers, and AI chat.
+   - All data is company-specific and secure.
+
+6. **AI/ML & LLM:**
+   - ML models are trained per company (no manual steps).
+   - LLM assistant uses RAG to answer business questions from the database.
+
+---
+
+## 4. Security & Multi-Tenancy
+
+- **API Key:** Each company gets a unique key; only their agent can push data for them.
+- **Data Isolation:** All data in DB is tagged by company_id.
+- **No Data Mixing:** Company A’s data is never visible to Company B.
+- **HTTPS & Token Auth:** All communication is secure.
+
+---
+
+## 5. Database ER Diagram (Simplified)
+
+- **User** (id, name, email, role)
+- **Company** (id, name, api_key, owner_id)
+- **Client** (id, name, company_id)
+- **Transaction** (id, company_id, client_id, type, amount, invoice_date, payment_date)
+- **ClientBehavior** (id, client_id, avg_delay_days, category)
+- **DiscountOffer** (id, client_id, offer_percent, valid_until, created_by_ml)
+
+---
+
+## 6. Desktop Sync Agent (.exe) – How It Works
+
+- **GUI (Tkinter):** User enters/scans API key on first run.
+- **.env File:** Stores API key and config.
+- **Integrate Button:** On click, agent fetches Tally data, converts, and pushes to backend.
+- **Background Scheduler:** Auto-syncs every X hours.
+- **Error Handling:** Shows connection status, retries if offline.
+
+---
+
+## 7. Mobile App (Expo/React Native)
+
+- **Splash → Login (Google OAuth) → Company Setup**
+- **Dashboard:** Cashflow, client categories, discount offers
+- **AI Chat:** LLM assistant for business queries
+- **Settings:** Show/copy/QR API key for desktop agent
+
+---
+
+## 8. ML/AI Logic
+
+- **Automated Training:** No manual ML steps; backend triggers training after each sync.
+- **Features:** Client name, amount, invoice/payment dates, delay, weighted averages.
+- **Categorization:** Prompt, On-Time, Late, Risky (based on average delay).
+- **Discount Logic:** Dynamic offers to nudge late payers, based on ML output.
+
+---
+
+## 9. Key Implementation Points
+
+- **No manual data upload:** All Tally data is fetched via XML API and pushed automatically.
+- **No manual ML:** All training and categorization is automated in backend code.
+- **API key matching:** Ensures each company’s data is isolated and secure.
+- **Scalable:** Can support 1000+ companies, each with their own Tally and data.
+
+---
+
+## 10. Next Steps (What to Build)
+
+1. **Django Models & API Endpoints:** Company, Client, Transaction, sync_tally_data, API key validation.
+2. **Desktop Agent:** Python app with GUI, .env, QR scan, Tally fetch, JSON push.
+3. **Mobile App:** Google login, dashboard, API key display, AI chat.
+4. **ML/Celery:** Automated training and categorization jobs.
+5. **LLM Assistant:** (Optional) RAG + chatbot integration.
+
+---
+
+## 11. Code Understanding
+
+- **Backend:** Django REST API, PostgreSQL, Celery for background jobs, ML logic in Python.
+- **Mobile:** React Native (TypeScript recommended), Expo Router for navigation, Axios for API calls.
+- **Desktop Agent:** Python (requests, xmltodict, Tkinter, dotenv, schedule), packaged as .exe with PyInstaller.
+- **Security:** API key for company matching, JWT for mobile login, HTTPS everywhere.
+
+---
+
+## 12. What’s NOT Needed
+
+- No manual PDF/CSV parsing (unless fallback needed)
+- No manual ML training or parameter tuning per client
+- No backend code inside mobile/ folder
+
+---
+
+## 13. Resources
+
+- [Tally XML API Docs](https://help.tallysolutions.com/)
+- [PyInstaller](https://pyinstaller.org/)
+- [Django REST Framework](https://www.django-rest-framework.org/)
+- [Expo Docs](https://docs.expo.dev/)
+
+---
+
+## 14. Final Notes
+
+- Your architecture is robust, scalable, and production-ready.
+- All data flows are automated and secure.
+- The system is designed for multi-tenant SaaS from day one.
+- You can add more features (billing, notifications, advanced AI) as you grow.
+
+---
+
+If you want, I can generate:
+- The Django models and API code
+- The Python desktop agent starter code
+- The mobile app login/dashboard starter code
+
+
+
+
+
+
+desktop_agent/
+├── main.py             # GUI and sync control
+├── tally_connector.py  # Tally connection and XML request builder
+├── api_connector.py    # Push data to Django backend
+├── config.env          # Stores API key and settings
+├── requirements.txt    # Python dependencies
+└── sync_log.txt        # Optional log file
+
+
+Python (backend + GUI)
+
+Tkinter (for desktop UI)
+
+Requests (for Tally HTTP requests + API sync)
+
+xmltodict (to parse Tally XML response)
+
+.env file (to store API keys and config)
+
+PyInstaller (to convert Python code to .exe)

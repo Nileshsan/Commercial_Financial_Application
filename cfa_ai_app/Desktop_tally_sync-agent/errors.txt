@@ -1,0 +1,1708 @@
+C:\Users\Admin\Nilesh_Projects\CFA\cfa_ai_app\Desktop_tally_sync-agent>python main.py
+[LOG] Loaded TALLY_URL: http://localhost:9000
+[LOG ERROR] Failed to write to log file: 'APIConnector' object has no attribute 'log_file'
+[API_CONNECTOR] ⚠️ Backend URL not set in environment variables
+[LOG] Sync Data button clicked.
+[LOG] ✅ Tally service is running on localhost:9000
+[LOG] Testing connection to http://localhost:9000
+[LOG] Test response: status=200, length=1081
+[LOG] ✅ Tally connection test successful
+[LOG] Tally connected. Fetching data...
+[LOG] Normalized date range sent to Tally: 20250101 to 20250715
+[LOG] Fetching Sales Vouchers chunk: 20250101 to 20250130
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20250101 to 20250130
+[LOG] ✅ Extracted 42 vouchers from Sales Vouchers
+[LOG] Chunk 20250101-20250130: 42 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20250131 to 20250301
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20250131 to 20250301
+[LOG] ✅ Extracted 0 vouchers from Sales Vouchers
+[LOG] Chunk 20250131-20250301: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20250302 to 20250331
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20250302 to 20250331
+[LOG] ✅ Extracted 0 vouchers from Sales Vouchers
+[LOG] Chunk 20250302-20250331: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20250401 to 20250430
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20250401 to 20250430
+[LOG] ✅ Extracted 0 vouchers from Sales Vouchers
+[LOG] Chunk 20250401-20250430: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20250501 to 20250530
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20250501 to 20250530
+[LOG] ✅ Extracted 0 vouchers from Sales Vouchers
+[LOG] Chunk 20250501-20250530: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20250531 to 20250629
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20250531 to 20250629
+[LOG] ✅ Extracted 0 vouchers from Sales Vouchers
+[LOG] Chunk 20250531-20250629: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20250630 to 20250715
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20250630 to 20250715
+[LOG] ✅ Extracted 0 vouchers from Sales Vouchers
+[LOG] Chunk 20250630-20250715: 0 vouchers
+[LOG] ✅ Total Sales Vouchers vouchers fetched in chunks: 42
+[LOG] Sales Vouchers: 42 vouchers fetched.
+[LOG] Fetching Purchase Vouchers chunk: 20250101 to 20250130
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20250101 to 20250130
+[LOG] ✅ Extracted 1 vouchers from Purchase Vouchers
+[LOG] Chunk 20250101-20250130: 1 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20250131 to 20250301
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20250131 to 20250301
+[LOG] ✅ Extracted 0 vouchers from Purchase Vouchers
+[LOG] Chunk 20250131-20250301: 0 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20250302 to 20250331
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20250302 to 20250331
+[LOG] ✅ Extracted 0 vouchers from Purchase Vouchers
+[LOG] Chunk 20250302-20250331: 0 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20250401 to 20250430
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20250401 to 20250430
+[LOG] ✅ Extracted 0 vouchers from Purchase Vouchers
+[LOG] Chunk 20250401-20250430: 0 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20250501 to 20250530
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20250501 to 20250530
+[LOG] ✅ Extracted 0 vouchers from Purchase Vouchers
+[LOG] Chunk 20250501-20250530: 0 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20250531 to 20250629
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20250531 to 20250629
+[LOG] ✅ Extracted 0 vouchers from Purchase Vouchers
+[LOG] Chunk 20250531-20250629: 0 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20250630 to 20250715
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20250630 to 20250715
+[LOG] ✅ Extracted 0 vouchers from Purchase Vouchers
+[LOG] Chunk 20250630-20250715: 0 vouchers
+[LOG] ✅ Total Purchase Vouchers vouchers fetched in chunks: 1
+[LOG] Purchase Vouchers: 1 vouchers fetched.
+[LOG] Fetching Payment Vouchers chunk: 20250101 to 20250130
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20250101 to 20250130
+[LOG] ✅ Extracted 30 vouchers from Payment Vouchers
+[LOG] Chunk 20250101-20250130: 30 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20250131 to 20250301
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20250131 to 20250301
+[LOG] ✅ Extracted 0 vouchers from Payment Vouchers
+[LOG] Chunk 20250131-20250301: 0 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20250302 to 20250331
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20250302 to 20250331
+[LOG] ✅ Extracted 0 vouchers from Payment Vouchers
+[LOG] Chunk 20250302-20250331: 0 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20250401 to 20250430
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20250401 to 20250430
+[LOG] ✅ Extracted 0 vouchers from Payment Vouchers
+[LOG] Chunk 20250401-20250430: 0 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20250501 to 20250530
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20250501 to 20250530
+[LOG] ✅ Extracted 0 vouchers from Payment Vouchers
+[LOG] Chunk 20250501-20250530: 0 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20250531 to 20250629
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20250531 to 20250629
+[LOG] ✅ Extracted 0 vouchers from Payment Vouchers
+[LOG] Chunk 20250531-20250629: 0 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20250630 to 20250715
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20250630 to 20250715
+[LOG] ✅ Extracted 0 vouchers from Payment Vouchers
+[LOG] Chunk 20250630-20250715: 0 vouchers
+[LOG] ✅ Total Payment Vouchers vouchers fetched in chunks: 30
+[LOG] Payment Vouchers: 30 vouchers fetched.
+[LOG] Fetching Receipt Vouchers chunk: 20250101 to 20250130
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20250101 to 20250130
+[LOG] ✅ Extracted 18 vouchers from Receipt Vouchers
+[LOG] Chunk 20250101-20250130: 18 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20250131 to 20250301
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20250131 to 20250301
+[LOG] ✅ Extracted 0 vouchers from Receipt Vouchers
+[LOG] Chunk 20250131-20250301: 0 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20250302 to 20250331
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20250302 to 20250331
+[LOG] ✅ Extracted 0 vouchers from Receipt Vouchers
+[LOG] Chunk 20250302-20250331: 0 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20250401 to 20250430
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20250401 to 20250430
+[LOG] ✅ Extracted 0 vouchers from Receipt Vouchers
+[LOG] Chunk 20250401-20250430: 0 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20250501 to 20250530
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20250501 to 20250530
+[LOG] ✅ Extracted 0 vouchers from Receipt Vouchers
+[LOG] Chunk 20250501-20250530: 0 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20250531 to 20250629
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20250531 to 20250629
+[LOG] ✅ Extracted 0 vouchers from Receipt Vouchers
+[LOG] Chunk 20250531-20250629: 0 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20250630 to 20250715
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20250630 to 20250715
+[LOG] ✅ Extracted 0 vouchers from Receipt Vouchers
+[LOG] Chunk 20250630-20250715: 0 vouchers
+[LOG] ✅ Total Receipt Vouchers vouchers fetched in chunks: 18
+[LOG] Receipt Vouchers: 18 vouchers fetched.
+[LOG] Fetching Journal Vouchers chunk: 20250101 to 20250130
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20250101 to 20250130
+[LOG] ✅ Extracted 1 vouchers from Journal Vouchers
+[LOG] Chunk 20250101-20250130: 1 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20250131 to 20250301
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20250131 to 20250301
+[LOG] ✅ Extracted 0 vouchers from Journal Vouchers
+[LOG] Chunk 20250131-20250301: 0 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20250302 to 20250331
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20250302 to 20250331
+[LOG] ✅ Extracted 0 vouchers from Journal Vouchers
+[LOG] Chunk 20250302-20250331: 0 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20250401 to 20250430
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20250401 to 20250430
+[LOG] ✅ Extracted 0 vouchers from Journal Vouchers
+[LOG] Chunk 20250401-20250430: 0 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20250501 to 20250530
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20250501 to 20250530
+[LOG] ✅ Extracted 0 vouchers from Journal Vouchers
+[LOG] Chunk 20250501-20250530: 0 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20250531 to 20250629
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20250531 to 20250629
+[LOG] ✅ Extracted 0 vouchers from Journal Vouchers
+[LOG] Chunk 20250531-20250629: 0 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20250630 to 20250715
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20250630 to 20250715
+[LOG] ✅ Extracted 0 vouchers from Journal Vouchers
+[LOG] Chunk 20250630-20250715: 0 vouchers
+[LOG] ✅ Total Journal Vouchers vouchers fetched in chunks: 1
+[LOG] Journal Vouchers: 1 vouchers fetched.
+[LOG] Fetching Credit Note Vouchers chunk: 20250101 to 20250130
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20250101 to 20250130
+[LOG] ✅ Extracted 3 vouchers from Credit Note Vouchers
+[LOG] Chunk 20250101-20250130: 3 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20250131 to 20250301
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20250131 to 20250301
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20250131-20250301: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20250302 to 20250331
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20250302 to 20250331
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20250302-20250331: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20250401 to 20250430
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20250401 to 20250430
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20250401-20250430: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20250501 to 20250530
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20250501 to 20250530
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20250501-20250530: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20250531 to 20250629
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20250531 to 20250629
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20250531-20250629: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20250630 to 20250715
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20250630 to 20250715
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20250630-20250715: 0 vouchers
+[LOG] ✅ Total Credit Note Vouchers vouchers fetched in chunks: 3
+[LOG] Credit Note Vouchers: 3 vouchers fetched.
+[LOG] Fetching Debit Note Vouchers chunk: 20250101 to 20250130
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20250101 to 20250130
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20250101-20250130: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20250131 to 20250301
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20250131 to 20250301
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20250131-20250301: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20250302 to 20250331
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20250302 to 20250331
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20250302-20250331: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20250401 to 20250430
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20250401 to 20250430
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20250401-20250430: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20250501 to 20250530
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20250501 to 20250530
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20250501-20250530: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20250531 to 20250629
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20250531 to 20250629
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20250531-20250629: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20250630 to 20250715
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20250630 to 20250715
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20250630-20250715: 0 vouchers
+[LOG] ✅ Total Debit Note Vouchers vouchers fetched in chunks: 0
+[LOG] Debit Note Vouchers: 0 vouchers fetched.
+[LOG] ✅ Total vouchers extracted: 95 by type: {'Sales': 42, 'Purchase': 1, 'Payment': 30, 'Receipt': 18, 'Journal': 1, 'Credit Note': 3}
+[LOG] Data fetched from Tally as JSON. Sending to backend...
+[API_CONNECTOR] ❌ Backend URL not configured
+[LOG] Failed to sync data to backend.
+[LOG] Sync Data button clicked.
+[LOG] ✅ Tally service is running on localhost:9000
+[LOG] Testing connection to http://localhost:9000
+[LOG] Test response: status=200, length=1081
+[LOG] ✅ Tally connection test successful
+[LOG] Tally connected. Fetching data...
+[LOG] Normalized date range sent to Tally: 20220101 to 20250715
+[LOG] Fetching Sales Vouchers chunk: 20220101 to 20220130
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20220101 to 20220130
+[LOG] ✅ Extracted 0 vouchers from Sales Vouchers
+[LOG] Chunk 20220101-20220130: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20220131 to 20220301
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20220131 to 20220301
+[LOG] ✅ Extracted 0 vouchers from Sales Vouchers
+[LOG] Chunk 20220131-20220301: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20220302 to 20220331
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20220302 to 20220331
+[LOG] ✅ Extracted 0 vouchers from Sales Vouchers
+[LOG] Chunk 20220302-20220331: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20220401 to 20220430
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20220401 to 20220430
+[LOG] ❌ XML Parse error: not well-formed (invalid token): line 52110, column 53
+[LOG] Raw response: <ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Fluidtecq Pneumatics Private Limited (2022-23)</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHER REMOTEID="bd9d731b-d3c9-4771-8880-e4baca94aeaa-00012d7b" VCHKEY="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0000a...
+[LOG] ❌ No response from Tally for Sales Vouchers
+[LOG] Chunk 20220401-20220430: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20220501 to 20220530
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20220501 to 20220530
+[LOG] ✅ Extracted 124 vouchers from Sales Vouchers
+[LOG] Chunk 20220501-20220530: 124 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20220531 to 20220629
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20220531 to 20220629
+[LOG] ❌ XML Parse error: not well-formed (invalid token): line 158397, column 45
+[LOG] Raw response: <ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Fluidtecq Pneumatics Private Limited (2022-23)</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHER REMOTEID="bd9d731b-d3c9-4771-8880-e4baca94aeaa-000133ac" VCHKEY="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0000a...
+[LOG] ❌ No response from Tally for Sales Vouchers
+[LOG] Chunk 20220531-20220629: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20220630 to 20220729
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20220630 to 20220729
+[LOG] ✅ Extracted 105 vouchers from Sales Vouchers
+[LOG] Chunk 20220630-20220729: 105 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20220730 to 20220828
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20220730 to 20220828
+[LOG] ✅ Extracted 103 vouchers from Sales Vouchers
+[LOG] Chunk 20220730-20220828: 103 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20220829 to 20220927
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20220829 to 20220927
+[LOG] ❌ XML Parse error: not well-formed (invalid token): line 339423, column 35
+[LOG] Raw response: <ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Fluidtecq Pneumatics Private Limited (2022-23)</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHER REMOTEID="bd9d731b-d3c9-4771-8880-e4baca94aeaa-00013caa" VCHKEY="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0000a...
+[LOG] ❌ No response from Tally for Sales Vouchers
+[LOG] Chunk 20220829-20220927: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20220928 to 20221027
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20220928 to 20221027
+[LOG] ❌ XML Parse error: not well-formed (invalid token): line 49986, column 35
+[LOG] Raw response: <ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Fluidtecq Pneumatics Private Limited (2022-23)</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHER REMOTEID="bd9d731b-d3c9-4771-8880-e4baca94aeaa-000140ae" VCHKEY="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0000a...
+[LOG] ❌ No response from Tally for Sales Vouchers
+[LOG] Chunk 20220928-20221027: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20221028 to 20221126
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20221028 to 20221126
+[LOG] ✅ Extracted 168 vouchers from Sales Vouchers
+[LOG] Chunk 20221028-20221126: 168 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20221127 to 20221226
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20221127 to 20221226
+[LOG] ✅ Extracted 109 vouchers from Sales Vouchers
+[LOG] Chunk 20221127-20221226: 109 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20221227 to 20230125
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20221227 to 20230125
+[LOG] ❌ XML Parse error: not well-formed (invalid token): line 78894, column 57
+[LOG] Raw response: <ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Fluidtecq Pneumatics Private Limited (2022-23)</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHER REMOTEID="bd9d731b-d3c9-4771-8880-e4baca94aeaa-00014bee" VCHKEY="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0000a...
+[LOG] ❌ No response from Tally for Sales Vouchers
+[LOG] Chunk 20221227-20230125: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20230126 to 20230224
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20230126 to 20230224
+[LOG] ❌ XML Parse error: not well-formed (invalid token): line 257531, column 52
+[LOG] Raw response: <ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Fluidtecq Pneumatics Private Limited (2022-23)</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHER REMOTEID="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0001505b" VCHKEY="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0000a...
+[LOG] ❌ No response from Tally for Sales Vouchers
+[LOG] Chunk 20230126-20230224: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20230225 to 20230326
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20230225 to 20230326
+[LOG] ✅ Extracted 148 vouchers from Sales Vouchers
+[LOG] Chunk 20230225-20230326: 148 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20230327 to 20230425
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20230327 to 20230425
+[LOG] ❌ XML Parse error: not well-formed (invalid token): line 115802, column 57
+[LOG] Raw response: <ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Fluidtecq Pneumatics Private Limited (2022-23)</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHER REMOTEID="bd9d731b-d3c9-4771-8880-e4baca94aeaa-000157ac" VCHKEY="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0000a...
+[LOG] ❌ No response from Tally for Sales Vouchers
+[LOG] Chunk 20230327-20230425: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20230426 to 20230525
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20230426 to 20230525
+[LOG] ✅ Extracted 129 vouchers from Sales Vouchers
+[LOG] Chunk 20230426-20230525: 129 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20230526 to 20230624
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20230526 to 20230624
+[LOG] ✅ Extracted 119 vouchers from Sales Vouchers
+[LOG] Chunk 20230526-20230624: 119 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20230625 to 20230724
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20230625 to 20230724
+[LOG] ✅ Extracted 139 vouchers from Sales Vouchers
+[LOG] Chunk 20230625-20230724: 139 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20230725 to 20230823
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20230725 to 20230823
+[LOG] ❌ XML Parse error: not well-formed (invalid token): line 355898, column 64
+[LOG] Raw response: <ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Fluidtecq Pneumatics Private Limited (2022-23)</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHER REMOTEID="bd9d731b-d3c9-4771-8880-e4baca94aeaa-00016732" VCHKEY="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0000b...
+[LOG] ❌ No response from Tally for Sales Vouchers
+[LOG] Chunk 20230725-20230823: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20230824 to 20230922
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20230824 to 20230922
+[LOG] ✅ Extracted 138 vouchers from Sales Vouchers
+[LOG] Chunk 20230824-20230922: 138 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20230923 to 20231022
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20230923 to 20231022
+[LOG] ❌ XML Parse error: not well-formed (invalid token): line 49372, column 45
+[LOG] Raw response: <ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Fluidtecq Pneumatics Private Limited (2022-23)</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHER REMOTEID="bd9d731b-d3c9-4771-8880-e4baca94aeaa-00016f39" VCHKEY="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0000b...
+[LOG] ❌ No response from Tally for Sales Vouchers
+[LOG] Chunk 20230923-20231022: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20231023 to 20231121
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20231023 to 20231121
+[LOG] ❌ XML Parse error: not well-formed (invalid token): line 114922, column 44
+[LOG] Raw response: <ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Fluidtecq Pneumatics Private Limited (2022-23)</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHER REMOTEID="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0001731a" VCHKEY="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0000b...
+[LOG] ❌ No response from Tally for Sales Vouchers
+[LOG] Chunk 20231023-20231121: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20231122 to 20231221
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20231122 to 20231221
+[LOG] ✅ Extracted 163 vouchers from Sales Vouchers
+[LOG] Chunk 20231122-20231221: 163 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20231222 to 20240120
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20231222 to 20240120
+[LOG] ✅ Extracted 155 vouchers from Sales Vouchers
+[LOG] Chunk 20231222-20240120: 155 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20240121 to 20240219
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20240121 to 20240219
+[LOG] ✅ Extracted 135 vouchers from Sales Vouchers
+[LOG] Chunk 20240121-20240219: 135 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20240220 to 20240320
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20240220 to 20240320
+[LOG] ✅ Extracted 173 vouchers from Sales Vouchers
+[LOG] Chunk 20240220-20240320: 173 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20240321 to 20240419
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20240321 to 20240419
+[LOG] ✅ Extracted 137 vouchers from Sales Vouchers
+[LOG] Chunk 20240321-20240419: 137 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20240420 to 20240519
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20240420 to 20240519
+[LOG] ✅ Extracted 142 vouchers from Sales Vouchers
+[LOG] Chunk 20240420-20240519: 142 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20240520 to 20240618
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20240520 to 20240618
+[LOG] ✅ Extracted 144 vouchers from Sales Vouchers
+[LOG] Chunk 20240520-20240618: 144 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20240619 to 20240718
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20240619 to 20240718
+[LOG] ❌ XML Parse error: not well-formed (invalid token): line 217826, column 44
+[LOG] Raw response: <ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Fluidtecq Pneumatics Private Limited (2022-23)</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHER REMOTEID="bd9d731b-d3c9-4771-8880-e4baca94aeaa-000193dc" VCHKEY="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0000b...
+[LOG] ❌ No response from Tally for Sales Vouchers
+[LOG] Chunk 20240619-20240718: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20240719 to 20240817
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20240719 to 20240817
+[LOG] ✅ Extracted 149 vouchers from Sales Vouchers
+[LOG] Chunk 20240719-20240817: 149 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20240818 to 20240916
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20240818 to 20240916
+[LOG] ✅ Extracted 112 vouchers from Sales Vouchers
+[LOG] Chunk 20240818-20240916: 112 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20240917 to 20241016
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20240917 to 20241016
+[LOG] ✅ Extracted 162 vouchers from Sales Vouchers
+[LOG] Chunk 20240917-20241016: 162 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20241017 to 20241115
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20241017 to 20241115
+[LOG] ✅ Extracted 144 vouchers from Sales Vouchers
+[LOG] Chunk 20241017-20241115: 144 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20241116 to 20241215
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20241116 to 20241215
+[LOG] ❌ XML Parse error: not well-formed (invalid token): line 35671, column 34
+[LOG] Raw response: <ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Fluidtecq Pneumatics Private Limited (2022-23)</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHER REMOTEID="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0001a7b8" VCHKEY="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0000b...
+[LOG] ❌ No response from Tally for Sales Vouchers
+[LOG] Chunk 20241116-20241215: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20241216 to 20250114
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20241216 to 20250114
+[LOG] ❌ XML Parse error: not well-formed (invalid token): line 126529, column 57
+[LOG] Raw response: <ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Fluidtecq Pneumatics Private Limited (2022-23)</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHER REMOTEID="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0001ab82" VCHKEY="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0000b...
+[LOG] ❌ No response from Tally for Sales Vouchers
+[LOG] Chunk 20241216-20250114: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20250115 to 20250213
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20250115 to 20250213
+[LOG] ✅ Extracted 0 vouchers from Sales Vouchers
+[LOG] Chunk 20250115-20250213: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20250214 to 20250315
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20250214 to 20250315
+[LOG] ✅ Extracted 0 vouchers from Sales Vouchers
+[LOG] Chunk 20250214-20250315: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20250316 to 20250414
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20250316 to 20250414
+[LOG] ✅ Extracted 0 vouchers from Sales Vouchers
+[LOG] Chunk 20250316-20250414: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20250415 to 20250514
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20250415 to 20250514
+[LOG] ✅ Extracted 0 vouchers from Sales Vouchers
+[LOG] Chunk 20250415-20250514: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20250515 to 20250613
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20250515 to 20250613
+[LOG] ✅ Extracted 0 vouchers from Sales Vouchers
+[LOG] Chunk 20250515-20250613: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20250614 to 20250713
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20250614 to 20250713
+[LOG] ✅ Extracted 0 vouchers from Sales Vouchers
+[LOG] Chunk 20250614-20250713: 0 vouchers
+[LOG] Fetching Sales Vouchers chunk: 20250714 to 20250715
+[LOG] Fetching vouchers from report 'Sales Vouchers' for 20250714 to 20250715
+[LOG] ✅ Extracted 0 vouchers from Sales Vouchers
+[LOG] Chunk 20250714-20250715: 0 vouchers
+[LOG] ✅ Total Sales Vouchers vouchers fetched in chunks: 2898
+[LOG] Sales Vouchers: 2898 vouchers fetched.
+[LOG] Fetching Purchase Vouchers chunk: 20220101 to 20220130
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20220101 to 20220130
+[LOG] ✅ Extracted 0 vouchers from Purchase Vouchers
+[LOG] Chunk 20220101-20220130: 0 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20220131 to 20220301
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20220131 to 20220301
+[LOG] ✅ Extracted 0 vouchers from Purchase Vouchers
+[LOG] Chunk 20220131-20220301: 0 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20220302 to 20220331
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20220302 to 20220331
+[LOG] ✅ Extracted 0 vouchers from Purchase Vouchers
+[LOG] Chunk 20220302-20220331: 0 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20220401 to 20220430
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20220401 to 20220430
+[LOG] ✅ Extracted 207 vouchers from Purchase Vouchers
+[LOG] Chunk 20220401-20220430: 207 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20220501 to 20220530
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20220501 to 20220530
+[LOG] ✅ Extracted 204 vouchers from Purchase Vouchers
+[LOG] Chunk 20220501-20220530: 204 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20220531 to 20220629
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20220531 to 20220629
+[LOG] ✅ Extracted 164 vouchers from Purchase Vouchers
+[LOG] Chunk 20220531-20220629: 164 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20220630 to 20220729
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20220630 to 20220729
+[LOG] ✅ Extracted 189 vouchers from Purchase Vouchers
+[LOG] Chunk 20220630-20220729: 189 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20220730 to 20220828
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20220730 to 20220828
+[LOG] ✅ Extracted 195 vouchers from Purchase Vouchers
+[LOG] Chunk 20220730-20220828: 195 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20220829 to 20220927
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20220829 to 20220927
+[LOG] ✅ Extracted 216 vouchers from Purchase Vouchers
+[LOG] Chunk 20220829-20220927: 216 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20220928 to 20221027
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20220928 to 20221027
+[LOG] ✅ Extracted 203 vouchers from Purchase Vouchers
+[LOG] Chunk 20220928-20221027: 203 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20221028 to 20221126
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20221028 to 20221126
+[LOG] ✅ Extracted 211 vouchers from Purchase Vouchers
+[LOG] Chunk 20221028-20221126: 211 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20221127 to 20221226
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20221127 to 20221226
+[LOG] ✅ Extracted 237 vouchers from Purchase Vouchers
+[LOG] Chunk 20221127-20221226: 237 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20221227 to 20230125
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20221227 to 20230125
+[LOG] ✅ Extracted 239 vouchers from Purchase Vouchers
+[LOG] Chunk 20221227-20230125: 239 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20230126 to 20230224
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20230126 to 20230224
+[LOG] ✅ Extracted 204 vouchers from Purchase Vouchers
+[LOG] Chunk 20230126-20230224: 204 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20230225 to 20230326
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20230225 to 20230326
+[LOG] ✅ Extracted 269 vouchers from Purchase Vouchers
+[LOG] Chunk 20230225-20230326: 269 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20230327 to 20230425
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20230327 to 20230425
+[LOG] ✅ Extracted 205 vouchers from Purchase Vouchers
+[LOG] Chunk 20230327-20230425: 205 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20230426 to 20230525
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20230426 to 20230525
+[LOG] ✅ Extracted 190 vouchers from Purchase Vouchers
+[LOG] Chunk 20230426-20230525: 190 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20230526 to 20230624
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20230526 to 20230624
+[LOG] ✅ Extracted 205 vouchers from Purchase Vouchers
+[LOG] Chunk 20230526-20230624: 205 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20230625 to 20230724
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20230625 to 20230724
+[LOG] ✅ Extracted 206 vouchers from Purchase Vouchers
+[LOG] Chunk 20230625-20230724: 206 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20230725 to 20230823
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20230725 to 20230823
+[LOG] ✅ Extracted 229 vouchers from Purchase Vouchers
+[LOG] Chunk 20230725-20230823: 229 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20230824 to 20230922
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20230824 to 20230922
+[LOG] ✅ Extracted 213 vouchers from Purchase Vouchers
+[LOG] Chunk 20230824-20230922: 213 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20230923 to 20231022
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20230923 to 20231022
+[LOG] ✅ Extracted 241 vouchers from Purchase Vouchers
+[LOG] Chunk 20230923-20231022: 241 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20231023 to 20231121
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20231023 to 20231121
+[LOG] ✅ Extracted 197 vouchers from Purchase Vouchers
+[LOG] Chunk 20231023-20231121: 197 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20231122 to 20231221
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20231122 to 20231221
+[LOG] ✅ Extracted 257 vouchers from Purchase Vouchers
+[LOG] Chunk 20231122-20231221: 257 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20231222 to 20240120
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20231222 to 20240120
+[LOG] ✅ Extracted 225 vouchers from Purchase Vouchers
+[LOG] Chunk 20231222-20240120: 225 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20240121 to 20240219
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20240121 to 20240219
+[LOG] ✅ Extracted 233 vouchers from Purchase Vouchers
+[LOG] Chunk 20240121-20240219: 233 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20240220 to 20240320
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20240220 to 20240320
+[LOG] ✅ Extracted 252 vouchers from Purchase Vouchers
+[LOG] Chunk 20240220-20240320: 252 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20240321 to 20240419
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20240321 to 20240419
+[LOG] ✅ Extracted 207 vouchers from Purchase Vouchers
+[LOG] Chunk 20240321-20240419: 207 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20240420 to 20240519
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20240420 to 20240519
+[LOG] ✅ Extracted 216 vouchers from Purchase Vouchers
+[LOG] Chunk 20240420-20240519: 216 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20240520 to 20240618
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20240520 to 20240618
+[LOG] ✅ Extracted 265 vouchers from Purchase Vouchers
+[LOG] Chunk 20240520-20240618: 265 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20240619 to 20240718
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20240619 to 20240718
+[LOG] ✅ Extracted 235 vouchers from Purchase Vouchers
+[LOG] Chunk 20240619-20240718: 235 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20240719 to 20240817
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20240719 to 20240817
+[LOG] ✅ Extracted 215 vouchers from Purchase Vouchers
+[LOG] Chunk 20240719-20240817: 215 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20240818 to 20240916
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20240818 to 20240916
+[LOG] ✅ Extracted 213 vouchers from Purchase Vouchers
+[LOG] Chunk 20240818-20240916: 213 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20240917 to 20241016
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20240917 to 20241016
+[LOG] ✅ Extracted 197 vouchers from Purchase Vouchers
+[LOG] Chunk 20240917-20241016: 197 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20241017 to 20241115
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20241017 to 20241115
+[LOG] ❌ XML Parse error: not well-formed (invalid token): line 517734, column 7
+[LOG] Raw response: <ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Fluidtecq Pneumatics Private Limited (2022-23)</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <VOUCHER REMOTEID="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0001a4fc" VCHKEY="bd9d731b-d3c9-4771-8880-e4baca94aeaa-0000b...
+[LOG] ❌ No response from Tally for Purchase Vouchers
+[LOG] Chunk 20241017-20241115: 0 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20241116 to 20241215
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20241116 to 20241215
+[LOG] ✅ Extracted 145 vouchers from Purchase Vouchers
+[LOG] Chunk 20241116-20241215: 145 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20241216 to 20250114
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20241216 to 20250114
+[LOG] ✅ Extracted 53 vouchers from Purchase Vouchers
+[LOG] Chunk 20241216-20250114: 53 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20250115 to 20250213
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20250115 to 20250213
+[LOG] ✅ Extracted 0 vouchers from Purchase Vouchers
+[LOG] Chunk 20250115-20250213: 0 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20250214 to 20250315
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20250214 to 20250315
+[LOG] ✅ Extracted 0 vouchers from Purchase Vouchers
+[LOG] Chunk 20250214-20250315: 0 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20250316 to 20250414
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20250316 to 20250414
+[LOG] ✅ Extracted 0 vouchers from Purchase Vouchers
+[LOG] Chunk 20250316-20250414: 0 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20250415 to 20250514
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20250415 to 20250514
+[LOG] ✅ Extracted 0 vouchers from Purchase Vouchers
+[LOG] Chunk 20250415-20250514: 0 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20250515 to 20250613
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20250515 to 20250613
+[LOG] ✅ Extracted 0 vouchers from Purchase Vouchers
+[LOG] Chunk 20250515-20250613: 0 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20250614 to 20250713
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20250614 to 20250713
+[LOG] ✅ Extracted 0 vouchers from Purchase Vouchers
+[LOG] Chunk 20250614-20250713: 0 vouchers
+[LOG] Fetching Purchase Vouchers chunk: 20250714 to 20250715
+[LOG] Fetching vouchers from report 'Purchase Vouchers' for 20250714 to 20250715
+[LOG] ✅ Extracted 0 vouchers from Purchase Vouchers
+[LOG] Chunk 20250714-20250715: 0 vouchers
+[LOG] ✅ Total Purchase Vouchers vouchers fetched in chunks: 6937
+[LOG] Purchase Vouchers: 6937 vouchers fetched.
+[LOG] Fetching Payment Vouchers chunk: 20220101 to 20220130
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20220101 to 20220130
+[LOG] ✅ Extracted 0 vouchers from Payment Vouchers
+[LOG] Chunk 20220101-20220130: 0 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20220131 to 20220301
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20220131 to 20220301
+[LOG] ✅ Extracted 0 vouchers from Payment Vouchers
+[LOG] Chunk 20220131-20220301: 0 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20220302 to 20220331
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20220302 to 20220331
+[LOG] ✅ Extracted 0 vouchers from Payment Vouchers
+[LOG] Chunk 20220302-20220331: 0 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20220401 to 20220430
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20220401 to 20220430
+[LOG] ✅ Extracted 223 vouchers from Payment Vouchers
+[LOG] Chunk 20220401-20220430: 223 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20220501 to 20220530
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20220501 to 20220530
+[LOG] ✅ Extracted 202 vouchers from Payment Vouchers
+[LOG] Chunk 20220501-20220530: 202 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20220531 to 20220629
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20220531 to 20220629
+[LOG] ✅ Extracted 192 vouchers from Payment Vouchers
+[LOG] Chunk 20220531-20220629: 192 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20220630 to 20220729
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20220630 to 20220729
+[LOG] ✅ Extracted 185 vouchers from Payment Vouchers
+[LOG] Chunk 20220630-20220729: 185 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20220730 to 20220828
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20220730 to 20220828
+[LOG] ✅ Extracted 228 vouchers from Payment Vouchers
+[LOG] Chunk 20220730-20220828: 228 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20220829 to 20220927
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20220829 to 20220927
+[LOG] ✅ Extracted 231 vouchers from Payment Vouchers
+[LOG] Chunk 20220829-20220927: 231 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20220928 to 20221027
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20220928 to 20221027
+[LOG] ✅ Extracted 245 vouchers from Payment Vouchers
+[LOG] Chunk 20220928-20221027: 245 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20221028 to 20221126
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20221028 to 20221126
+[LOG] ✅ Extracted 289 vouchers from Payment Vouchers
+[LOG] Chunk 20221028-20221126: 289 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20221127 to 20221226
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20221127 to 20221226
+[LOG] ✅ Extracted 210 vouchers from Payment Vouchers
+[LOG] Chunk 20221127-20221226: 210 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20221227 to 20230125
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20221227 to 20230125
+[LOG] ✅ Extracted 239 vouchers from Payment Vouchers
+[LOG] Chunk 20221227-20230125: 239 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20230126 to 20230224
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20230126 to 20230224
+[LOG] ✅ Extracted 166 vouchers from Payment Vouchers
+[LOG] Chunk 20230126-20230224: 166 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20230225 to 20230326
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20230225 to 20230326
+[LOG] ✅ Extracted 223 vouchers from Payment Vouchers
+[LOG] Chunk 20230225-20230326: 223 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20230327 to 20230425
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20230327 to 20230425
+[LOG] ✅ Extracted 262 vouchers from Payment Vouchers
+[LOG] Chunk 20230327-20230425: 262 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20230426 to 20230525
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20230426 to 20230525
+[LOG] ✅ Extracted 210 vouchers from Payment Vouchers
+[LOG] Chunk 20230426-20230525: 210 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20230526 to 20230624
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20230526 to 20230624
+[LOG] ✅ Extracted 248 vouchers from Payment Vouchers
+[LOG] Chunk 20230526-20230624: 248 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20230625 to 20230724
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20230625 to 20230724
+[LOG] ✅ Extracted 237 vouchers from Payment Vouchers
+[LOG] Chunk 20230625-20230724: 237 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20230725 to 20230823
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20230725 to 20230823
+[LOG] ✅ Extracted 247 vouchers from Payment Vouchers
+[LOG] Chunk 20230725-20230823: 247 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20230824 to 20230922
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20230824 to 20230922
+[LOG] ✅ Extracted 203 vouchers from Payment Vouchers
+[LOG] Chunk 20230824-20230922: 203 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20230923 to 20231022
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20230923 to 20231022
+[LOG] ✅ Extracted 217 vouchers from Payment Vouchers
+[LOG] Chunk 20230923-20231022: 217 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20231023 to 20231121
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20231023 to 20231121
+[LOG] ✅ Extracted 219 vouchers from Payment Vouchers
+[LOG] Chunk 20231023-20231121: 219 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20231122 to 20231221
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20231122 to 20231221
+[LOG] ✅ Extracted 258 vouchers from Payment Vouchers
+[LOG] Chunk 20231122-20231221: 258 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20231222 to 20240120
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20231222 to 20240120
+[LOG] ✅ Extracted 212 vouchers from Payment Vouchers
+[LOG] Chunk 20231222-20240120: 212 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20240121 to 20240219
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20240121 to 20240219
+[LOG] ✅ Extracted 261 vouchers from Payment Vouchers
+[LOG] Chunk 20240121-20240219: 261 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20240220 to 20240320
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20240220 to 20240320
+[LOG] ✅ Extracted 283 vouchers from Payment Vouchers
+[LOG] Chunk 20240220-20240320: 283 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20240321 to 20240419
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20240321 to 20240419
+[LOG] ✅ Extracted 225 vouchers from Payment Vouchers
+[LOG] Chunk 20240321-20240419: 225 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20240420 to 20240519
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20240420 to 20240519
+[LOG] ✅ Extracted 268 vouchers from Payment Vouchers
+[LOG] Chunk 20240420-20240519: 268 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20240520 to 20240618
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20240520 to 20240618
+[LOG] ✅ Extracted 266 vouchers from Payment Vouchers
+[LOG] Chunk 20240520-20240618: 266 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20240619 to 20240718
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20240619 to 20240718
+[LOG] ✅ Extracted 271 vouchers from Payment Vouchers
+[LOG] Chunk 20240619-20240718: 271 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20240719 to 20240817
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20240719 to 20240817
+[LOG] ✅ Extracted 267 vouchers from Payment Vouchers
+[LOG] Chunk 20240719-20240817: 267 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20240818 to 20240916
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20240818 to 20240916
+[LOG] ✅ Extracted 254 vouchers from Payment Vouchers
+[LOG] Chunk 20240818-20240916: 254 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20240917 to 20241016
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20240917 to 20241016
+[LOG] ✅ Extracted 319 vouchers from Payment Vouchers
+[LOG] Chunk 20240917-20241016: 319 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20241017 to 20241115
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20241017 to 20241115
+[LOG] ✅ Extracted 295 vouchers from Payment Vouchers
+[LOG] Chunk 20241017-20241115: 295 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20241116 to 20241215
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20241116 to 20241215
+[LOG] ✅ Extracted 188 vouchers from Payment Vouchers
+[LOG] Chunk 20241116-20241215: 188 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20241216 to 20250114
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20241216 to 20250114
+[LOG] ✅ Extracted 131 vouchers from Payment Vouchers
+[LOG] Chunk 20241216-20250114: 131 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20250115 to 20250213
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20250115 to 20250213
+[LOG] ✅ Extracted 0 vouchers from Payment Vouchers
+[LOG] Chunk 20250115-20250213: 0 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20250214 to 20250315
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20250214 to 20250315
+[LOG] ✅ Extracted 0 vouchers from Payment Vouchers
+[LOG] Chunk 20250214-20250315: 0 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20250316 to 20250414
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20250316 to 20250414
+[LOG] ✅ Extracted 0 vouchers from Payment Vouchers
+[LOG] Chunk 20250316-20250414: 0 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20250415 to 20250514
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20250415 to 20250514
+[LOG] ✅ Extracted 0 vouchers from Payment Vouchers
+[LOG] Chunk 20250415-20250514: 0 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20250515 to 20250613
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20250515 to 20250613
+[LOG] ✅ Extracted 0 vouchers from Payment Vouchers
+[LOG] Chunk 20250515-20250613: 0 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20250614 to 20250713
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20250614 to 20250713
+[LOG] ✅ Extracted 0 vouchers from Payment Vouchers
+[LOG] Chunk 20250614-20250713: 0 vouchers
+[LOG] Fetching Payment Vouchers chunk: 20250714 to 20250715
+[LOG] Fetching vouchers from report 'Payment Vouchers' for 20250714 to 20250715
+[LOG] ✅ Extracted 0 vouchers from Payment Vouchers
+[LOG] Chunk 20250714-20250715: 0 vouchers
+[LOG] ✅ Total Payment Vouchers vouchers fetched in chunks: 7974
+[LOG] Payment Vouchers: 7974 vouchers fetched.
+[LOG] Fetching Receipt Vouchers chunk: 20220101 to 20220130
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20220101 to 20220130
+[LOG] ✅ Extracted 0 vouchers from Receipt Vouchers
+[LOG] Chunk 20220101-20220130: 0 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20220131 to 20220301
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20220131 to 20220301
+[LOG] ✅ Extracted 0 vouchers from Receipt Vouchers
+[LOG] Chunk 20220131-20220301: 0 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20220302 to 20220331
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20220302 to 20220331
+[LOG] ✅ Extracted 0 vouchers from Receipt Vouchers
+[LOG] Chunk 20220302-20220331: 0 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20220401 to 20220430
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20220401 to 20220430
+[LOG] ✅ Extracted 93 vouchers from Receipt Vouchers
+[LOG] Chunk 20220401-20220430: 93 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20220501 to 20220530
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20220501 to 20220530
+[LOG] ✅ Extracted 94 vouchers from Receipt Vouchers
+[LOG] Chunk 20220501-20220530: 94 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20220531 to 20220629
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20220531 to 20220629
+[LOG] ✅ Extracted 105 vouchers from Receipt Vouchers
+[LOG] Chunk 20220531-20220629: 105 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20220630 to 20220729
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20220630 to 20220729
+[LOG] ✅ Extracted 87 vouchers from Receipt Vouchers
+[LOG] Chunk 20220630-20220729: 87 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20220730 to 20220828
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20220730 to 20220828
+[LOG] ✅ Extracted 103 vouchers from Receipt Vouchers
+[LOG] Chunk 20220730-20220828: 103 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20220829 to 20220927
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20220829 to 20220927
+[LOG] ✅ Extracted 104 vouchers from Receipt Vouchers
+[LOG] Chunk 20220829-20220927: 104 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20220928 to 20221027
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20220928 to 20221027
+[LOG] ✅ Extracted 96 vouchers from Receipt Vouchers
+[LOG] Chunk 20220928-20221027: 96 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20221028 to 20221126
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20221028 to 20221126
+[LOG] ✅ Extracted 117 vouchers from Receipt Vouchers
+[LOG] Chunk 20221028-20221126: 117 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20221127 to 20221226
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20221127 to 20221226
+[LOG] ✅ Extracted 110 vouchers from Receipt Vouchers
+[LOG] Chunk 20221127-20221226: 110 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20221227 to 20230125
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20221227 to 20230125
+[LOG] ✅ Extracted 102 vouchers from Receipt Vouchers
+[LOG] Chunk 20221227-20230125: 102 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20230126 to 20230224
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20230126 to 20230224
+[LOG] ✅ Extracted 105 vouchers from Receipt Vouchers
+[LOG] Chunk 20230126-20230224: 105 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20230225 to 20230326
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20230225 to 20230326
+[LOG] ✅ Extracted 93 vouchers from Receipt Vouchers
+[LOG] Chunk 20230225-20230326: 93 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20230327 to 20230425
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20230327 to 20230425
+[LOG] ✅ Extracted 107 vouchers from Receipt Vouchers
+[LOG] Chunk 20230327-20230425: 107 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20230426 to 20230525
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20230426 to 20230525
+[LOG] ✅ Extracted 104 vouchers from Receipt Vouchers
+[LOG] Chunk 20230426-20230525: 104 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20230526 to 20230624
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20230526 to 20230624
+[LOG] ✅ Extracted 122 vouchers from Receipt Vouchers
+[LOG] Chunk 20230526-20230624: 122 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20230625 to 20230724
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20230625 to 20230724
+[LOG] ✅ Extracted 110 vouchers from Receipt Vouchers
+[LOG] Chunk 20230625-20230724: 110 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20230725 to 20230823
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20230725 to 20230823
+[LOG] ✅ Extracted 125 vouchers from Receipt Vouchers
+[LOG] Chunk 20230725-20230823: 125 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20230824 to 20230922
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20230824 to 20230922
+[LOG] ✅ Extracted 104 vouchers from Receipt Vouchers
+[LOG] Chunk 20230824-20230922: 104 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20230923 to 20231022
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20230923 to 20231022
+[LOG] ✅ Extracted 108 vouchers from Receipt Vouchers
+[LOG] Chunk 20230923-20231022: 108 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20231023 to 20231121
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20231023 to 20231121
+[LOG] ✅ Extracted 94 vouchers from Receipt Vouchers
+[LOG] Chunk 20231023-20231121: 94 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20231122 to 20231221
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20231122 to 20231221
+[LOG] ✅ Extracted 122 vouchers from Receipt Vouchers
+[LOG] Chunk 20231122-20231221: 122 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20231222 to 20240120
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20231222 to 20240120
+[LOG] ✅ Extracted 125 vouchers from Receipt Vouchers
+[LOG] Chunk 20231222-20240120: 125 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20240121 to 20240219
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20240121 to 20240219
+[LOG] ✅ Extracted 107 vouchers from Receipt Vouchers
+[LOG] Chunk 20240121-20240219: 107 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20240220 to 20240320
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20240220 to 20240320
+[LOG] ✅ Extracted 140 vouchers from Receipt Vouchers
+[LOG] Chunk 20240220-20240320: 140 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20240321 to 20240419
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20240321 to 20240419
+[LOG] ✅ Extracted 110 vouchers from Receipt Vouchers
+[LOG] Chunk 20240321-20240419: 110 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20240420 to 20240519
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20240420 to 20240519
+[LOG] ✅ Extracted 91 vouchers from Receipt Vouchers
+[LOG] Chunk 20240420-20240519: 91 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20240520 to 20240618
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20240520 to 20240618
+[LOG] ✅ Extracted 112 vouchers from Receipt Vouchers
+[LOG] Chunk 20240520-20240618: 112 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20240619 to 20240718
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20240619 to 20240718
+[LOG] ✅ Extracted 114 vouchers from Receipt Vouchers
+[LOG] Chunk 20240619-20240718: 114 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20240719 to 20240817
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20240719 to 20240817
+[LOG] ✅ Extracted 124 vouchers from Receipt Vouchers
+[LOG] Chunk 20240719-20240817: 124 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20240818 to 20240916
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20240818 to 20240916
+[LOG] ✅ Extracted 106 vouchers from Receipt Vouchers
+[LOG] Chunk 20240818-20240916: 106 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20240917 to 20241016
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20240917 to 20241016
+[LOG] ✅ Extracted 129 vouchers from Receipt Vouchers
+[LOG] Chunk 20240917-20241016: 129 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20241017 to 20241115
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20241017 to 20241115
+[LOG] ✅ Extracted 114 vouchers from Receipt Vouchers
+[LOG] Chunk 20241017-20241115: 114 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20241116 to 20241215
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20241116 to 20241215
+[LOG] ✅ Extracted 107 vouchers from Receipt Vouchers
+[LOG] Chunk 20241116-20241215: 107 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20241216 to 20250114
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20241216 to 20250114
+[LOG] ✅ Extracted 89 vouchers from Receipt Vouchers
+[LOG] Chunk 20241216-20250114: 89 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20250115 to 20250213
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20250115 to 20250213
+[LOG] ✅ Extracted 0 vouchers from Receipt Vouchers
+[LOG] Chunk 20250115-20250213: 0 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20250214 to 20250315
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20250214 to 20250315
+[LOG] ✅ Extracted 0 vouchers from Receipt Vouchers
+[LOG] Chunk 20250214-20250315: 0 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20250316 to 20250414
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20250316 to 20250414
+[LOG] ✅ Extracted 0 vouchers from Receipt Vouchers
+[LOG] Chunk 20250316-20250414: 0 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20250415 to 20250514
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20250415 to 20250514
+[LOG] ✅ Extracted 0 vouchers from Receipt Vouchers
+[LOG] Chunk 20250415-20250514: 0 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20250515 to 20250613
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20250515 to 20250613
+[LOG] ✅ Extracted 0 vouchers from Receipt Vouchers
+[LOG] Chunk 20250515-20250613: 0 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20250614 to 20250713
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20250614 to 20250713
+[LOG] ✅ Extracted 0 vouchers from Receipt Vouchers
+[LOG] Chunk 20250614-20250713: 0 vouchers
+[LOG] Fetching Receipt Vouchers chunk: 20250714 to 20250715
+[LOG] Fetching vouchers from report 'Receipt Vouchers' for 20250714 to 20250715
+[LOG] ✅ Extracted 0 vouchers from Receipt Vouchers
+[LOG] Chunk 20250714-20250715: 0 vouchers
+[LOG] ✅ Total Receipt Vouchers vouchers fetched in chunks: 3673
+[LOG] Receipt Vouchers: 3673 vouchers fetched.
+[LOG] Fetching Journal Vouchers chunk: 20220101 to 20220130
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20220101 to 20220130
+[LOG] ✅ Extracted 0 vouchers from Journal Vouchers
+[LOG] Chunk 20220101-20220130: 0 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20220131 to 20220301
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20220131 to 20220301
+[LOG] ✅ Extracted 0 vouchers from Journal Vouchers
+[LOG] Chunk 20220131-20220301: 0 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20220302 to 20220331
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20220302 to 20220331
+[LOG] ✅ Extracted 0 vouchers from Journal Vouchers
+[LOG] Chunk 20220302-20220331: 0 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20220401 to 20220430
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20220401 to 20220430
+[LOG] ✅ Extracted 47 vouchers from Journal Vouchers
+[LOG] Chunk 20220401-20220430: 47 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20220501 to 20220530
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20220501 to 20220530
+[LOG] ✅ Extracted 12 vouchers from Journal Vouchers
+[LOG] Chunk 20220501-20220530: 12 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20220531 to 20220629
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20220531 to 20220629
+[LOG] ✅ Extracted 25 vouchers from Journal Vouchers
+[LOG] Chunk 20220531-20220629: 25 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20220630 to 20220729
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20220630 to 20220729
+[LOG] ✅ Extracted 22 vouchers from Journal Vouchers
+[LOG] Chunk 20220630-20220729: 22 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20220730 to 20220828
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20220730 to 20220828
+[LOG] ✅ Extracted 31 vouchers from Journal Vouchers
+[LOG] Chunk 20220730-20220828: 31 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20220829 to 20220927
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20220829 to 20220927
+[LOG] ✅ Extracted 26 vouchers from Journal Vouchers
+[LOG] Chunk 20220829-20220927: 26 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20220928 to 20221027
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20220928 to 20221027
+[LOG] ✅ Extracted 18 vouchers from Journal Vouchers
+[LOG] Chunk 20220928-20221027: 18 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20221028 to 20221126
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20221028 to 20221126
+[LOG] ✅ Extracted 14 vouchers from Journal Vouchers
+[LOG] Chunk 20221028-20221126: 14 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20221127 to 20221226
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20221127 to 20221226
+[LOG] ✅ Extracted 18 vouchers from Journal Vouchers
+[LOG] Chunk 20221127-20221226: 18 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20221227 to 20230125
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20221227 to 20230125
+[LOG] ✅ Extracted 20 vouchers from Journal Vouchers
+[LOG] Chunk 20221227-20230125: 20 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20230126 to 20230224
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20230126 to 20230224
+[LOG] ✅ Extracted 25 vouchers from Journal Vouchers
+[LOG] Chunk 20230126-20230224: 25 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20230225 to 20230326
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20230225 to 20230326
+[LOG] ✅ Extracted 15 vouchers from Journal Vouchers
+[LOG] Chunk 20230225-20230326: 15 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20230327 to 20230425
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20230327 to 20230425
+[LOG] ✅ Extracted 84 vouchers from Journal Vouchers
+[LOG] Chunk 20230327-20230425: 84 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20230426 to 20230525
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20230426 to 20230525
+[LOG] ✅ Extracted 27 vouchers from Journal Vouchers
+[LOG] Chunk 20230426-20230525: 27 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20230526 to 20230624
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20230526 to 20230624
+[LOG] ✅ Extracted 13 vouchers from Journal Vouchers
+[LOG] Chunk 20230526-20230624: 13 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20230625 to 20230724
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20230625 to 20230724
+[LOG] ✅ Extracted 18 vouchers from Journal Vouchers
+[LOG] Chunk 20230625-20230724: 18 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20230725 to 20230823
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20230725 to 20230823
+[LOG] ✅ Extracted 22 vouchers from Journal Vouchers
+[LOG] Chunk 20230725-20230823: 22 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20230824 to 20230922
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20230824 to 20230922
+[LOG] ✅ Extracted 12 vouchers from Journal Vouchers
+[LOG] Chunk 20230824-20230922: 12 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20230923 to 20231022
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20230923 to 20231022
+[LOG] ✅ Extracted 18 vouchers from Journal Vouchers
+[LOG] Chunk 20230923-20231022: 18 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20231023 to 20231121
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20231023 to 20231121
+[LOG] ✅ Extracted 19 vouchers from Journal Vouchers
+[LOG] Chunk 20231023-20231121: 19 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20231122 to 20231221
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20231122 to 20231221
+[LOG] ✅ Extracted 13 vouchers from Journal Vouchers
+[LOG] Chunk 20231122-20231221: 13 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20231222 to 20240120
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20231222 to 20240120
+[LOG] ✅ Extracted 26 vouchers from Journal Vouchers
+[LOG] Chunk 20231222-20240120: 26 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20240121 to 20240219
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20240121 to 20240219
+[LOG] ✅ Extracted 25 vouchers from Journal Vouchers
+[LOG] Chunk 20240121-20240219: 25 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20240220 to 20240320
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20240220 to 20240320
+[LOG] ✅ Extracted 22 vouchers from Journal Vouchers
+[LOG] Chunk 20240220-20240320: 22 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20240321 to 20240419
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20240321 to 20240419
+[LOG] ✅ Extracted 56 vouchers from Journal Vouchers
+[LOG] Chunk 20240321-20240419: 56 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20240420 to 20240519
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20240420 to 20240519
+[LOG] ✅ Extracted 19 vouchers from Journal Vouchers
+[LOG] Chunk 20240420-20240519: 19 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20240520 to 20240618
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20240520 to 20240618
+[LOG] ✅ Extracted 11 vouchers from Journal Vouchers
+[LOG] Chunk 20240520-20240618: 11 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20240619 to 20240718
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20240619 to 20240718
+[LOG] ✅ Extracted 16 vouchers from Journal Vouchers
+[LOG] Chunk 20240619-20240718: 16 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20240719 to 20240817
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20240719 to 20240817
+[LOG] ✅ Extracted 11 vouchers from Journal Vouchers
+[LOG] Chunk 20240719-20240817: 11 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20240818 to 20240916
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20240818 to 20240916
+[LOG] ✅ Extracted 15 vouchers from Journal Vouchers
+[LOG] Chunk 20240818-20240916: 15 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20240917 to 20241016
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20240917 to 20241016
+[LOG] ✅ Extracted 30 vouchers from Journal Vouchers
+[LOG] Chunk 20240917-20241016: 30 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20241017 to 20241115
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20241017 to 20241115
+[LOG] ✅ Extracted 17 vouchers from Journal Vouchers
+[LOG] Chunk 20241017-20241115: 17 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20241116 to 20241215
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20241116 to 20241215
+[LOG] ✅ Extracted 9 vouchers from Journal Vouchers
+[LOG] Chunk 20241116-20241215: 9 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20241216 to 20250114
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20241216 to 20250114
+[LOG] ✅ Extracted 3 vouchers from Journal Vouchers
+[LOG] Chunk 20241216-20250114: 3 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20250115 to 20250213
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20250115 to 20250213
+[LOG] ✅ Extracted 0 vouchers from Journal Vouchers
+[LOG] Chunk 20250115-20250213: 0 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20250214 to 20250315
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20250214 to 20250315
+[LOG] ✅ Extracted 0 vouchers from Journal Vouchers
+[LOG] Chunk 20250214-20250315: 0 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20250316 to 20250414
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20250316 to 20250414
+[LOG] ✅ Extracted 0 vouchers from Journal Vouchers
+[LOG] Chunk 20250316-20250414: 0 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20250415 to 20250514
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20250415 to 20250514
+[LOG] ✅ Extracted 0 vouchers from Journal Vouchers
+[LOG] Chunk 20250415-20250514: 0 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20250515 to 20250613
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20250515 to 20250613
+[LOG] ✅ Extracted 0 vouchers from Journal Vouchers
+[LOG] Chunk 20250515-20250613: 0 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20250614 to 20250713
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20250614 to 20250713
+[LOG] ✅ Extracted 0 vouchers from Journal Vouchers
+[LOG] Chunk 20250614-20250713: 0 vouchers
+[LOG] Fetching Journal Vouchers chunk: 20250714 to 20250715
+[LOG] Fetching vouchers from report 'Journal Vouchers' for 20250714 to 20250715
+[LOG] ✅ Extracted 0 vouchers from Journal Vouchers
+[LOG] Chunk 20250714-20250715: 0 vouchers
+[LOG] ✅ Total Journal Vouchers vouchers fetched in chunks: 759
+[LOG] Journal Vouchers: 759 vouchers fetched.
+[LOG] Fetching Credit Note Vouchers chunk: 20220101 to 20220130
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20220101 to 20220130
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20220101-20220130: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20220131 to 20220301
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20220131 to 20220301
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20220131-20220301: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20220302 to 20220331
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20220302 to 20220331
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20220302-20220331: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20220401 to 20220430
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20220401 to 20220430
+[LOG] ✅ Extracted 2 vouchers from Credit Note Vouchers
+[LOG] Chunk 20220401-20220430: 2 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20220501 to 20220530
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20220501 to 20220530
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20220501-20220530: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20220531 to 20220629
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20220531 to 20220629
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20220531-20220629: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20220630 to 20220729
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20220630 to 20220729
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20220630-20220729: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20220730 to 20220828
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20220730 to 20220828
+[LOG] ✅ Extracted 2 vouchers from Credit Note Vouchers
+[LOG] Chunk 20220730-20220828: 2 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20220829 to 20220927
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20220829 to 20220927
+[LOG] ✅ Extracted 3 vouchers from Credit Note Vouchers
+[LOG] Chunk 20220829-20220927: 3 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20220928 to 20221027
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20220928 to 20221027
+[LOG] ✅ Extracted 2 vouchers from Credit Note Vouchers
+[LOG] Chunk 20220928-20221027: 2 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20221028 to 20221126
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20221028 to 20221126
+[LOG] ✅ Extracted 1 vouchers from Credit Note Vouchers
+[LOG] Chunk 20221028-20221126: 1 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20221127 to 20221226
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20221127 to 20221226
+[LOG] ✅ Extracted 2 vouchers from Credit Note Vouchers
+[LOG] Chunk 20221127-20221226: 2 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20221227 to 20230125
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20221227 to 20230125
+[LOG] ✅ Extracted 2 vouchers from Credit Note Vouchers
+[LOG] Chunk 20221227-20230125: 2 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20230126 to 20230224
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20230126 to 20230224
+[LOG] ✅ Extracted 1 vouchers from Credit Note Vouchers
+[LOG] Chunk 20230126-20230224: 1 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20230225 to 20230326
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20230225 to 20230326
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20230225-20230326: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20230327 to 20230425
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20230327 to 20230425
+[LOG] ✅ Extracted 4 vouchers from Credit Note Vouchers
+[LOG] Chunk 20230327-20230425: 4 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20230426 to 20230525
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20230426 to 20230525
+[LOG] ✅ Extracted 1 vouchers from Credit Note Vouchers
+[LOG] Chunk 20230426-20230525: 1 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20230526 to 20230624
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20230526 to 20230624
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20230526-20230624: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20230625 to 20230724
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20230625 to 20230724
+[LOG] ✅ Extracted 1 vouchers from Credit Note Vouchers
+[LOG] Chunk 20230625-20230724: 1 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20230725 to 20230823
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20230725 to 20230823
+[LOG] ✅ Extracted 1 vouchers from Credit Note Vouchers
+[LOG] Chunk 20230725-20230823: 1 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20230824 to 20230922
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20230824 to 20230922
+[LOG] ✅ Extracted 4 vouchers from Credit Note Vouchers
+[LOG] Chunk 20230824-20230922: 4 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20230923 to 20231022
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20230923 to 20231022
+[LOG] ✅ Extracted 3 vouchers from Credit Note Vouchers
+[LOG] Chunk 20230923-20231022: 3 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20231023 to 20231121
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20231023 to 20231121
+[LOG] ✅ Extracted 1 vouchers from Credit Note Vouchers
+[LOG] Chunk 20231023-20231121: 1 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20231122 to 20231221
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20231122 to 20231221
+[LOG] ✅ Extracted 1 vouchers from Credit Note Vouchers
+[LOG] Chunk 20231122-20231221: 1 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20231222 to 20240120
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20231222 to 20240120
+[LOG] ✅ Extracted 3 vouchers from Credit Note Vouchers
+[LOG] Chunk 20231222-20240120: 3 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20240121 to 20240219
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20240121 to 20240219
+[LOG] ✅ Extracted 2 vouchers from Credit Note Vouchers
+[LOG] Chunk 20240121-20240219: 2 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20240220 to 20240320
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20240220 to 20240320
+[LOG] ✅ Extracted 1 vouchers from Credit Note Vouchers
+[LOG] Chunk 20240220-20240320: 1 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20240321 to 20240419
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20240321 to 20240419
+[LOG] ✅ Extracted 4 vouchers from Credit Note Vouchers
+[LOG] Chunk 20240321-20240419: 4 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20240420 to 20240519
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20240420 to 20240519
+[LOG] ✅ Extracted 4 vouchers from Credit Note Vouchers
+[LOG] Chunk 20240420-20240519: 4 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20240520 to 20240618
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20240520 to 20240618
+[LOG] ✅ Extracted 8 vouchers from Credit Note Vouchers
+[LOG] Chunk 20240520-20240618: 8 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20240619 to 20240718
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20240619 to 20240718
+[LOG] ✅ Extracted 8 vouchers from Credit Note Vouchers
+[LOG] Chunk 20240619-20240718: 8 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20240719 to 20240817
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20240719 to 20240817
+[LOG] ✅ Extracted 2 vouchers from Credit Note Vouchers
+[LOG] Chunk 20240719-20240817: 2 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20240818 to 20240916
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20240818 to 20240916
+[LOG] ✅ Extracted 3 vouchers from Credit Note Vouchers
+[LOG] Chunk 20240818-20240916: 3 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20240917 to 20241016
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20240917 to 20241016
+[LOG] ✅ Extracted 4 vouchers from Credit Note Vouchers
+[LOG] Chunk 20240917-20241016: 4 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20241017 to 20241115
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20241017 to 20241115
+[LOG] ✅ Extracted 1 vouchers from Credit Note Vouchers
+[LOG] Chunk 20241017-20241115: 1 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20241116 to 20241215
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20241116 to 20241215
+[LOG] ✅ Extracted 5 vouchers from Credit Note Vouchers
+[LOG] Chunk 20241116-20241215: 5 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20241216 to 20250114
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20241216 to 20250114
+[LOG] ✅ Extracted 4 vouchers from Credit Note Vouchers
+[LOG] Chunk 20241216-20250114: 4 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20250115 to 20250213
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20250115 to 20250213
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20250115-20250213: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20250214 to 20250315
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20250214 to 20250315
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20250214-20250315: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20250316 to 20250414
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20250316 to 20250414
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20250316-20250414: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20250415 to 20250514
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20250415 to 20250514
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20250415-20250514: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20250515 to 20250613
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20250515 to 20250613
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20250515-20250613: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20250614 to 20250713
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20250614 to 20250713
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20250614-20250713: 0 vouchers
+[LOG] Fetching Credit Note Vouchers chunk: 20250714 to 20250715
+[LOG] Fetching vouchers from report 'Credit Note Vouchers' for 20250714 to 20250715
+[LOG] ✅ Extracted 0 vouchers from Credit Note Vouchers
+[LOG] Chunk 20250714-20250715: 0 vouchers
+[LOG] ✅ Total Credit Note Vouchers vouchers fetched in chunks: 80
+[LOG] Credit Note Vouchers: 80 vouchers fetched.
+[LOG] Fetching Debit Note Vouchers chunk: 20220101 to 20220130
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20220101 to 20220130
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20220101-20220130: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20220131 to 20220301
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20220131 to 20220301
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20220131-20220301: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20220302 to 20220331
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20220302 to 20220331
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20220302-20220331: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20220401 to 20220430
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20220401 to 20220430
+[LOG] ✅ Extracted 5 vouchers from Debit Note Vouchers
+[LOG] Chunk 20220401-20220430: 5 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20220501 to 20220530
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20220501 to 20220530
+[LOG] ✅ Extracted 1 vouchers from Debit Note Vouchers
+[LOG] Chunk 20220501-20220530: 1 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20220531 to 20220629
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20220531 to 20220629
+[LOG] ✅ Extracted 10 vouchers from Debit Note Vouchers
+[LOG] Chunk 20220531-20220629: 10 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20220630 to 20220729
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20220630 to 20220729
+[LOG] ✅ Extracted 6 vouchers from Debit Note Vouchers
+[LOG] Chunk 20220630-20220729: 6 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20220730 to 20220828
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20220730 to 20220828
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20220730-20220828: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20220829 to 20220927
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20220829 to 20220927
+[LOG] ✅ Extracted 2 vouchers from Debit Note Vouchers
+[LOG] Chunk 20220829-20220927: 2 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20220928 to 20221027
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20220928 to 20221027
+[LOG] ✅ Extracted 1 vouchers from Debit Note Vouchers
+[LOG] Chunk 20220928-20221027: 1 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20221028 to 20221126
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20221028 to 20221126
+[LOG] ✅ Extracted 2 vouchers from Debit Note Vouchers
+[LOG] Chunk 20221028-20221126: 2 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20221127 to 20221226
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20221127 to 20221226
+[LOG] ✅ Extracted 4 vouchers from Debit Note Vouchers
+[LOG] Chunk 20221127-20221226: 4 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20221227 to 20230125
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20221227 to 20230125
+[LOG] ✅ Extracted 2 vouchers from Debit Note Vouchers
+[LOG] Chunk 20221227-20230125: 2 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20230126 to 20230224
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20230126 to 20230224
+[LOG] ✅ Extracted 1 vouchers from Debit Note Vouchers
+[LOG] Chunk 20230126-20230224: 1 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20230225 to 20230326
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20230225 to 20230326
+[LOG] ✅ Extracted 1 vouchers from Debit Note Vouchers
+[LOG] Chunk 20230225-20230326: 1 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20230327 to 20230425
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20230327 to 20230425
+[LOG] ✅ Extracted 5 vouchers from Debit Note Vouchers
+[LOG] Chunk 20230327-20230425: 5 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20230426 to 20230525
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20230426 to 20230525
+[LOG] ✅ Extracted 6 vouchers from Debit Note Vouchers
+[LOG] Chunk 20230426-20230525: 6 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20230526 to 20230624
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20230526 to 20230624
+[LOG] ✅ Extracted 2 vouchers from Debit Note Vouchers
+[LOG] Chunk 20230526-20230624: 2 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20230625 to 20230724
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20230625 to 20230724
+[LOG] ✅ Extracted 3 vouchers from Debit Note Vouchers
+[LOG] Chunk 20230625-20230724: 3 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20230725 to 20230823
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20230725 to 20230823
+[LOG] ✅ Extracted 1 vouchers from Debit Note Vouchers
+[LOG] Chunk 20230725-20230823: 1 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20230824 to 20230922
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20230824 to 20230922
+[LOG] ✅ Extracted 4 vouchers from Debit Note Vouchers
+[LOG] Chunk 20230824-20230922: 4 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20230923 to 20231022
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20230923 to 20231022
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20230923-20231022: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20231023 to 20231121
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20231023 to 20231121
+[LOG] ✅ Extracted 7 vouchers from Debit Note Vouchers
+[LOG] Chunk 20231023-20231121: 7 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20231122 to 20231221
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20231122 to 20231221
+[LOG] ✅ Extracted 2 vouchers from Debit Note Vouchers
+[LOG] Chunk 20231122-20231221: 2 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20231222 to 20240120
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20231222 to 20240120
+[LOG] ✅ Extracted 3 vouchers from Debit Note Vouchers
+[LOG] Chunk 20231222-20240120: 3 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20240121 to 20240219
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20240121 to 20240219
+[LOG] ✅ Extracted 1 vouchers from Debit Note Vouchers
+[LOG] Chunk 20240121-20240219: 1 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20240220 to 20240320
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20240220 to 20240320
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20240220-20240320: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20240321 to 20240419
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20240321 to 20240419
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20240321-20240419: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20240420 to 20240519
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20240420 to 20240519
+[LOG] ✅ Extracted 2 vouchers from Debit Note Vouchers
+[LOG] Chunk 20240420-20240519: 2 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20240520 to 20240618
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20240520 to 20240618
+[LOG] ✅ Extracted 3 vouchers from Debit Note Vouchers
+[LOG] Chunk 20240520-20240618: 3 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20240619 to 20240718
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20240619 to 20240718
+[LOG] ✅ Extracted 1 vouchers from Debit Note Vouchers
+[LOG] Chunk 20240619-20240718: 1 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20240719 to 20240817
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20240719 to 20240817
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20240719-20240817: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20240818 to 20240916
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20240818 to 20240916
+[LOG] ✅ Extracted 1 vouchers from Debit Note Vouchers
+[LOG] Chunk 20240818-20240916: 1 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20240917 to 20241016
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20240917 to 20241016
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20240917-20241016: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20241017 to 20241115
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20241017 to 20241115
+[LOG] ✅ Extracted 5 vouchers from Debit Note Vouchers
+[LOG] Chunk 20241017-20241115: 5 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20241116 to 20241215
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20241116 to 20241215
+[LOG] ✅ Extracted 1 vouchers from Debit Note Vouchers
+[LOG] Chunk 20241116-20241215: 1 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20241216 to 20250114
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20241216 to 20250114
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20241216-20250114: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20250115 to 20250213
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20250115 to 20250213
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20250115-20250213: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20250214 to 20250315
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20250214 to 20250315
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20250214-20250315: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20250316 to 20250414
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20250316 to 20250414
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20250316-20250414: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20250415 to 20250514
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20250415 to 20250514
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20250415-20250514: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20250515 to 20250613
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20250515 to 20250613
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20250515-20250613: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20250614 to 20250713
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20250614 to 20250713
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20250614-20250713: 0 vouchers
+[LOG] Fetching Debit Note Vouchers chunk: 20250714 to 20250715
+[LOG] Fetching vouchers from report 'Debit Note Vouchers' for 20250714 to 20250715
+[LOG] ✅ Extracted 0 vouchers from Debit Note Vouchers
+[LOG] Chunk 20250714-20250715: 0 vouchers
+[LOG] ✅ Total Debit Note Vouchers vouchers fetched in chunks: 82
+[LOG] Debit Note Vouchers: 82 vouchers fetched.
+[LOG] ✅ Total vouchers extracted: 22403 by type: {'Sales': 2898, 'Purchase Expenses': 1093, 'Purchase': 5844, 'Payment': 7974, 'Receipt': 3673, 'Journal': 759, 'Credit Note': 80, 'Debit Note': 82}
+[LOG] Data fetched from Tally as JSON. Sending to backend...
+[API_CONNECTOR] ❌ Backend URL not configured
+[LOG] Failed to sync data to backend.
+
+
