@@ -13,8 +13,9 @@ import datetime
 from PIL import Image, ImageTk
 import threading
 import json
+import traceback
 from dateutil import parser
-# Dependency check for tenacity
+# Dependency check for tenacity 
 try:
     import tenacity
 except ImportError:
@@ -573,10 +574,18 @@ def sync_data():
             update_log_display("No data fetched from Tally")
             
     except Exception as e:
-        messagebox.showerror("Error", f"Sync failed: {str(e)}")
+        # Capture full traceback to log for debugging
+        tb = traceback.format_exc()
+        log_msg = f"Sync failed with error: {str(e)}\n{tb}"
+        try:
+            log(log_msg)
+        except Exception:
+            print(log_msg)
+
+        # Show concise error to user and point to log for details
+        messagebox.showerror("Error", "Sync failed. See sync_log.txt for details.")
         status_label.config(text="Sync failed with error.", fg="#d32f2f")
-        log(f"Sync failed with error: {str(e)}")
-        update_log_display(f"Sync failed: {str(e)}")
+        update_log_display(f"Sync failed: {str(e) or 'See log for details.'}")
     finally:
         progress.stop()
         tt_sync.config(state='normal')

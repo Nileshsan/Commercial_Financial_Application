@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.utils import timezone
 from django.db import OperationalError
 import time
 from decimal import Decimal
@@ -33,6 +34,10 @@ def normalize_transactions(company_id):
         reg_type = tx.register_type.lower().strip()
         if reg_type in ['sales', 'sale']:
             tx.register_type = 'sales'
+            party_transactions[party_name]['sales'].append(tx)
+        elif reg_type in ['opening_balance']:
+            # Treat opening balances as sales/outstanding so receipts can offset them
+            # Keep original register_type but include in sales matching
             party_transactions[party_name]['sales'].append(tx)
         elif reg_type in ['receipt', 'rcpt', 'receipts']:
             tx.register_type = 'receipt'
@@ -72,21 +77,22 @@ def normalize_transactions(company_id):
         receipts = sorted(data['receipts'], key=lambda x: x.date)
         
         for sale in sales:
-            remaining_sale = float(sale.remaining_amount or sale.amount)
-            if remaining_sale <= 0:
+            # Use Decimal arithmetic to avoid float rounding issues
+            remaining_sale = Decimal(sale.remaining_amount or sale.amount)
+            if remaining_sale <= Decimal('0'):
                 continue
-                
+
             for receipt in receipts:
-                if receipt.date < sale.date:
+                # Allow matching receipts regardless of whether their date is before
+                # or after the sale date. Earlier receipts should offset later sales
+                # (and vice-versa) so we don't skip when receipt.date < sale.date.
+                remaining_receipt = Decimal(receipt.remaining_amount or receipt.amount)
+                if remaining_receipt <= Decimal('0'):
                     continue
-                    
-                remaining_receipt = float(receipt.remaining_amount or receipt.amount)
-                if remaining_receipt <= 0:
-                    continue
-                    
-                # Match amounts
-                match_amount = min(remaining_sale, remaining_receipt)
-                if match_amount <= 0:
+
+                # Match amounts using Decimal
+                match_amount = remaining_sale if remaining_sale <= remaining_receipt else remaining_receipt
+                if match_amount <= Decimal('0'):
                     continue
                     
                 # We'll attempt to create/update the TransactionMatching inside a
@@ -129,12 +135,12 @@ def normalize_transactions(company_id):
                     continue
 
                 # Update remaining amounts (this must run after match persisted)
-                sale.remaining_amount = Decimal(str(remaining_sale - match_amount))
-                receipt.remaining_amount = Decimal(str(remaining_receipt - match_amount))
+                sale.remaining_amount = (remaining_sale - match_amount)
+                receipt.remaining_amount = (remaining_receipt - match_amount)
 
                 # Update reconciliation status
-                sale.is_reconciled = sale.remaining_amount <= 0
-                receipt.is_reconciled = receipt.remaining_amount <= 0
+                sale.is_reconciled = sale.remaining_amount <= Decimal('0')
+                receipt.is_reconciled = receipt.remaining_amount <= Decimal('0')
 
                 # Save updated transactions using inner atomic savepoints to avoid
                 # corrupting any outer transaction
@@ -156,3 +162,53 @@ def normalize_transactions(company_id):
                 remaining_sale = float(sale.remaining_amount)
                 if remaining_sale <= 0:
                     break
+
+
+def normalize_raw_transactions(company_id):
+    """Convert RawTallyTransaction rows (accounts app) into transactions.TallyTransaction.
+    Idempotent: uses unique (company, voucher_type, voucher_number) to skip duplicates.
+    Marks RawTallyTransaction.processed = True after successful upsert.
+    """
+    from accounts.models import RawTallyTransaction
+    from django.db import IntegrityError
+
+    raws = RawTallyTransaction.objects.filter(company_id=company_id, processed=False).order_by('created_at')
+    logger.info(f"Normalizing {raws.count()} raw transactions for company {company_id}")
+
+    for raw in raws:
+        try:
+            with transaction.atomic():
+                # Check for existing normalized transaction
+                exists = TallyTransaction.objects.filter(
+                    company_id=company_id,
+                    voucher_type__iexact=raw.voucher_type,
+                    voucher_number__iexact=(raw.voucher_number or '')
+                ).exists()
+
+                if exists:
+                    # Already normalized; mark processed and continue
+                    raw.processed = True
+                    raw.save()
+                    continue
+
+                # Create normalized transaction
+                tt = TallyTransaction.objects.create(
+                    company_id=company_id,
+                    voucher_type=raw.voucher_type,
+                    voucher_number=raw.voucher_number or '',
+                    date=raw.date or timezone.now().date(),
+                    amount=raw.amount or Decimal('0'),
+                    party_name=(raw.party_name or '').strip(),
+                    register_type=(raw.register_type or '').lower(),
+                    remaining_amount=(raw.remaining_amount if raw.remaining_amount is not None else raw.amount)
+                )
+
+                # Mark raw as processed
+                raw.processed = True
+                raw.save()
+        except IntegrityError as ie:
+            logger.warning(f"Integrity error while normalizing raw {raw.id}: {ie}")
+            # leave raw unprocessed for retry
+        except Exception as e:
+            logger.error(f"Failed to normalize raw transaction {raw.id}: {e}")
+            # do not mark processed so we can retry later

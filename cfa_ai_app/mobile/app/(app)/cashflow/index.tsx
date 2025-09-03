@@ -319,7 +319,7 @@ export default function CashflowScreen() {
   const [predictions, setPredictions] = useState<CashflowPrediction[]>([]);
   const [paymentPredictions, setPaymentPredictions] = useState<any>(null);
   const [summary, setSummary] = useState<CashflowSummary | null>(null);
-  const [partyBalances, setPartyBalances] = useState<PartyBalance[]>([]);
+  // party balances removed from UI; unpaid sales will show pending receipts
   const [unpaidSales, setUnpaidSales] = useState<UnpaidSale[]>([]);
   const [analysisSummary, setAnalysisSummary] = useState<PaymentAnalysisSummary | null>(null);
   const [bankBalance, setBankBalance] = useState<number | null>(null);
@@ -378,74 +378,68 @@ export default function CashflowScreen() {
       // Get cashflow predictions - this is our critical path
       const response = await api.getCashflowPredictions(companyId, days);
       console.log('API Response:', response);
-      
+
       if (!response || response.status !== 'success' || !response.data) {
         console.error('Invalid response from cashflow predictions API:', response);
         throw new Error('Failed to fetch cashflow predictions. Please check your network connection and try again.');
       }
 
+      // Support two response shapes: response.data.data (new) or response.data (legacy)
+      const dataRoot = response.data?.data || response.data || {};
+
       // Log successful data for debugging
       console.log('Successfully fetched predictions:', {
-        predictionCount: response.data?.data?.predictions?.length || 0,
-        hasSummary: !!response.data?.data?.summary,
-        summary: response.data?.data?.summary
+        predictionCount: (dataRoot.predictions && dataRoot.predictions.length) || 0,
+        hasSummary: !!dataRoot.summary,
+        summary: dataRoot.summary || null,
       });
 
-      // Get predictions from the correct path in the response
-      const rawPredictions = response.data?.predictions || [];
+      // Get predictions from the normalized root
+      const rawPredictions = dataRoot.predictions || [];
       console.log('Raw predictions:', rawPredictions); // Debug log
       
       // Transform predictions to match the expected format
       const cleanPredictions = rawPredictions.map((prediction: any) => {
-        const totalReceipts = prediction.receipts.reduce((sum: number, r: any) => sum + (r.amount || 0), 0);
-        const totalExpenses = prediction.expenses.reduce((sum: number, e: any) => sum + (e.amount || 0), 0);
+        const receiptsArr = Array.isArray(prediction.receipts) ? prediction.receipts : [];
+        const expensesArr = Array.isArray(prediction.expenses) ? prediction.expenses : [];
+
+        const totalReceipts = receiptsArr.reduce((sum: number, r: any) => sum + (r?.amount || 0), 0);
+        const totalExpenses = expensesArr.reduce((sum: number, e: any) => sum + (e?.amount || 0), 0);
         
         const cleaned = {
           date: prediction.date,
           predicted_balance: prediction.predicted_balance || 0,
-          min_balance: prediction.predicted_balance - (totalExpenses * 0.1) || 0, // 10% variance for min
-          max_balance: prediction.predicted_balance + (totalReceipts * 0.1) || 0, // 10% variance for max
-          receipts: prediction.receipts || [],
-          expenses: prediction.expenses || []
+          min_balance: (prediction.predicted_balance || 0) - (totalExpenses * 0.1), // 10% variance for min
+          max_balance: (prediction.predicted_balance || 0) + (totalReceipts * 0.1), // 10% variance for max
+          receipts: receiptsArr,
+          expenses: expensesArr,
         };
         console.log('Cleaned prediction:', cleaned); // Debug log
         return cleaned;
       });
       
       setPredictions(cleanPredictions);
-      setPaymentPredictions(response.data); // Store the full response for other components
-      
+      setPaymentPredictions(dataRoot); // Store the normalized root for other components
+
       const finalBalance = cleanPredictions.length > 0 ? cleanPredictions[cleanPredictions.length - 1].predicted_balance : 0;
-      
+
       setSummary({
-        total_expected_receipts: response.data?.insights?.total_expected_receipts || 0,
-        total_expected_expenses: response.data?.insights?.total_expected_expenses || 0,
-        initial_balance: response.data?.initial_balance || bankBalance || 0,
+        total_expected_receipts: dataRoot?.insights?.total_expected_receipts || 0,
+        total_expected_expenses: dataRoot?.insights?.total_expected_expenses || 0,
+        initial_balance: dataRoot?.initial_balance || bankBalance || 0,
         final_predicted_balance: finalBalance,
-        days_forecast: days
+        days_forecast: days,
       });
-      
-      // Convert analyzed parties to party balances format
-      const parties = response.data?.data?.predictions
-        .filter((p: CashflowPrediction) => p.receipts && p.receipts.length > 0)
-        .flatMap((p: CashflowPrediction) => p.receipts)
-        .map((r: any) => ({
-          party_name: r.party,
-          current_balance: r.amount,
-          expected_payment_date: r.date,
-          payment_probability: r.confidence
-        }));
-      setPartyBalances(parties);
+
+  // party balances removed - unpaid sales will show pending receipts and remaining amounts
 
         // Load additional data in parallel with proper error handling
       let errors: string[] = [];
       const [
         unpaidSalesResponse,
-        partyBalancesResponse,
         analysisSummaryResponse
       ] = await Promise.allSettled([
         api.getUnpaidSales(companyId),
-        api.getPartyBalances(companyId),
         api.getPaymentAnalysisSummary(companyId)
       ]);
 
@@ -459,13 +453,7 @@ export default function CashflowScreen() {
         errors.push('Could not load unpaid sales');
       }
 
-      // Handle party balances
-      if (partyBalancesResponse.status === 'fulfilled' && 
-          partyBalancesResponse.value.status === 'success') {
-        setPartyBalances(partyBalancesResponse.value.data.party_balances);
-      } else if (partyBalancesResponse.status === 'rejected') {
-        errors.push('Could not load party balances');
-      }
+  // party balances intentionally not loaded here per UI decision
 
       // Handle analysis summary
       if (analysisSummaryResponse.status === 'fulfilled' && 
@@ -483,11 +471,10 @@ export default function CashflowScreen() {
       console.error('Error loading cashflow data:', error);
       // Clear all state on critical error
       setError('Failed to load cashflow data. Please try again.');
-      setPredictions([]);
-      setSummary(null);
-      setPaymentPredictions(null);
-      setPartyBalances([]);
-      setUnpaidSales([]);
+  setPredictions([]);
+  setSummary(null);
+  setPaymentPredictions(null);
+  setUnpaidSales([]);
       setAnalysisSummary(null);
     } finally {
       setLoading(false);
@@ -675,71 +662,148 @@ export default function CashflowScreen() {
   };
 
   const renderUnpaidSales = () => {
-    if (!unpaidSales || unpaidSales.length === 0) return null;
+    // Build defensive date parser
+    const parseDate = (d: any): Date | null => {
+      if (!d) return null;
+      try {
+        const dt = new Date(d);
+        if (isNaN(dt.getTime())) return null;
+        return dt;
+      } catch (e) {
+        return null;
+      }
+    };
+
+    // Extract predicted receipts from the payment predictions (paymentPredictions.predictions)
+    const predictedFromApi: Array<any> = [];
+    try {
+      const root = paymentPredictions || {};
+      const preds = Array.isArray(root.predictions) ? root.predictions : [];
+      preds.forEach((p: any) => {
+        const receipts = Array.isArray(p.receipts) ? p.receipts : [];
+        receipts.forEach((r: any) => {
+          // normalized shape expected from API logs: { amount, confidence, party, reference, type }
+          predictedFromApi.push({
+            party: r.party || r.party_name || 'Unknown',
+            amount: Number(r.amount) || 0,
+            confidence: Number(r.confidence) || 0,
+            reference: r.reference || r.voucher_number || null,
+            predicted_payment_date: p.date || r.date || null,
+            raw: r,
+          });
+        });
+      });
+    } catch (e) {
+      console.warn('Failed to parse paymentPredictions for predicted receipts', e);
+    }
+
+    // Merge predicted receipts with unpaid sales (prefer matching by voucher/reference, else by party+amount)
+    const mergedPredicted: UnpaidSale[] = predictedFromApi.map((pred, idx) => {
+      // Try to find a matching unpaid sale
+      const match = (Array.isArray(unpaidSales) ? unpaidSales : []).find((s: any) => {
+        if (pred.reference && s.voucher_number && String(pred.reference) === String(s.voucher_number)) return true;
+        if (s.party_name && pred.party && s.party_name.trim().toLowerCase() === String(pred.party).trim().toLowerCase()) {
+          // fuzzy amount match (remaining_amount should be >= predicted amount or close)
+          const rem = Number(s.remaining_amount || 0);
+          if (!isNaN(rem) && rem >= (pred.amount * 0.5)) return true;
+        }
+        return false;
+      });
+
+      const id = match?.id ?? -(idx + 1);
+      const remaining_amount = match ? Number(match.remaining_amount || pred.amount) : Number(pred.amount || 0);
+      const saleDate = match?.date ?? null;
+
+      return {
+        id,
+        date: saleDate,
+        amount: Number(pred.amount || 0),
+        remaining_amount,
+        party_name: pred.party,
+        voucher_number: pred.reference || '',
+        predicted_payment_date: pred.predicted_payment_date,
+        confidence: Number(pred.confidence || 0),
+        avg_delay_days: match?.avg_delay_days || 0,
+      } as UnpaidSale;
+    });
+
+    // Filter out zero amounts and only keep those within expected forecast or high value
+    const now = new Date();
+    const endDate = new Date(now.getTime() + (days || 30) * 24 * 60 * 60 * 1000);
+
+    const validPredicted = mergedPredicted.filter(s => Number(s.remaining_amount) > 0 && s.predicted_payment_date);
+
+    const highValue = [...validPredicted].sort((a, b) => Number(b.remaining_amount) - Number(a.remaining_amount)).slice(0, 5);
+
+    const expectedSoon = validPredicted.filter(s => {
+      const pd = parseDate(s.predicted_payment_date);
+      return pd && pd >= now && pd <= endDate;
+    }).sort((a, b) => (parseDate(a.predicted_payment_date)?.getTime() || 0) - (parseDate(b.predicted_payment_date)?.getTime() || 0));
 
     return (
       <View style={styles.unpaidSalesCard}>
         <Text style={styles.summaryTitle}>Unpaid Sales</Text>
-        {unpaidSales.slice(0, 5).map((sale) => (
-          <View key={sale.id} style={styles.unpaidSaleItem}>
-            <View style={styles.unpaidSaleHeader}>
-              <Text style={styles.unpaidSaleParty}>{sale.party_name}</Text>
-              <Text style={styles.unpaidSaleAmount}>{formatCurrency(sale.remaining_amount)}</Text>
-            </View>
-            <View style={styles.unpaidSaleDetails}>
-              <Text style={styles.unpaidSaleDate}>
-                Sale Date: {new Date(sale.date).toLocaleDateString()}
-              </Text>
-              {sale.predicted_payment_date && (
-                <Text style={styles.unpaidSalePrediction}>
-                  Expected: {new Date(sale.predicted_payment_date).toLocaleDateString()} 
-                  ({sale.confidence * 100}% confidence)
-                </Text>
-              )}
-            </View>
+
+        {/* High value unpaid sales (from predictions) */}
+        {highValue.length > 0 && (
+          <View style={{ marginBottom: 8 }}>
+            <Text style={[styles.summaryLabel, { marginBottom: 6 }]}>High value unpaid sales</Text>
+            {highValue.map(sale => (
+              <View key={`high-${sale.id ?? JSON.stringify(sale)}`} style={styles.unpaidSaleItem}>
+                <View style={styles.unpaidSaleHeader}>
+                  <Text style={styles.unpaidSaleParty}>{sale.party_name}</Text>
+                  <Text style={styles.unpaidSaleAmount}>{formatCurrency(sale.remaining_amount)}</Text>
+                </View>
+                <View style={styles.unpaidSaleDetails}>
+                  <Text style={styles.unpaidSaleDate}>Sale Date: {parseDate(sale.date)?.toLocaleDateString() ?? 'Unknown'}</Text>
+                  {sale.predicted_payment_date && (
+                    <Text style={styles.unpaidSalePrediction}>
+                      Expected: {parseDate(sale.predicted_payment_date)?.toLocaleDateString() ?? 'Unknown'} ({Math.round((sale.confidence || 0) * 100)}% confidence)
+                    </Text>
+                  )}
+                </View>
+                {sale.voucher_number ? <Text style={styles.partyConfidence}>Ref: {sale.voucher_number}</Text> : null}
+              </View>
+            ))}
           </View>
-        ))}
-        {unpaidSales.length > 5 && (
-          <Text style={styles.summaryLabel}>
-            +{unpaidSales.length - 5} more unpaid sales
-          </Text>
+        )}
+
+        {/* Expected within forecast window */}
+        {expectedSoon.length > 0 && (
+          <View style={{ marginTop: 6 }}>
+            <Text style={[styles.summaryLabel, { marginBottom: 6 }]}>Expected in next {days} days</Text>
+            {expectedSoon.map(sale => (
+              <View key={`exp-${sale.id ?? JSON.stringify(sale)}`} style={styles.unpaidSaleItem}>
+                <View style={styles.unpaidSaleHeader}>
+                  <Text style={styles.unpaidSaleParty}>{sale.party_name}</Text>
+                  <Text style={styles.unpaidSaleAmount}>{formatCurrency(sale.remaining_amount)}</Text>
+                </View>
+                <View style={styles.unpaidSaleDetails}>
+                  <Text style={styles.unpaidSaleDate}>Due: {parseDate(sale.predicted_payment_date)?.toLocaleDateString() ?? 'Unknown'}</Text>
+                  <Text style={styles.unpaidSalePrediction}>{Math.round((sale.confidence || 0) * 100)}% probability</Text>
+                </View>
+                {sale.voucher_number ? <Text style={styles.partyConfidence}>Ref: {sale.voucher_number}</Text> : null}
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* If no predicted unpaid sales, show helpful message */}
+        {(highValue.length === 0 && expectedSoon.length === 0) && (
+          <View style={styles.noDataContainer}>
+            <Text style={styles.noDataText}>No predicted unpaid sales found for the selected period.</Text>
+          </View>
+        )}
+
+        {/* Show total predicted count if more exist */}
+        {validPredicted.length > 5 && (
+          <Text style={styles.summaryLabel}>+{validPredicted.length - 5} more predicted unpaid sales</Text>
         )}
       </View>
     );
   };
 
-  const renderPartyBalances = () => {
-    if (!partyBalances || partyBalances.length === 0) return null;
-
-    return (
-      <View style={styles.summaryCard}>
-        <Text style={styles.summaryTitle}>Party Balances</Text>
-        {partyBalances.slice(0, 5).map((balance, index) => (
-          <View key={index} style={styles.unpaidSaleItem}>
-            <View style={styles.unpaidSaleHeader}>
-              <Text style={styles.unpaidSaleParty}>{balance.party_name}</Text>
-              <Text style={styles.unpaidSaleAmount}>{formatCurrency(balance.current_balance)}</Text>
-            </View>
-            <View style={styles.unpaidSaleDetails}>
-              {balance.expected_payment_date && (
-                <Text style={styles.unpaidSaleDate}>
-                  Expected: {new Date(balance.expected_payment_date).toLocaleDateString()}
-                </Text>
-              )}
-              <Text style={styles.unpaidSalePrediction}>
-                {balance.payment_probability * 100}% probability
-              </Text>
-            </View>
-          </View>
-        ))}
-        {partyBalances.length > 5 && (
-          <Text style={styles.summaryLabel}>
-            +{partyBalances.length - 5} more parties
-          </Text>
-        )}
-      </View>
-    );
-  };
+  // party balances UI removed per product decision
 
   if (loading) {
     return (
@@ -791,10 +855,9 @@ export default function CashflowScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        {renderChart()}
-        {renderSummary()}
-        {renderUnpaidSales()}
-        {renderPartyBalances()}
+  {renderChart()}
+  {renderSummary()}
+  {renderUnpaidSales()}
       </ScrollView>
 
       {showBankBalanceModal && (

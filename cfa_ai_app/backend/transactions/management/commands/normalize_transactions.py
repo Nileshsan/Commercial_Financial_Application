@@ -62,11 +62,10 @@ class Command(BaseCommand):
                 remaining_sale = float(sale.remaining_amount or sale.amount)
                 if remaining_sale <= 0:
                     continue
-                    
+
                 for receipt in receipts:
-                    if receipt.date < sale.date:
-                        continue
-                        
+                    # Allow matching receipts regardless of their date relative to the sale.
+                    # Earlier receipts should offset later sales and should not be skipped.
                     remaining_receipt = float(receipt.remaining_amount or receipt.amount)
                     if remaining_receipt <= 0:
                         continue

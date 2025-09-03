@@ -216,6 +216,14 @@ def check_data_status(request):
         
     try:
         # Check all required data
+        job_id = request.query_params.get('job_id')
+        if job_id:
+            job_cache_key = f'model_training_job_{company_id}_{job_id}'
+            job_status = cache.get(job_cache_key)
+            if not job_status:
+                return Response({'status': 'error', 'message': 'Job not found or expired'}, status=404)
+            return Response({'status': 'success', 'job_status': job_status})
+
         data_status = {
             'tally_transactions': {
                 'total': TallyTransaction.objects.filter(company_id=company_id).count(),
@@ -977,28 +985,85 @@ def get_unpaid_sales(request, company_id=None):
         # Get unpaid sales
         logger.debug("Detecting unpaid sales")
         unpaid_sales = analyzer.detect_unpaid_sales()
-        
+
         # Get payment predictions for unpaid sales
         logger.debug("Getting payment predictions")
         payment_predictions = analyzer.predict_payment_dates()
-        
+
+        # Normalize payment_predictions to a list of dicts regardless of analyzer implementation
+        preds = []
+        try:
+            if isinstance(payment_predictions, dict):
+                # Try common locations for lists
+                preds = payment_predictions.get('predictions') or payment_predictions.get('data') or []
+                # If nested data contains dict with 'predictions'
+                if isinstance(preds, dict) and 'predictions' in preds:
+                    preds = preds.get('predictions')
+            elif isinstance(payment_predictions, list):
+                preds = payment_predictions
+            else:
+                preds = list(payment_predictions) if payment_predictions else []
+        except Exception:
+            preds = []
+
+        # Ensure preds is a list
+        if not isinstance(preds, list):
+            preds = [preds]
+
         # Combine unpaid sales with predictions
         enhanced_unpaid_sales = []
         for sale in unpaid_sales:
-            # Find matching prediction
-            prediction = next((p for p in payment_predictions if p['sale_id'] == sale['id']), None)
-            
+            # Support sale as dict or model-like object
+            sale_id = sale.get('id') if isinstance(sale, dict) else getattr(sale, 'id', None)
+            sale_voucher = sale.get('voucher_number') if isinstance(sale, dict) else getattr(sale, 'voucher_number', None)
+            sale_party = sale.get('party_name') if isinstance(sale, dict) else getattr(sale, 'party_name', None)
+            sale_date = sale.get('date') if isinstance(sale, dict) else getattr(sale, 'date', None)
+            sale_remaining = sale.get('remaining_amount') if isinstance(sale, dict) else getattr(sale, 'remaining_amount', None)
+
+            # Find matching prediction by several heuristics
+            prediction = None
+            for p in preds:
+                if not isinstance(p, dict):
+                    continue
+                try:
+                    # exact sale id
+                    if sale_id is not None and ('sale_id' in p and p.get('sale_id') == sale_id):
+                        prediction = p
+                        break
+                    # sale reference / voucher match
+                    if sale_voucher and (p.get('sale_reference') == sale_voucher or p.get('voucher_number') == sale_voucher):
+                        prediction = p
+                        break
+                    # party + amount approximate match
+                    p_party = p.get('party_name') or p.get('party') or p.get('party_name')
+                    p_amount = float(p.get('amount') or 0)
+                    if sale_party and p_party and sale_party == p_party and sale_remaining is not None:
+                        try:
+                            if abs(float(sale_remaining) - p_amount) < 0.01:
+                                prediction = p
+                                break
+                        except Exception:
+                            pass
+                except Exception:
+                    continue
+
             enhanced_sale = {
-                'id': sale['id'],
-                'date': sale['date'].strftime('%Y-%m-%d') if hasattr(sale['date'], 'strftime') else sale['date'],
-                'amount': sale['amount'],
-                'remaining_amount': sale['remaining_amount'],
-                'party_name': sale['party_name'],
-                'voucher_number': sale['voucher_number'],
-                'predicted_payment_date': prediction['predicted_payment_date'] if prediction else None,
-                'confidence': prediction['confidence'] if prediction else 0,
-                'avg_delay_days': prediction['avg_delay_days'] if prediction else 0
+                'id': sale_id,
+                'date': sale_date.strftime('%Y-%m-%d') if hasattr(sale_date, 'strftime') else sale_date,
+                'amount': sale.get('amount') if isinstance(sale, dict) else getattr(sale, 'amount', None),
+                'remaining_amount': sale_remaining,
+                'party_name': sale_party,
+                'voucher_number': sale_voucher,
+                'predicted_payment_date': None,
+                'confidence': 0,
+                'avg_delay_days': 0
             }
+
+            if prediction:
+                enhanced_sale['predicted_payment_date'] = prediction.get('predicted_payment_date') or prediction.get('date') or prediction.get('expected_date')
+                enhanced_sale['confidence'] = prediction.get('confidence') or prediction.get('confidence_score') or 0
+                enhanced_sale['avg_delay_days'] = prediction.get('avg_delay_days') or prediction.get('avg_payment_days') or prediction.get('avg_delay') or 0
+
             enhanced_unpaid_sales.append(enhanced_sale)
         
         return Response({

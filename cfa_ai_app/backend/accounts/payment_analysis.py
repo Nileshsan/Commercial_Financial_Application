@@ -52,34 +52,39 @@ class PaymentPatternAnalyzer:
         except Exception as e:
             logger.error(f"Error getting bank balance: {str(e)}")
             return 0
-    def __init__(self, company_id):
+    def __init__(self, company_id, since_date=None, transaction_ids=None):
         if not company_id:
             raise ValueError("Company ID is required")
             
         self.company_id = company_id
+        # Optional scoping parameters: restrict analysis to transactions on/after since_date
+        # or to a list of transaction IDs. These are optional and existing callers are
+        # backward-compatible when they are not provided.
+        self.since_date = since_date
+        self.transaction_ids = transaction_ids
         self.payment_patterns = {}
         self.fixed_expenses = {}
         self.unpaid_sales = []
-        
+
         logger.info(f"Initializing PaymentPatternAnalyzer for company {company_id}")
-        
+
         # Validate company existence and data
         try:
             # Check if we have any transactions first
             transaction_count = TallyTransaction.objects.filter(company_id=self.company_id).count()
             sales_count = TallyTransaction.objects.filter(company_id=self.company_id, register_type='sales').count()
             receipt_count = TallyTransaction.objects.filter(company_id=self.company_id, register_type='receipt').count()
-            
+
             logger.info(f"Data validation - Total: {transaction_count}, Sales: {sales_count}, Receipts: {receipt_count}")
             logger.info(f"Found {transaction_count} total transactions: {sales_count} sales and {receipt_count} receipts")
         except Exception as e:
             logger.error(f"Error validating transaction data: {str(e)}")
             raise ValueError("Error validating transaction data")
-        
+
         if transaction_count == 0:
             logger.error(f"No transactions found for company {company_id}")
             raise ValueError("No transaction data found. Please import your Tally data first using the desktop sync agent or manual import.")
-        
+
         try:
             # Initialize party balances and patterns on creation
             self._ensure_party_balances()
@@ -108,9 +113,7 @@ class PaymentPatternAnalyzer:
         try:
             with transaction.atomic():
                 # Get all parties from both opening balances and transactions
-                parties = set(list(TallyTransaction.objects.filter(
-                    company_id=self.company_id
-                ).values_list('party_name', flat=True).distinct()) + 
+                parties = set(list(self._base_transactions().values_list('party_name', flat=True).distinct()) + 
                 list(LedgerOpeningBalance.objects.filter(
                     company_id=self.company_id
                 ).values_list('ledger_name', flat=True).distinct()))
@@ -282,6 +285,15 @@ class PaymentPatternAnalyzer:
         """Get all fixed expenses"""
         return FixedExpense.objects.filter(company_id=self.company_id)
 
+    def _base_transactions(self):
+        """Return a base queryset for company transactions optionally scoped by since_date or ids."""
+        qs = TallyTransaction.objects.filter(company_id=self.company_id)
+        if getattr(self, 'since_date', None):
+            qs = qs.filter(date__gte=self.since_date)
+        if getattr(self, 'transaction_ids', None):
+            qs = qs.filter(id__in=self.transaction_ids)
+        return qs
+
     def analyze_payment_patterns(self):
         """Analyze payment patterns and generate sophisticated payment predictions"""
         try:
@@ -304,15 +316,13 @@ class PaymentPatternAnalyzer:
                 party_name = unpaid['party_name']
                 if party_name not in party_histories:
                     # Get full payment history
-                    history = TallyTransaction.objects.filter(
-                        company_id=self.company_id,
+                    history = self._base_transactions().filter(
                         party_name=party_name,
                         register_type__in=['receipt', 'payment']
                     ).order_by('date')
                     
                     # Get sales history
-                    sales_history = TallyTransaction.objects.filter(
-                        company_id=self.company_id,
+                    sales_history = self._base_transactions().filter(
                         party_name=party_name,
                         register_type='sales'
                     ).order_by('date')
@@ -516,8 +526,7 @@ class PaymentPatternAnalyzer:
                 return []
             
             # Get all sales transactions
-            sales = TallyTransaction.objects.filter(
-                company_id=self.company_id,
+            sales = self._base_transactions().filter(
                 register_type='sales'
             ).order_by('date')
             
@@ -624,9 +633,7 @@ class PaymentPatternAnalyzer:
                 logger.error(f"Error getting opening balances: {str(e)}")
             
             # Get all transactions for the company, excluding bank accounts
-            transactions = TallyTransaction.objects.filter(
-                company_id=self.company_id
-            ).exclude(
+            transactions = self._base_transactions().exclude(
                 party_name__icontains='bank'
             ).order_by('date')
             

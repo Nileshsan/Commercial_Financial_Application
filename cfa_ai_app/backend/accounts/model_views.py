@@ -9,6 +9,10 @@ from transactions.models import PaymentPattern, FixedExpense, TallyTransaction
 from django.db.models import Avg
 import time
 from .payment_analysis import PaymentPatternAnalyzer
+from concurrent.futures import ThreadPoolExecutor
+import uuid
+from django.utils import timezone
+from datetime import timedelta
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -131,41 +135,53 @@ def train_model(request):
                             'help': 'Use the Desktop_tally_sync-agent to import data from Tally.'
                         }
                     }, status=status.HTTP_400_BAD_REQUEST)
-                
-                log_progress('data-loading', 'Starting data normalization', 0, raw_count)
-                
-                # Step 2: Process raw data
-                processed_count = normalize_transactions(company_id)
-                log_progress('data-loading', 'Data normalization complete', processed_count, raw_count)
-                
-                # Step 3: Generate party balances
-                generated, updated = PartyBalanceManager.generate_party_balances(company_id)
-                log_progress('data-loading', 'Party balances generated', 
-                           progress=100, total=100,
-                           status='complete')
-                
-                # Cache the progress
-                cache_key = f'model_training_progress_{company_id}'
+                # Submit the heavy processing to a background worker to avoid timeouts
+                job_id = str(uuid.uuid4())
+                cache_key = f'model_training_job_{company_id}_{job_id}'
+                # initialize progress in cache
                 cache.set(cache_key, {
                     'step': 'data-loading',
-                    'completed': True,
-                    'processed_transactions': processed_count,
-                    'party_balances': generated + updated
-                }, timeout=3600)  # Cache for 1 hour
-                
+                    'status': 'queued',
+                    'progress': 0,
+                    'raw_count': raw_count
+                }, timeout=3600)
+
+                def run_data_loading(company_id, job_cache_key):
+                    try:
+                        log_progress('data-loading', 'Starting data normalization', 0, raw_count)
+                        cache.set(job_cache_key, {'step': 'data-loading', 'status': 'running', 'progress': 0, 'raw_count': raw_count}, timeout=3600)
+
+                        processed_count = normalize_transactions(company_id)
+                        log_progress('data-loading', 'Data normalization complete', processed_count, raw_count)
+                        cache.set(job_cache_key, {'step': 'data-loading', 'status': 'normalization_complete', 'progress': 50, 'processed_count': processed_count, 'raw_count': raw_count}, timeout=3600)
+
+                        generated, updated = PartyBalanceManager.generate_party_balances(company_id)
+                        log_progress('data-loading', 'Party balances generated', progress=100, total=100, status='complete')
+
+                        cache.set(job_cache_key, {
+                            'step': 'data-loading',
+                            'status': 'complete',
+                            'progress': 100,
+                            'raw_count': raw_count,
+                            'processed_count': processed_count,
+                            'party_balances': {'generated': generated, 'updated': updated}
+                        }, timeout=3600)
+                    except Exception as e:
+                        import traceback
+                        error_detail = traceback.format_exc()
+                        logger.error(f"Background data-loading error: {str(e)}\n{error_detail}")
+                        cache.set(job_cache_key, {'step': 'data-loading', 'status': 'error', 'error': str(e), 'detail': error_detail}, timeout=3600)
+
+                # Start background thread
+                executor = ThreadPoolExecutor(max_workers=1)
+                executor.submit(run_data_loading, company_id, cache_key)
+
                 return Response({
-                    'status': 'success',
-                    'data': {
-                        'progress': 100,
-                        'raw_count': raw_count,
-                        'processed_count': processed_count,
-                        'party_balances': {
-                            'generated': generated,
-                            'updated': updated
-                        },
-                        'message': f'Data processing complete: {processed_count} transactions normalized, {generated} party balances created, {updated} updated'
-                    }
-                })
+                    'status': 'processing',
+                    'job_id': job_id,
+                    'message': 'Data-loading has been started in background. Check status via /api/data-status/',
+                    'raw_count': raw_count
+                }, status=status.HTTP_202_ACCEPTED)
             except Exception as e:
                 import traceback
                 error_detail = traceback.format_exc()
@@ -222,7 +238,9 @@ def train_model(request):
                     }, status=status.HTTP_400_BAD_REQUEST)
                 
                 log_progress('payment-patterns', 'Initializing pattern analyzer', 20, 100)
-                analyzer = PaymentPatternAnalyzer(company_id)
+                # Scope analysis to recent transactions by default (30 days)
+                since_date = timezone.now().date() - timedelta(days=30)
+                analyzer = PaymentPatternAnalyzer(company_id, since_date=since_date)
                 
                 log_progress('payment-patterns', 'Analyzing payment patterns', 40, 100)
                 patterns = analyzer.analyze_payment_patterns()
@@ -295,7 +313,8 @@ def train_model(request):
                     }, status=status.HTTP_400_BAD_REQUEST)
                 
                 log_progress('fixed-expenses', 'Initializing expense analyzer', 20, 100)
-                analyzer = PaymentPatternAnalyzer(company_id)
+                since_date = timezone.now().date() - timedelta(days=30)
+                analyzer = PaymentPatternAnalyzer(company_id, since_date=since_date)
                 
                 log_progress('fixed-expenses', 'Analyzing fixed expenses', 40, 100)
                 expenses = analyzer.analyze_fixed_expenses()
@@ -356,7 +375,8 @@ def train_model(request):
                     }, status=status.HTTP_400_BAD_REQUEST)
                 
                 log_progress('cashflow-setup', 'Initializing cashflow analyzer', 20, 100)
-                analyzer = PaymentPatternAnalyzer(company_id)
+                since_date = timezone.now().date() - timedelta(days=30)
+                analyzer = PaymentPatternAnalyzer(company_id, since_date=since_date)
                 
                 log_progress('cashflow-setup', 'Setting up cashflow predictions', 40, 100)
                 current_balance = analyzer.get_current_bank_balance()

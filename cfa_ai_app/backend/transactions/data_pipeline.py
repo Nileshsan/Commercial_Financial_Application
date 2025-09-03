@@ -304,15 +304,15 @@ class DataPipeline:
                                 defaults={
                                     'amount': avg_amount,
                                     'interval_days': int(avg_interval),
-                                    'last_payment_date': max(dates),
+                                    'last_paid_date': max(dates),
                                     'confidence': 0.95,
-                                    'is_active': True
-                                }
+                                    'is_active': True,
+                                },
                             )
                             fixed_expenses.append({
                                 'description': party_name,
                                 'amount': avg_amount,
-                                'interval_days': int(avg_interval)
+                                'interval_days': int(avg_interval),
                             })
             
             return fixed_expenses

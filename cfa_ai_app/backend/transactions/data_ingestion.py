@@ -40,7 +40,9 @@ def ingest_tally_data(request):
             
             # Step 2: Calculate payment patterns
             from .payment_analysis import PaymentPatternAnalyzer
-            analyzer = PaymentPatternAnalyzer(company_id)
+            # Scope analysis to recent data by default to keep imports fast
+            since_date = timezone.now().date() - timezone.timedelta(days=30)
+            analyzer = PaymentPatternAnalyzer(company_id, since_date=since_date)
             patterns = analyzer.analyze_payment_patterns()
             
             message = (
@@ -70,7 +72,9 @@ def ingest_tally_data(request):
 
 from decimal import Decimal
 from django.db import transaction
-from .models import TallyTransaction, LedgerEntry, LedgerMaster
+from .models import LedgerEntry, LedgerMaster
+from accounts.models import RawTallyTransaction
+from transactions.data_processor import normalize_raw_transactions
 
 def process_vouchers(vouchers, company_id):
     """Process voucher data from Tally"""
@@ -83,8 +87,8 @@ def process_vouchers(vouchers, company_id):
                 voucher_type = voucher_data.get('VOUCHERTYPENAME', '').lower()
                 register_type = map_voucher_type_to_register(voucher_type)
                 
-                # Create transaction record
-                tally_transaction = TallyTransaction.objects.create(
+                # Store raw voucher (append-only), normalization will convert to TallyTransaction
+                RawTallyTransaction.objects.create(
                     company_id=company_id,
                     voucher_type=voucher_type,
                     voucher_number=voucher_data.get('VOUCHERNUMBER', ''),
@@ -92,7 +96,8 @@ def process_vouchers(vouchers, company_id):
                     amount=Decimal(str(voucher_data.get('AMOUNT', 0))),
                     party_name=voucher_data.get('PARTYNAME', '').strip(),
                     register_type=register_type,
-                    remaining_amount=Decimal(str(voucher_data.get('AMOUNT', 0)))
+                    remaining_amount=Decimal(str(voucher_data.get('AMOUNT', 0))),
+                    raw_payload=voucher_data
                 )
                 
                 # Process ledger entries
@@ -100,17 +105,17 @@ def process_vouchers(vouchers, company_id):
                 if isinstance(ledger_entries, dict):
                     ledger_entries = [ledger_entries]
                 
-                for entry in ledger_entries:
-                    if isinstance(entry, dict):
-                        LedgerEntry.objects.create(
-                            transaction=tally_transaction,
-                            ledger_name=entry.get('LEDGERNAME', ''),
-                            amount=Decimal(str(entry.get('AMOUNT', 0))),
-                            is_debit=entry.get('ISDEEBIT', 'No').lower() == 'yes',
-                            is_credit=not entry.get('ISDEBIT', 'No').lower() == 'yes'
-                        )
+                # Ledger entries stored inside raw_payload; normalization step may extract as needed
         
-        logger.info(f"Successfully processed {len(vouchers)} vouchers")
+        logger.info(f"Successfully saved {len(vouchers)} raw vouchers")
+
+        # Trigger normalization of raw rows into TallyTransaction (idempotent)
+        try:
+            normalize_raw_transactions(company_id)
+        except Exception as e:
+            logger.error(f"Normalization failed after ingesting vouchers: {e}")
+            raise
+
         return True
         
     except Exception as e:
@@ -140,10 +145,10 @@ def process_opening_balances(balances, company_id):
                     }
                 )
                 
-                # Create opening balance transaction if balance exists
+                # Store opening balance as raw row; normalization will convert to TallyTransaction
                 opening_balance = Decimal(str(balance_data.get('OPENINGBALANCE', 0)))
                 if opening_balance != 0:
-                    TallyTransaction.objects.create(
+                    RawTallyTransaction.objects.create(
                         company_id=company_id,
                         voucher_type='Opening Balance',
                         voucher_number=f'OB-{ledger_name}',
@@ -151,10 +156,19 @@ def process_opening_balances(balances, company_id):
                         amount=abs(opening_balance),
                         party_name=ledger_name,
                         register_type='opening_balance',
-                        remaining_amount=abs(opening_balance)
+                        remaining_amount=abs(opening_balance),
+                        raw_payload=balance_data
                     )
         
-        logger.info(f"Successfully processed {len(balances)} opening balances")
+        logger.info(f"Successfully saved {len(balances)} raw opening balances")
+
+        # Trigger normalization
+        try:
+            normalize_raw_transactions(company_id)
+        except Exception as e:
+            logger.error(f"Normalization failed after ingesting opening balances: {e}")
+            raise
+
         return True
         
     except Exception as e:

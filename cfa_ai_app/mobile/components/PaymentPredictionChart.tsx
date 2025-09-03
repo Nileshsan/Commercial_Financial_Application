@@ -107,28 +107,35 @@ export const PaymentPredictionChart: React.FC<PaymentPredictionProps> = ({
       
       <ScrollView style={styles.detailsContainer}>
         <Text style={styles.sectionTitle}>Daily Predictions</Text>
-        {predictions.map((prediction, index) => (
-          <View key={index} style={styles.predictionItem}>
-            <Text style={styles.date}>
-              {new Date(prediction.date).toLocaleDateString('en-US', {
+        {predictions.map((prediction) => {
+          const key = prediction.date || JSON.stringify(prediction);
+          const displayDate = prediction.date
+            ? new Date(prediction.date).toLocaleDateString('en-US', {
                 weekday: 'short',
                 month: 'short',
                 day: 'numeric',
-              })}
-            </Text>
-            <Text style={styles.amount}>
-              {formatCurrency(prediction.total)}
-            </Text>
-            <View style={styles.partiesContainer}>
-              {prediction.parties.map((party, pIndex) => (
-                <Text key={pIndex} style={styles.partyDetail}>
-                  {party.party_name}: {formatCurrency(party.amount)} 
-                  ({Math.round(party.confidence)}% confidence)
-                </Text>
-              ))}
+              })
+            : 'Unknown date';
+
+          const parties = Array.isArray(prediction.parties) ? prediction.parties : [];
+
+          return (
+            <View key={key} style={styles.predictionItem}>
+              <Text style={styles.date}>{displayDate}</Text>
+              <Text style={styles.amount}>{formatCurrency(prediction.total)}</Text>
+              <View style={styles.partiesContainer}>
+                {parties.map((party, pIndex) => (
+                  <Text
+                    key={`${key}-${party.party_name ?? 'party'}-${pIndex}`}
+                    style={styles.partyDetail}
+                  >
+                    {party.party_name}: {formatCurrency(party.amount)} ({Math.round((party.confidence || 0) * 100)}% confidence)
+                  </Text>
+                ))}
+              </View>
             </View>
-          </View>
-        ))}
+          );
+        })}
       </ScrollView>
     </View>
   );

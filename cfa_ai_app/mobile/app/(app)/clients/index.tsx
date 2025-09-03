@@ -84,16 +84,25 @@ export default function ClientsScreen() {
       // Fetch party balances as a proxy for clients list (backend doesn't expose a typed client list here)
       const pbRes = await apiClient.fetchPartyBalances(companyId);
       if (pbRes && pbRes.status === 'success' && pbRes.data) {
+        // Normalize party balances response into an array regardless of shape
+        const partyList: any[] = Array.isArray(pbRes.data)
+          ? pbRes.data
+          : Array.isArray(pbRes.data.party_balances)
+            ? pbRes.data.party_balances
+            : Array.isArray(pbRes.data.data?.party_balances)
+              ? pbRes.data.data.party_balances
+              : [];
+
         // Map PartyBalance -> Client minimal representation
-        const clientsData = (pbRes.data || []).map((c: any, idx: number) => ({
-          id: String(idx),
-          name: c.party_name,
+        const clientsData = partyList.map((c: any, idx: number) => ({
+          id: c.id ? String(c.id) : `${(c.party_name || c.party || 'client')}-${idx}`,
+          name: c.party_name || c.party || 'Unknown',
           email: '',
           phone: '',
           totalRevenue: 0,
           outstandingBalance: c.current_balance || 0,
           lastTransaction: c.last_updated || new Date().toISOString(),
-          status: 'active'
+          status: 'active' as 'active'
         }));
         setClients(clientsData);
       }

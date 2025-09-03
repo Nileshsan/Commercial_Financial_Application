@@ -989,12 +989,95 @@ def fetch_ledger_opening_balances(company_name=None, max_retries=3):
             except Exception as e:
                 log(f"Warning: Could not save raw response: {e}", level="WARN")
             
-            cleaned_text = sanitize_xml(response.text)
+            # Save a memory-safe copy and try to clean. If the response is very large
+            # sanitize_xml may raise MemoryError; handle that by streaming LEDGER blocks
             opening_balances = []
+            try:
+                # Write raw response first (already attempted above) and then try to clean
+                cleaned_text = sanitize_xml(response.text)
+                if not cleaned_text.strip():
+                    raise ValueError("Empty response from Tally")
+                large_response = len(response.text) > (5 * 1024 * 1024)  # 5 MB threshold
+                if large_response:
+                    log(f"Warning: Large response detected ({len(response.text)} bytes). Using streaming parse.", level="WARN")
+                # If cleaning succeeded, proceed normally
+            except MemoryError as me:
+                log(f"MemoryError while cleaning XML: {me}. Falling back to streaming extraction.", level="ERROR")
+                # Ensure raw response file exists and stream parse ledger blocks from it
+                try:
+                    with open('raw_tally_response.xml', 'w', encoding='utf-8') as f:
+                        f.write(response.text)
+                except Exception as wf:
+                    log(f"Could not write raw response for streaming parse: {wf}", level="ERROR")
+
+                # Stream-extract LEDGER blocks from the file to avoid building a huge string in memory
+                try:
+                    in_block = False
+                    buffer_lines = []
+                    with open('raw_tally_response.xml', 'r', encoding='utf-8', errors='ignore') as rf:
+                        for line in rf:
+                            if '<LEDGER' in line and not in_block:
+                                in_block = True
+                                buffer_lines = [line]
+                                continue
+                            if in_block:
+                                buffer_lines.append(line)
+                                if '</LEDGER>' in line:
+                                    ledger_xml = ''.join(buffer_lines)
+                                    # parse this single ledger block safely
+                                    try:
+                                        parsed = xmltodict.parse('<?xml version="1.0" encoding="UTF-8"?><ENVELOPE>' + ledger_xml + '</ENVELOPE>')
+                                        led = parsed.get('ENVELOPE', {}).get('LEDGER')
+                                        if led:
+                                            # map fields similar to normal flow
+                                            name_tag = led.get('NAME')
+                                            name = name_tag.strip() if isinstance(name_tag, str) and name_tag else None
+                                            if not name and isinstance(led.get('LANGUAGENAME.LIST'), dict):
+                                                ln = led['LANGUAGENAME.LIST'].get('NAME.LIST', {}).get('NAME')
+                                                if isinstance(ln, str):
+                                                    name = ln.strip()
+                                            group = led.get('PARENT') or '[NO GROUP]'
+                                            opening = led.get('OPENINGBALANCE') or '0'
+                                            try:
+                                                cleaned_balance = re.sub(r'[^\d.-]', '', str(opening))
+                                                balance_value = float(cleaned_balance) if cleaned_balance else 0.0
+                                            except:
+                                                balance_value = 0.0
+                                            if name and balance_value != 0:
+                                                opening_balances.append({
+                                                    'ledger_name': name,
+                                                    'opening_balance': balance_value,
+                                                    'group': group,
+                                                    'raw_balance': opening
+                                                })
+                                    except Exception as pe:
+                                        log(f"Streaming parse error for a ledger block: {pe}", level='WARN')
+                                    in_block = False
+                                    buffer_lines = []
+                    # After streaming extraction, if we got ledgers, we're successful
+                    if opening_balances:
+                        log(f"✅ Stream-extracted {len(opening_balances)} ledger opening balances for company: {company_name}")
+                        # Save results and return early
+                        with open('opening_balances.json', 'w', encoding='utf-8') as f:
+                            json.dump(opening_balances, f, indent=2, ensure_ascii=False)
+                        return opening_balances
+                except Exception as se:
+                    log(f"Streaming extraction failed: {se}", level='ERROR')
+                    # fallthrough to normal processing which will attempt cleanup again
+            except Exception as e:
+                # Other exceptions during cleaning - rethrow or fallback
+                log(f"XML cleaning exception: {e}", level='ERROR')
+                # fallthrough to default behavior
             
-            if not cleaned_text.strip():
-                raise ValueError("Empty response from Tally")
-                
+            # If we reach here and cleaned_text exists, proceed normally; otherwise continue and let later parsing handle empty
+            try:
+                if 'cleaned_text' not in locals():
+                    cleaned_text = sanitize_xml(response.text)
+                # continue normal flow
+            except MemoryError:
+                log("MemoryError on second sanitize attempt; aborting and returning empty list", level='ERROR')
+                return []
+
             break  # Success, exit retry loop
             
         except (requests.exceptions.RequestException, 

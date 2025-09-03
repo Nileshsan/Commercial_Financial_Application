@@ -2,6 +2,8 @@ from celery import shared_task
 from .data_processor import normalize_transactions
 import logging
 from .payment_analysis import PaymentPatternAnalyzer
+from django.utils import timezone
+from datetime import timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +22,8 @@ def normalize_transactions_task(self, company_id):
 def analyze_payment_patterns_task(self, company_id):
     """Run payment pattern analysis after normalization finishes"""
     try:
-        analyzer = PaymentPatternAnalyzer(company_id)
+        since_date = timezone.now().date() - timedelta(days=30)
+        analyzer = PaymentPatternAnalyzer(company_id, since_date=since_date)
         patterns = analyzer.analyze_payment_patterns()
         logger.info(f"analyze_payment_patterns_task completed: {len(patterns)} patterns for company {company_id}")
         return {'patterns': len(patterns)}

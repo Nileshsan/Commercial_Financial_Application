@@ -32,13 +32,15 @@ class PaymentPatternAnalyzer:
         """Initialize the analyzer with caching and validation"""
         if not company_id:
             raise ValueError("Company ID is required")
-            
+
         self.company_id = company_id
+        self.since_date = None
+        self.transaction_ids = None
         self.payment_patterns = {}
         self.fixed_expenses = {}
         self.unpaid_sales = []
         self.cache_key = f"{self.CACHE_KEY_PREFIX}{company_id}"
-        
+
         logger.info(f"Initializing PaymentPatternAnalyzer for company {company_id}")
         
         # Try to load cached data first
@@ -92,6 +94,15 @@ class PaymentPatternAnalyzer:
             cache.set(self.cache_key, cache_data, self.CACHE_TIMEOUT)
         except Exception as e:
             logger.error(f"Error caching data: {str(e)}")
+
+    def _base_transactions(self):
+        """Return base queryset scoped by optional since_date/transaction_ids"""
+        qs = TallyTransaction.objects.filter(company_id=self.company_id)
+        if getattr(self, 'since_date', None):
+            qs = qs.filter(date__gte=self.since_date)
+        if getattr(self, 'transaction_ids', None):
+            qs = qs.filter(id__in=self.transaction_ids)
+        return qs
 
     def _ensure_party_balances(self):
         """Ensure party balances exist with optimized querying"""
@@ -158,6 +169,118 @@ class PaymentPatternAnalyzer:
             raise
 
     def _process_party_balance_batch(self, party_batch):
+        """Process a batch of parties for balance calculation with correct running balance logic"""
+        try:
+            opening_balances = {
+                b.ledger_name: b.opening_balance 
+                for b in LedgerOpeningBalance.objects.filter(
+                    company_id=self.company_id,
+                    ledger_name__in=party_batch
+                )
+            }
+
+            bulk_data = []
+            for party_name in party_batch:
+                # Fetch all transactions for the party, ordered by date
+                transactions = (
+                    TallyTransaction.objects.filter(
+                        company_id=self.company_id,
+                        party_name=party_name
+                    )
+                    .order_by('date', 'id')
+                )
+
+                running_balance = opening_balances.get(party_name, Decimal('0'))
+                last_date = None
+
+                for t in transactions:
+                    if t.register_type == 'sales':
+                        running_balance += t.amount
+                    elif t.register_type == 'receipt':
+                        running_balance -= t.amount
+                    last_date = t.date
+
+                bulk_data.append(
+                    PartyBalance(
+                        company_id=self.company_id,
+                        party_name=party_name,
+                        current_balance=running_balance,
+                        last_transaction_date=last_date or timezone.now().date(),
+                        last_updated=timezone.now()
+                    )
+                )
+
+            PartyBalance.objects.bulk_create(
+                bulk_data,
+                update_conflicts=True,
+                unique_fields=['company_id', 'party_name'],
+                update_fields=['current_balance', 'last_transaction_date', 'last_updated']
+            )
+        except Exception as e:
+            logger.error(f"Error processing party balance batch: {str(e)}")
+            raise
+            # Get aggregated transaction data
+            transaction_sums = (
+                TallyTransaction.objects.filter(
+                    company_id=self.company_id,
+                    party_name__in=party_batch
+                )
+                .values('party_name', 'register_type')
+                .annotate(
+                    total=Sum('amount'),
+                    last_date=Max('date')
+                )
+            )
+            
+            # Organize transaction data by party
+            party_data = defaultdict(lambda: {
+                'sales': Decimal('0'),
+                'receipts': Decimal('0'),
+                'last_date': None
+            })
+            
+            for t in transaction_sums:
+                if t['register_type'] == 'sales':
+                    party_data[t['party_name']]['sales'] = t['total']
+                elif t['register_type'] == 'receipt':
+                    party_data[t['party_name']]['receipts'] = t['total']
+                if t['last_date']:
+                    if not party_data[t['party_name']]['last_date'] or t['last_date'] > party_data[t['party_name']]['last_date']:
+                        party_data[t['party_name']]['last_date'] = t['last_date']
+            
+            # Prepare bulk update data
+            bulk_data = []
+            for party_name in party_batch:
+                data = party_data[party_name]
+                opening_balance = opening_balances.get(party_name, Decimal('0'))
+                current_balance = (
+                    opening_balance + 
+                    data['sales'] - 
+                    data['receipts']
+                )
+                
+                bulk_data.append(
+                    PartyBalance(
+                        company_id=self.company_id,
+                        party_name=party_name,
+                        current_balance=current_balance,
+                        last_transaction_date=data['last_date'] or timezone.now().date(),
+                        last_updated=timezone.now()
+                    )
+                )
+            
+            # Bulk update/create
+            PartyBalance.objects.bulk_create(
+                bulk_data,
+                update_conflicts=True,
+                unique_fields=['company_id', 'party_name'],
+                update_fields=['current_balance', 'last_transaction_date', 'last_updated']
+            )
+            
+        except Exception as e:
+            logger.error(f"Error processing party balance batch: {str(e)}")
+            raise
+
         """Process a batch of parties for balance calculation"""
         try:
             # Prefetch related data for the batch
@@ -387,7 +510,31 @@ class PaymentPatternAnalyzer:
         """Get unpaid sales with optimized querying"""
         cache_key = f"unpaid_sales_{self.company_id}"
         cached_data = cache.get(cache_key)
-        
+        unpaid_sales = []
+        parties = PartyBalance.objects.filter(company_id=self.company_id)
+        for party in parties:
+            # Get all sales and receipts for the party, sorted by date
+            transactions = (
+                TallyTransaction.objects.filter(
+                    company_id=self.company_id,
+                    party_name=party.party_name
+                )
+                .order_by('date', 'id')
+            )
+            cumulative_sales = Decimal('0')
+            cumulative_receipts = Decimal('0')
+            for t in transactions:
+                if t.register_type == 'sales':
+                    cumulative_sales += t.amount
+                elif t.register_type == 'receipt':
+                    cumulative_receipts += t.amount
+            unpaid_amount = cumulative_sales - cumulative_receipts
+            if unpaid_amount > 0:
+                unpaid_sales.append({
+                    'party_name': party.party_name,
+                    'unpaid_amount': unpaid_amount
+                })
+        return unpaid_sales
         if cached_data:
             return cached_data
             

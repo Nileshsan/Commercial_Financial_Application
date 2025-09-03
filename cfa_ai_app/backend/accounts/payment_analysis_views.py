@@ -86,12 +86,26 @@ class UnpaidSalesView(APIView):
             cached_sales = cache.get(cache_key)
             if cached_sales:
                 logger.debug(f"Returning cached unpaid sales for company {company_id}")
+                # cached_sales may be a list or a dict depending on analyzer implementation
+                if isinstance(cached_sales, list):
+                    unpaid_list = cached_sales
+                    total_unpaid = sum(item.get('remaining_amount', item.get('unpaid_amount', 0)) if isinstance(item, dict) else 0 for item in unpaid_list)
+                    count = len(unpaid_list)
+                elif isinstance(cached_sales, dict):
+                    unpaid_list = cached_sales.get('unpaid_sales', [])
+                    total_unpaid = cached_sales.get('total_unpaid', 0)
+                    count = cached_sales.get('count', len(unpaid_list))
+                else:
+                    unpaid_list = []
+                    total_unpaid = 0
+                    count = 0
+
                 response_data = {
                     'status': 'success',
                     'data': {
-                        'unpaid_sales': cached_sales.get('unpaid_sales', []),
-                        'total_unpaid': cached_sales.get('total_unpaid', 0),
-                        'count': cached_sales.get('count', 0),
+                        'unpaid_sales': unpaid_list,
+                        'total_unpaid': total_unpaid,
+                        'count': count,
                         'data_available': True
                     }
                 }
@@ -101,16 +115,31 @@ class UnpaidSalesView(APIView):
             with transaction.atomic():
                 analyzer = PaymentPatternAnalyzer(company_id)
                 unpaid_sales = analyzer.get_unpaid_sales()
-                
-                # Cache the results for 15 minutes to reduce recomputations
-                cache.set(cache_key, unpaid_sales, 900)
-                
+
+                # Normalize analyzer output to a dict format
+                if isinstance(unpaid_sales, list):
+                    unpaid_list = unpaid_sales
+                    total_unpaid = sum(item.get('remaining_amount', item.get('unpaid_amount', 0)) if isinstance(item, dict) else 0 for item in unpaid_list)
+                    count = len(unpaid_list)
+                    normalized = {
+                        'unpaid_sales': unpaid_list,
+                        'total_unpaid': total_unpaid,
+                        'count': count
+                    }
+                elif isinstance(unpaid_sales, dict):
+                    normalized = unpaid_sales
+                else:
+                    normalized = {'unpaid_sales': [], 'total_unpaid': 0, 'count': 0}
+
+                # Cache the normalized results for 15 minutes to reduce recomputations
+                cache.set(cache_key, normalized, 900)
+
                 response_data = {
                     'status': 'success',
                     'data': {
-                        'unpaid_sales': unpaid_sales.get('unpaid_sales', []),
-                        'total_unpaid': unpaid_sales.get('total_unpaid', 0),
-                        'count': unpaid_sales.get('count', 0),
+                        'unpaid_sales': normalized.get('unpaid_sales', []),
+                        'total_unpaid': normalized.get('total_unpaid', 0),
+                        'count': normalized.get('count', 0),
                         'data_available': True
                     }
                 }

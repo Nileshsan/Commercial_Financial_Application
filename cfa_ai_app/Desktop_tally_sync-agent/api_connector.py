@@ -141,30 +141,41 @@ class APIConnector:
     def _save_payload(self, data_type: str, data: Union[dict, list, str], is_json: bool = False) -> None:
         """Save a copy of the data payload for debugging purposes."""
         try:
-            # Format the payload for saving
-            if isinstance(data, (dict, list)):
-                pretty_payload = json.dumps(data, indent=2, ensure_ascii=False)
-                ext = 'json'
-            else:
-                pretty_payload = str(data)
-                ext = 'txt'
-
-            # Create backup directory if needed
+            # Format the payload for saving (robust to non-serializable objects)
             backend_dir = os.path.join(os.path.dirname(__file__), 'file_backend')
             os.makedirs(backend_dir, exist_ok=True)
-
-            # Save with timestamp
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+            try:
+                if isinstance(data, (dict, list)):
+                    pretty_payload = json.dumps(data, indent=2, ensure_ascii=False, default=str)
+                    ext = 'json'
+                else:
+                    # Try to JSON encode anything reasonable, fall back to str()
+                    try:
+                        pretty_payload = json.dumps(data, indent=2, ensure_ascii=False, default=str)
+                        ext = 'json'
+                    except Exception:
+                        pretty_payload = str(data)
+                        ext = 'txt'
+            except Exception:
+                try:
+                    pretty_payload = str(data)
+                    ext = 'txt'
+                except Exception:
+                    pretty_payload = '<unserializable payload>'
+                    ext = 'txt'
+
             backend_file = os.path.join(backend_dir, f'{data_type}_payload_{timestamp}.{ext}')
-            
             with open(backend_file, 'w', encoding='utf-8') as f:
                 f.write(pretty_payload)
-            
             self.log(f"Backup saved to: {backend_file}", suppress_terminal=True)
-            
         except Exception as e:
-            self.log(f"Failed to save {data_type} payload backup: {e}")
-            # Don't raise - this is just for debugging
+            # Ensure saving payload never raises a blocking exception
+            try:
+                self.log(f"Failed to save {data_type} payload backup: {e}")
+            except Exception:
+                print(f"[API_CONNECTOR] Failed to save {data_type} payload backup and failed to log: {e}")
 
     def _prepare_headers(self, api_key: str, is_json: bool = False) -> dict:
         """Prepare request headers with API key and content type."""
@@ -407,8 +418,9 @@ class APIConnector:
                     # Log the cleaned entry for verification
                     self.log(f"Processing ledger: {ledger_name}")
                     self.log(f"Opening balance: {opening_balance}")
-                    self.log(f"User Company: {clean_balance['user_company']}")
-                    self.log(f"Company: {clean_balance['company']}")
+                    # Use computed company variables (avoid KeyError on clean_balance)
+                    self.log(f"User Company: {company_base_name}")
+                    self.log(f"Company: {company_full_name}")
                     if "group" in clean_balance:
                         self.log(f"Group: {clean_balance['group']}")
                 except Exception as e:
@@ -673,9 +685,12 @@ class APIConnector:
             # Parse data if it's JSON
             payload = json.loads(data) if is_json and isinstance(data, str) else data
             
-            # Prepare headers with Token authentication
+            # Prepare headers. Prefer any Authorization already configured on the session
+            # (e.g., from _setup_session), but fall back to Token auth if absent.
+            session_auth = self.session.headers.get('Authorization') if hasattr(self, 'session') else None
+            auth_value = session_auth if session_auth else f'Token {api_key}'
             headers = {
-                'Authorization': f'Token {api_key}',  # Using Token auth which contains company info
+                'Authorization': auth_value,
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
                 'User-Agent': 'CFA-Tally-Sync-Agent/1.0'
@@ -704,9 +719,15 @@ class APIConnector:
                 self.log(f"  Full company name: {company_name}")
                 self.log(f"  User company name: {user_company_name}")
                 
-                # Log incoming payload for debugging
-                self.log(f"Raw payload type: {type(payload)}")
-                self.log(f"Raw payload content: {json.dumps(payload, indent=2)}")
+                # Log incoming payload for debugging (robust)
+                try:
+                    self.log(f"Raw payload type: {type(payload)}")
+                    self.log(f"Raw payload content: {json.dumps(payload, indent=2, default=str)}")
+                except Exception:
+                    try:
+                        self.log(f"Raw payload content: <unserializable payload type={type(payload)}>")
+                    except Exception:
+                        pass
                 
                 # Handle different payload formats
                 if isinstance(payload, dict):
@@ -742,8 +763,14 @@ class APIConnector:
                 # Validate the final payload
                 if not formatted_payload or not isinstance(formatted_payload, list):
                     self.log("❌ Invalid payload format: expected a list of opening balances")
-                    self.log(f"Formatted payload type: {type(formatted_payload)}")
-                    self.log(f"Formatted payload: {formatted_payload}")
+                    try:
+                        self.log(f"Formatted payload type: {type(formatted_payload)}")
+                        self.log(f"Formatted payload: {json.dumps(formatted_payload, indent=2, default=str)}")
+                    except Exception:
+                        try:
+                            self.log(f"Formatted payload: <unserializable payload type={type(formatted_payload)}>")
+                        except Exception:
+                            pass
                     messagebox.showerror("Data Error", "Invalid payload format")
                     return False
 
@@ -757,16 +784,28 @@ class APIConnector:
                 if isinstance(formatted_payload, list):
                     self.log(f"Number of opening balances: {len(formatted_payload)}")
                     if formatted_payload:
-                        self.log(f"Sample opening balance:")
-                        self.log(json.dumps(formatted_payload[0], indent=2))
+                        try:
+                            self.log(f"Sample opening balance:")
+                            self.log(json.dumps(formatted_payload[0], indent=2, default=str))
+                        except Exception:
+                            try:
+                                self.log(f"Sample opening balance: <unserializable entry type={type(formatted_payload[0])}>")
+                            except Exception:
+                                pass
 
                 # Log the final formatted payload
                 self.log(f"Final payload structure:")
                 if isinstance(formatted_payload, list):
                     self.log(f"Number of balances: {len(formatted_payload)}")
                     if formatted_payload:
-                        self.log(f"Sample balance entry:")
-                        self.log(json.dumps(formatted_payload[0], indent=2))
+                        try:
+                            self.log(f"Sample balance entry:")
+                            self.log(json.dumps(formatted_payload[0], indent=2, default=str))
+                        except Exception:
+                            try:
+                                self.log(f"Sample balance entry: <unserializable entry type={type(formatted_payload[0])}>")
+                            except Exception:
+                                pass
                     
             elif data_type in ["transactions", "vouchers"]:
                 endpoint = f"{self.backend_url.rstrip('/')}/api/transactions/"
@@ -815,7 +854,13 @@ class APIConnector:
                 self.log(f"Formatted payload structure:")
                 self.log(f"Number of vouchers: {len(formatted_payload['vouchers'])}")
                 if formatted_payload['vouchers']:
-                    self.log(f"Sample voucher: {json.dumps(formatted_payload['vouchers'][0], indent=2)}")
+                    try:
+                        self.log(f"Sample voucher: {json.dumps(formatted_payload['vouchers'][0], indent=2, default=str)}")
+                    except Exception:
+                        try:
+                            self.log(f"Sample voucher: <unserializable voucher type={type(formatted_payload['vouchers'][0])}>")
+                        except Exception:
+                            pass
             else:
                 self.log(f"❌ Unsupported data type: {data_type}")
                 messagebox.showerror("Error", f"Unsupported data type: {data_type}")
@@ -830,8 +875,21 @@ class APIConnector:
             # Log detailed request information for debugging
             self.log(f"Sending request to {endpoint}")
             self.log(f"Headers: {json.dumps(headers, indent=2)}")
-            self.log(f"Payload length: {len(formatted_payload) if isinstance(formatted_payload, list) else 'N/A'}")
-            self.log(f"Full Payload: {json.dumps(formatted_payload, indent=2)}")
+            try:
+                self.log(f"Payload length: {len(formatted_payload) if isinstance(formatted_payload, list) else 'N/A'}")
+            except Exception:
+                self.log("Payload length: N/A")
+            try:
+                self.log(f"Full Payload: {json.dumps(formatted_payload, indent=2, default=str)}")
+            except Exception:
+                try:
+                    if isinstance(formatted_payload, dict):
+                        keys = list(formatted_payload.keys())
+                    else:
+                        keys = 'N/A'
+                    self.log(f"Full Payload: <unserializable payload type={type(formatted_payload)} keys={keys}>")
+                except Exception:
+                    pass
             
             if isinstance(formatted_payload, list) and len(formatted_payload) == 0:
                 self.log("⚠️ Warning: Empty payload list being sent")
@@ -886,6 +944,23 @@ class APIConnector:
                                 headers=headers,
                                 timeout=(30, 120)  # Increased timeout
                             )
+
+                            # If we get a 401 and the server indicates Bearer auth, retry once using Bearer
+                            try:
+                                www_auth = response.headers.get('WWW-Authenticate', '')
+                            except Exception:
+                                www_auth = ''
+                            if response.status_code == 401 and 'bearer' in www_auth.lower():
+                                # Only retry if we didn't already use Bearer
+                                if not headers.get('Authorization', '').lower().startswith('bearer'):
+                                    self.log("Received 401 with WWW-Authenticate: Bearer. Retrying with Bearer auth")
+                                    headers['Authorization'] = f'Bearer {api_key}'
+                                    response = self.session.post(
+                                        endpoint,
+                                        json=chunk_payload,
+                                        headers=headers,
+                                        timeout=(30, 120)
+                                    )
                             
                             if response.status_code in (429, 500):
                                 raise requests.exceptions.RetryError("Rate limit or server error")
@@ -924,37 +999,22 @@ class APIConnector:
                 success = success_count == total_chunks
                 self.log(f"{'✅' if success else '❌'} Processed {success_count}/{total_chunks} chunks successfully")
                 return success
-                
-                if len(chunks) > 1:
-                    self.log(f"Splitting {len(formatted_payload)} vouchers into {len(chunks)} chunks")
-                    
-                success_count = 0
-                for i, chunk in enumerate(chunks, 1):
-                    self.log(f"Sending chunk {i}/{len(chunks)} with {len(chunk)} vouchers...")
-                    chunk_payload = {"vouchers": chunk} if data_type in ["transactions", "vouchers"] else chunk
-                    
-                    try:
+
+                # If we get a 401 and server asks for Bearer, retry once using Bearer auth
+                try:
+                    www_auth = response.headers.get('WWW-Authenticate', '')
+                except Exception:
+                    www_auth = ''
+                if response.status_code == 401 and 'bearer' in www_auth.lower():
+                    if not headers.get('Authorization', '').lower().startswith('bearer'):
+                        self.log("Received 401 with WWW-Authenticate: Bearer. Retrying single request with Bearer auth")
+                        headers['Authorization'] = f'Bearer {api_key}'
                         response = self.session.post(
                             endpoint,
-                            json=chunk_payload,
+                            json=formatted_payload,
                             headers=headers,
-                            timeout=(30, 90)  # (connect timeout, read timeout)
+                            timeout=(30, 90)
                         )
-                        if self._handle_response(response, f"{data_type} chunk {i}"):
-                            success_count += 1
-                    except requests.exceptions.RequestException as e:
-                        self.log(f"❌ Failed to send chunk {i}: {str(e)}")
-                        continue
-                        
-                return success_count == len(chunks)
-            else:
-                # Send single request for non-list payloads
-                response = self.session.post(
-                    endpoint,
-                    json=formatted_payload,
-                    headers=headers,
-                    timeout=(30, 90)  # (connect timeout, read timeout)
-                )
 
             # Get response
             success = self._handle_response(response, data_type)
@@ -967,8 +1027,14 @@ class APIConnector:
                         self.log("⚠️ Warning: No new balances were created. Debug information:")
                         self.log(f"  Company name being used: {self.company_name}")
                         self.log(f"  Number of records in payload: {len(formatted_payload)}")
-                        self.log(f"  Sample record: {json.dumps(formatted_payload[0] if formatted_payload else {}, indent=2)}")
-                        self.log(f"  Response details: {json.dumps(response_data, indent=2)}")
+                        try:
+                            self.log(f"  Sample record: {json.dumps(formatted_payload[0] if formatted_payload else {}, indent=2, default=str)}")
+                        except Exception:
+                            self.log("  Sample record: <unserializable>")
+                        try:
+                            self.log(f"  Response details: {json.dumps(response_data, indent=2, default=str)}")
+                        except Exception:
+                            self.log("  Response details: <unserializable>")
                         self.log("  Backend message: " + response_data.get('message', 'No message provided'))
                         
                         # Show warning to user

@@ -273,16 +273,27 @@ class TallyDataImportView(CompanyAuthMixin, viewsets.GenericViewSet, mixins.Crea
         data = request.data
         
         # Example: Create transaction with company automatically set
-        transaction_data = {
-            'voucher_no': data.get('voucher_no'),
-            'date': data.get('date'),
-            'party_name': data.get('party_name'),
-            'amount': data.get('amount'),
-            'register_type': data.get('register_type'),
-            'company': company  # Automatically set the company
-        }
-        
-        transaction = TallyTransaction.objects.create(**transaction_data)
+        # Map incoming payload to TallyTransaction model fields. Only include
+        # known fields to avoid unexpected keyword argument errors from older
+        # client payload shapes.
+        safe_amount = data.get('amount')
+        try:
+            from decimal import Decimal
+            safe_amount = Decimal(str(safe_amount)) if safe_amount is not None else Decimal('0')
+        except Exception:
+            safe_amount = None
+
+        transaction = TallyTransaction.objects.create(
+            company=company,
+            voucher_type=str(data.get('voucher_type') or '').strip() or 'unknown',
+            voucher_number=str(data.get('voucher_number') or data.get('voucher_no') or '').strip(),
+            date=data.get('date') or None,
+            amount=safe_amount or Decimal('0'),
+            remaining_amount=safe_amount or Decimal('0'),
+            party_name=str(data.get('party_name') or '').strip(),
+            register_type=str(data.get('register_type') or '').strip() or 'journal',
+            is_reconciled=False
+        )
         
         return Response({
             'status': 'success',
@@ -708,8 +719,9 @@ def receive_tally_transactions(request):
                         logger.warning(f'Transaction {idx}: Invalid amount detected, using 0.0')
                     
                     # Check if transaction already exists
+                    # Check for existing transaction using voucher_number and company
                     existing_txn = TallyTransaction.objects.filter(
-                        voucher_no=safe_voucher_no,
+                        voucher_number=safe_voucher_no,
                         register_type=safe_register_type,
                         company=company
                     ).first()
@@ -720,20 +732,19 @@ def receive_tally_transactions(request):
                         continue
                         
                     # Create new transaction if it doesn't exist
+                    # Create a canonical TallyTransaction with only supported fields.
+                    from decimal import Decimal as _D
+                    amt = _D(str(safe_amount)) if safe_amount is not None else _D('0')
                     txn = TallyTransaction.objects.create(
-                        voucher_no=safe_voucher_no,
-                        voucher_id=safe_voucher_id,
-                        date=date_obj or datetime.now().date(),
-                        due_date=due_date,
-                        party_name=safe_party_name,
-                        party_type=safe_party_type,
-                        narration=safe_narration,
-                        amount=safe_amount,
-                        register_type=safe_register_type,
-                        payment_mode=safe_payment_mode,
-                        reference_no=safe_reference_no,
                         company=company,
-                        payment_status='pending' if due_date and due_date > datetime.now().date() else 'completed'
+                        voucher_type=(transaction_data.get('voucher_type') or safe_register_type),
+                        voucher_number=safe_voucher_no,
+                        date=date_obj or datetime.now().date(),
+                        amount=amt,
+                        remaining_amount=amt,
+                        party_name=safe_party_name,
+                        register_type=safe_register_type,
+                        is_reconciled=False
                     )
                     
                     # If this is opening balance data, also create LedgerBalance records

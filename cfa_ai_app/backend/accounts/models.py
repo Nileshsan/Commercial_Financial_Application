@@ -172,4 +172,29 @@ class LedgerOpeningBalance(models.Model):
     def __str__(self):
         return f"{self.company.name} - {self.ledger_name}: {self.opening_balance}"
 
+
+# Raw transactions table: append-only copy of incoming Tally sync payloads
+class RawTallyTransaction(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    voucher_type = models.CharField(max_length=100)
+    voucher_number = models.CharField(max_length=100, blank=True)
+    date = models.DateField(null=True)
+    amount = models.DecimalField(max_digits=15, decimal_places=2, default=0)
+    remaining_amount = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)
+    party_name = models.CharField(max_length=255, blank=True)
+    register_type = models.CharField(max_length=50, blank=True)
+    raw_payload = models.JSONField(null=True, blank=True)
+    processed = models.BooleanField(default=False, help_text="Whether this raw row has been normalized into transactions.TallyTransaction")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['company', 'voucher_type']),
+            models.Index(fields=['company', 'party_name']),
+            models.Index(fields=['processed'])
+        ]
+
+    def __str__(self):
+        return f"RAW {self.company.name} - {self.voucher_type}:{self.voucher_number} ({self.amount})"
+
 # Token model is provided by rest_framework.authtoken
