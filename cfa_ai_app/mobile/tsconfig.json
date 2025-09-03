@@ -1,0 +1,29 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "services/*": ["./services/*"],
+      "components/*": ["./app/components/*"]
+    },
+    "jsx": "react-native",
+    "types": ["react", "react-native"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "bundler",
+    "lib": ["es2020", "dom"],
+    "noEmit": true,
+    "isolatedModules": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "target": "ESNext"
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "types.d.ts"],
+  "exclude": ["node_modules"]
+}

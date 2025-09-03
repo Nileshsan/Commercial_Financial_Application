@@ -1,0 +1,26 @@
+<ENVELOPE>
+ <HEADER>
+  <TALLYREQUEST>Import Data</TALLYREQUEST>
+ </HEADER>
+ <BODY>
+  <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+    <STATICVARIABLES>
+     <SVCURRENTCOMPANY>Fluidtecq Pneumatics Private Limited (2022-23)</SVCURRENTCOMPANY>
+    </STATICVARIABLES>
+   </REQUESTDESC>
+   <REQUESTDATA>
+    <TALLYMESSAGE xmlns:UDF="TallyUDF">
+     <COMPANY>
+      <REMOTECMPINFO.LIST MERGE="Yes">
+       <NAME>bd9d731b-d3c9-4771-8880-e4baca94aeaa</NAME>
+       <REMOTECMPNAME>Fluidtecq Pneumatics Private Limited (2022-23)</REMOTECMPNAME>
+       <REMOTECMPSTATE>Maharashtra</REMOTECMPSTATE>
+      </REMOTECMPINFO.LIST>
+     </COMPANY>
+    </TALLYMESSAGE>
+   </REQUESTDATA>
+  </IMPORTDATA>
+ </BODY>
+</ENVELOPE>
