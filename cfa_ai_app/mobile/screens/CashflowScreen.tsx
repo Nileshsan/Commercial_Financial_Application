@@ -211,7 +211,7 @@ export default function CashflowScreen({ route, navigation }: CashflowScreenProp
               strokeWidth: "1",
               stroke: colors.primary
             },
-            formatYLabel: (value) => formatCurrency(Number(value))
+            formatYLabel: (value: string | number) => formatCurrency(Number(value))
           }}
           bezier
           style={{

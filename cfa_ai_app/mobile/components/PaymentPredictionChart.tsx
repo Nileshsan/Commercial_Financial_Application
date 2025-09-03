@@ -91,7 +91,7 @@ export const PaymentPredictionChart: React.FC<PaymentPredictionProps> = ({
             strokeWidth: '2',
             stroke: '#2e7d32',
           },
-          formatYLabel: (value) => {
+          formatYLabel: (value: string | number) => {
             const numValue = Number(value);
             if (isNaN(numValue) || !isFinite(numValue)) {
               return '₹0';

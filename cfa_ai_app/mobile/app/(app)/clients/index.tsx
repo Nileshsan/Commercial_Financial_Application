@@ -11,7 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import ClientList from './ClientList';
 import CashflowGraph from '../../components/CashflowGraph';
-import api from 'services/api';
+import api from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const apiClient = api;
 import { formatCurrency } from '../../utils/formatters';

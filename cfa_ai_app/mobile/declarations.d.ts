@@ -24,3 +24,9 @@ declare module '*.svg' {
   const value: any;
   export default value;
 }
+
+// Ambient declarations for third-party modules without shipped types
+declare module 'react-native-chart-kit';
+declare module 'react-native-gesture-handler';
+declare module 'react-native-reanimated';
+

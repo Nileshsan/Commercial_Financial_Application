@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import * as React from 'react';
 import {
   View,
   Text,
@@ -28,7 +28,7 @@ export const BankBalanceInput: React.FC<BankBalanceInputProps> = ({
   balance,
   onBalanceChange
 }) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const handleSubmit = async () => {
     if (!balance || isNaN(Number(balance))) {

@@ -5,7 +5,7 @@ import * as Clipboard from 'expo-clipboard';
 import QRCode from 'react-native-qrcode-svg';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { api } from '../../services/api';
+import { api } from '@/services/api';
 import { AnimatedGradient } from '../../components/AnimatedGradient';
 
 export default function APITokenScreen() {

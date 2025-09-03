@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { api } from '../../services/api';
+import { api } from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AnimatedGradient } from '../../components/AnimatedGradient';
 

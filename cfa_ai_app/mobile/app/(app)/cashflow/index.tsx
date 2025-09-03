@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -344,15 +345,28 @@ export default function CashflowScreen() {
   const initializeScreen = async () => {
     try {
       const storedCompanyId = await AsyncStorage.getItem('companyId');
+      let cid: number | null = null;
       if (storedCompanyId) {
-        setCompanyId(parseInt(storedCompanyId, 10));
+        const parsed = parseInt(storedCompanyId, 10);
+        if (!isNaN(parsed)) cid = parsed;
+        setCompanyId(parsed || 1);
       }
-      
-      // Check if bank balance is set
-      const response = await api.getCashflowPredictions(parseInt(storedCompanyId!, 10), days);
-      if (response.status === 'success' && response.data?.data?.summary?.initial_balance) {
-        setBankBalance(response.data.data.summary.initial_balance);
+
+      // Only request predictions if we have a company id
+      if (cid) {
+        const response = await api.getCashflowPredictions(cid, days).catch((e) => {
+          console.warn('Failed to fetch initial cashflow predictions', e);
+          return null;
+        });
+        const dataRoot = response?.data?.data || response?.data || {};
+        const initial = dataRoot?.summary?.initial_balance ?? dataRoot?.initial_balance;
+        if (initial !== undefined && initial !== null) {
+          setBankBalance(Number(initial));
+        } else {
+          setShowBankBalanceModal(true);
+        }
       } else {
+        // No company id yet; show modal so user can set bank balance later
         setShowBankBalanceModal(true);
       }
     } catch (error) {
@@ -601,7 +615,7 @@ export default function CashflowScreen() {
               strokeWidth: '2',
               stroke: '#2e7d32',
             },
-            formatYLabel: (value) => {
+            formatYLabel: (value: string | number) => {
               const numValue = Number(value);
               if (isNaN(numValue) || !isFinite(numValue)) {
                 return '₹0';
