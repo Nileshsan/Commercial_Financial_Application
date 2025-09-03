@@ -1,0 +1,8 @@
+requests
+xmltodict
+python-dotenv
+opencv-python
+Pillow
+tenacity
+python-dateutil
+keyring

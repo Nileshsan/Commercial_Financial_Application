@@ -1,0 +1,636 @@
+import requests
+import xmltodict
+import json
+import os
+from dotenv import load_dotenv
+import sys
+import datetime
+from tkinter import messagebox
+import re
+import html
+from xml.etree import ElementTree as ET
+import time
+import socket
+import urllib3
+from urllib3.exceptions import InsecureRequestWarning
+urllib3.disable_warnings(InsecureRequestWarning)
+
+# Terminal log printing for CLI feedback
+
+def print_log(msg, level="INFO"):
+    prefix = {
+        "INFO": "[LOG]",
+        "ERROR": "[ERROR]",
+        "WARN": "[WARN]",
+        "SUCCESS": "[SUCCESS]"
+    }.get(level, "[LOG]")
+    print(f"{prefix} {msg}")
+
+# Logging setup
+LOG_FILE = os.path.join(os.path.dirname(__file__), 'sync_log.txt')
+def log(msg, level="INFO"):
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    try:
+        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+            f.write(f"[{timestamp}] {msg}\n")
+    except Exception as e:
+        print_log(f"[LOG ERROR] Failed to write to log file: {e}", level="ERROR")
+    print_log(msg, level)
+
+load_dotenv()
+
+if getattr(sys, 'frozen', False):
+    base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
+else:
+    base_path = os.path.abspath(".")
+
+env_path = os.path.join(base_path, 'config.env')
+load_dotenv(dotenv_path=env_path)
+
+TALLY_URL = os.getenv("TALLY_URL", "http://localhost:9000")
+log(f"Loaded TALLY_URL: {TALLY_URL}")
+
+# Connection retry configuration
+MAX_RETRIES = 3
+RETRY_DELAY = 2
+CONNECTION_TIMEOUT = 30
+READ_TIMEOUT = 120
+
+# --- Connection helpers ---
+def check_tally_service():
+    """Check if Tally service is running on the specified port."""
+    try:
+        url_parts = TALLY_URL.replace('http://', '').replace('https://', '')
+        host_port = url_parts.split('/')
+        host = host_port[0].split(':')[0]
+        port = int(host_port[0].split(':')[1]) if ':' in host_port[0] else 9000
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(5)
+        result = sock.connect_ex((host, port))
+        sock.close()
+        if result == 0:
+            log(f"✅ Tally service is running on {host}:{port}")
+            return True
+        else:
+            log(f"❌ Tally service is not running on {host}:{port}")
+            return False
+    except Exception as e:
+        log(f"❌ Error checking Tally service: {e}")
+        return False
+
+def create_session():
+    """Create a requests session with appropriate settings."""
+    session = requests.Session()
+    session.headers.update({
+        'Content-Type': 'application/xml',
+        'User-Agent': 'TallyConnector/1.0',
+        'Connection': 'close'
+    })
+    return session
+
+# --- Improved test connection ---
+def test_tally_connection():
+    """Test if Tally is reachable using a standard Ledger master request."""
+    if not check_tally_service():
+        messagebox.showerror("Tally Error", "Tally service is not running. Please start Tally and enable XML/HTTP interface.")
+        return False
+    test_request = """
+    <ENVELOPE>
+        <HEADER>
+            <TALLYREQUEST>Export Data</TALLYREQUEST>
+        </HEADER>
+        <BODY>
+            <EXPORTDATA>
+                <REQUESTDESC>
+                    <REPORTNAME>List of Accounts</REPORTNAME>
+                    <STATICVARIABLES>
+                        <ACCOUNTTYPE>Ledger</ACCOUNTTYPE>
+                    </STATICVARIABLES>
+                </REQUESTDESC>
+            </EXPORTDATA>
+        </BODY>
+    </ENVELOPE>
+    """
+    if not TALLY_URL:
+        log("❌ TALLY_URL is not set. Please check your configuration.")
+        messagebox.showerror("Tally Error", "TALLY_URL is not set. Please check your configuration.")
+        return False
+    try:
+        log(f"Testing connection to {TALLY_URL}")
+        session = create_session()
+        response = session.post(
+            TALLY_URL, 
+            data=test_request.encode('utf-8'),
+            timeout=(CONNECTION_TIMEOUT, READ_TIMEOUT),
+            stream=False
+        )
+        log(f"Test response: status={response.status_code}, length={len(response.text)})")
+        if response.status_code == 200:
+            if any(pattern in response.text for pattern in ['<ENVELOPE>', '<TALLYMESSAGE>', '<LEDGER>', '<NAME>']):
+                log("✅ Tally connection test successful")
+                return True
+            else:
+                log(f"❌ Unexpected response format: {response.text[:500]}")
+                return False
+        else:
+            log(f"❌ HTTP error: {response.status_code}")
+            return False
+    except requests.exceptions.Timeout:
+        log("❌ Connection timeout - Tally may be busy or not responding")
+        messagebox.showerror("Tally Error", "Connection timeout. Please check if Tally is running and try again.")
+        return False
+    except requests.exceptions.ConnectionError as e:
+        log(f"❌ Connection error: {e}")
+        messagebox.showerror("Tally Error", "Cannot connect to Tally. Please ensure Tally is running and XML/HTTP interface is enabled.")
+        return False
+    except Exception as e:
+        log(f"❌ Unexpected error during connection test: {e}")
+        return False
+    finally:
+        try:
+            session.close()
+        except:
+            pass
+
+# --- XML cleaning ---
+def clean_invalid_xml_chars(xml_str):
+    """Remove all invalid XML 1.0 characters and decode HTML entities."""
+    if not xml_str:
+        return ""
+    cleaned = re.sub(
+        r'[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\U00010000-\U0010FFFF]',
+        '-',
+        xml_str
+    )
+    return html.unescape(cleaned)
+
+def fix_xml_structure(xml_str):
+    """Fix malformed XML structure from Tally TDL output."""
+    if not xml_str:
+        return None
+    try:
+        try:
+            ET.fromstring(xml_str)
+            return xml_str
+        except ET.ParseError:
+            pass
+        log("XML is not well-formed, attempting to fix...")
+        xml_str = clean_invalid_xml_chars(xml_str)
+        if not xml_str.strip().startswith('<?xml'):
+            xml_str = '<?xml version="1.0" encoding="UTF-8"?>\n' + xml_str
+        try:
+            ET.fromstring(xml_str)
+            return xml_str
+        except ET.ParseError as e:
+            log(f"❌ XML parsing error: {e}")
+            return None
+    except Exception as e:
+        log(f"❌ Error fixing XML structure: {e}")
+        return None
+
+# --- Retry logic for Tally requests ---
+def send_tally_request_with_retry(xml_request: str, return_json: bool = False, max_retries: int = MAX_RETRIES) -> dict | None:
+    """Send XML Request to Tally with retry logic."""
+    if not TALLY_URL:
+        log("❌ TALLY_URL is not set. Please check your configuration.")
+        return None
+    if not check_tally_service():
+        log("❌ Tally service is not available")
+        return None
+    last_error = None
+    for attempt in range(max_retries):
+        try:
+            log(f"Attempt {attempt + 1}/{max_retries}: Sending request to {TALLY_URL}")
+            session = create_session()
+            if attempt > 0:
+                time.sleep(RETRY_DELAY * attempt)
+            response = session.post(
+                TALLY_URL, 
+                data=xml_request.encode('utf-8'),
+                timeout=(CONNECTION_TIMEOUT, READ_TIMEOUT),
+                stream=False
+            )
+            log(f"Response received: status={response.status_code}, length={len(response.text)}")
+            if response.status_code == 200:
+                error_patterns = [
+                    '<LINEERROR>', 'Error in TDL', 'No PARTS', 'No LINES', 'No BUTTONS',
+                    'Invalid Report', 'Report not found', 'TDL Error'
+                ]
+                if any(err in response.text for err in error_patterns):
+                    log(f"❌ Tally returned error: {response.text[:500]}")
+                    return None
+                if not any(pattern in response.text for pattern in ['<ENVELOPE>', '<TALLYMESSAGE>', '<COMPANY>', '<VOUCHER>']):
+                    log(f"❌ Invalid response format: {response.text[:500]}")
+                    return None
+                try:
+                    if return_json:
+                        json_str = xml_to_json(response.text)
+                        if json_str is None:
+                            return None
+                        data = json.loads(json_str)
+                        return clean_dict_fields(data)
+                    else:
+                        fixed_xml = fix_xml_structure(response.text)
+                        if not fixed_xml:
+                            return None
+                        parsed = xmltodict.parse(fixed_xml)
+                        return clean_dict_fields(parsed)
+                except Exception as parse_err:
+                    log(f"❌ Failed to parse response: {parse_err}")
+                    last_error = parse_err
+                    continue
+            else:
+                log(f"❌ HTTP error: {response.status_code}")
+                last_error = f"HTTP {response.status_code}"
+                continue
+        except requests.exceptions.Timeout:
+            log(f"❌ Timeout on attempt {attempt + 1}")
+            last_error = "Timeout"
+            continue
+        except requests.exceptions.ConnectionError as e:
+            log(f"❌ Connection error on attempt {attempt + 1}: {e}")
+            last_error = f"Connection error: {e}"
+            continue
+        except Exception as e:
+            log(f"❌ Unexpected error on attempt {attempt + 1}: {e}")
+            last_error = f"Unexpected error: {e}"
+            continue
+        finally:
+            try:
+                session.close()
+            except:
+                pass
+    log(f"❌ All {max_retries} attempts failed. Last error: {last_error}")
+    return None
+
+# --- XML to JSON and cleaning helpers ---
+def xml_to_json(xml_str):
+    """Convert Tally XML string to JSON string."""
+    try:
+        fixed_xml = fix_xml_structure(xml_str)
+        if not fixed_xml:
+            return None
+        parsed_dict = xmltodict.parse(fixed_xml)
+        json_data = json.dumps(parsed_dict, indent=2, ensure_ascii=False)
+        return json_data
+    except Exception as e:
+        log(f"❌ Error converting XML to JSON: {e}")
+        return None
+
+def clean_field(value):
+    """Clean a single string field for XML and data usability."""
+    if not isinstance(value, str):
+        return value
+    value = re.sub(r'[^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\U00010000-\U0010FFFF]', '-', value)
+    value = (value.replace('&', '&amp;')
+                  .replace('<', '&lt;')
+                  .replace('>', '&gt;')
+                  .replace('"', '&quot;')
+                  .replace("'", '&apos;'))
+    return value.strip() or "-"
+
+def clean_dict_fields(data):
+    """Recursively clean all string fields in a dict or list."""
+    if isinstance(data, dict):
+        return {k: clean_dict_fields(v) for k, v in data.items()}
+    elif isinstance(data, list):
+        return [clean_dict_fields(item) for item in data]
+    elif isinstance(data, str):
+        return clean_field(data)
+    else:
+        return data
+
+# --- Main Tally request function ---
+def send_tally_request(xml_request: str, return_json: bool = False) -> dict | None:
+    """Send XML Request to Tally and return parsed response."""
+    return send_tally_request_with_retry(xml_request, return_json)
+
+# --- Company name extraction ---
+def get_company_name():
+    """Fetch and return the company name from Tally using a standard report."""
+    xml_request = """
+    <ENVELOPE>
+        <HEADER>
+            <TALLYREQUEST>Export Data</TALLYREQUEST>
+        </HEADER>
+        <BODY>
+            <EXPORTDATA>
+                <REQUESTDESC>
+                    <REPORTNAME>List of Accounts</REPORTNAME>
+                    <STATICVARIABLES>
+                        <ACCOUNTTYPE>Company</ACCOUNTTYPE>
+                    </STATICVARIABLES>
+                </REQUESTDESC>
+            </EXPORTDATA>
+        </BODY>
+    </ENVELOPE>
+    """
+    data = send_tally_request(xml_request)
+    if not data:
+        return None
+    try:
+        envelope = data.get('ENVELOPE', {})
+        if envelope:
+            body = envelope.get('BODY', {})
+            if body:
+                data_section = body.get('DATA', {})
+                if data_section:
+                    tally_message = data_section.get('TALLYMESSAGE', {})
+                    if tally_message:
+                        company = tally_message.get('COMPANY', {})
+                        if company and '@NAME' in company:
+                            return company.get('@NAME')
+        if 'COMPANY' in data:
+            company = data['COMPANY']
+            if isinstance(company, dict) and '@NAME' in company:
+                return company.get('@NAME')
+        def find_company_name(obj):
+            if isinstance(obj, dict):
+                for key, value in obj.items():
+                    if 'COMPANY' in key.upper() and isinstance(value, (str, dict)):
+                        if isinstance(value, str):
+                            return value
+                        elif isinstance(value, dict) and '@NAME' in value:
+                            return value['@NAME']
+                    result = find_company_name(value)
+                    if result:
+                        return result
+            elif isinstance(obj, list):
+                for item in obj:
+                    result = find_company_name(item)
+                    if result:
+                        return result
+            return None
+        return find_company_name(data)
+    except Exception as e:
+        log(f"❌ Error extracting company name: {e}")
+        return None
+
+# --- Data fetch functions ---
+def fetch_export_data(start_date="20240401", end_date="20250630") -> dict | None:
+    """Fetch data using Export Data XML report."""
+    xml_request = f"""
+    <ENVELOPE>
+        <HEADER>
+            <TALLYREQUEST>Export Data</TALLYREQUEST>
+        </HEADER>
+        <BODY>
+            <EXPORTDATA>
+                <REQUESTDESC>
+                    <REPORTNAME>Export Data XML</REPORTNAME>
+                    <STATICVARIABLES>
+                        <SVFROMDATE>{start_date}</SVFROMDATE>
+                        <SVTODATE>{end_date}</SVTODATE>
+                        <EXPLODEFLAG>Yes</EXPLODEFLAG>
+                        <SVEXPORTFORMAT>XML</SVEXPORTFORMAT>
+                    </STATICVARIABLES>
+                </REQUESTDESC>
+            </EXPORTDATA>
+        </BODY>
+    </ENVELOPE>
+    """
+    return send_tally_request(xml_request)
+
+def fetch_export_data_json(start_date="20240401", end_date="20250630") -> dict | None:
+    """Fetch data as JSON using Export Data XML report."""
+    xml_request = f"""
+    <ENVELOPE>
+        <HEADER>
+            <TALLYREQUEST>Export Data</TALLYREQUEST>
+        </HEADER>
+        <BODY>
+            <EXPORTDATA>
+                <REQUESTDESC>
+                    <REPORTNAME>Export Data XML</REPORTNAME>
+                    <STATICVARIABLES>
+                        <SVFROMDATE>{start_date}</SVFROMDATE>
+                        <SVTODATE>{end_date}</SVTODATE>
+                        <EXPLODEFLAG>Yes</EXPLODEFLAG>
+                        <SVEXPORTFORMAT>XML</SVEXPORTFORMAT>
+                    </STATICVARIABLES>
+                </REQUESTDESC>
+            </EXPORTDATA>
+        </BODY>
+    </ENVELOPE>
+    """
+    return send_tally_request(xml_request, return_json=True)
+
+# --- Standard report fallback functions ---
+def fetch_vouchers_standard_report(start_date="20240401", end_date="20250630"):
+    """Fetch vouchers using standard Tally Day Book report."""
+    xml_request = f"""
+    <ENVELOPE>
+        <HEADER>
+            <TALLYREQUEST>Export Data</TALLYREQUEST>
+        </HEADER>
+        <BODY>
+            <EXPORTDATA>
+                <REQUESTDESC>
+                    <REPORTNAME>Day Book</REPORTNAME>
+                    <STATICVARIABLES>
+                        <SVFROMDATE>{start_date}</SVFROMDATE>
+                        <SVTODATE>{end_date}</SVTODATE>
+                        <EXPLODEFLAG>Yes</EXPLODEFLAG>
+                    </STATICVARIABLES>
+                </REQUESTDESC>
+            </EXPORTDATA>
+        </BODY>
+    </ENVELOPE>
+    """
+    return send_tally_request(xml_request)
+
+def fetch_ledgers_standard_report():
+    """Fetch ledgers using standard Tally report."""
+    xml_request = """
+    <ENVELOPE>
+        <HEADER>
+            <TALLYREQUEST>Export Data</TALLYREQUEST>
+        </HEADER>
+        <BODY>
+            <EXPORTDATA>
+                <REQUESTDESC>
+                    <REPORTNAME>List of Accounts</REPORTNAME>
+                    <STATICVARIABLES>
+                        <ACCOUNTTYPE>All Ledgers</ACCOUNTTYPE>
+                    </STATICVARIABLES>
+                </REQUESTDESC>
+            </EXPORTDATA>
+        </BODY>
+    </ENVELOPE>
+    """
+    return send_tally_request(xml_request)
+
+def fetch_export_data_standard(start_date="20240401", end_date="20250630"):
+    """Fetch data using standard Tally reports as fallback."""
+    log("🔍 Fetching data using standard Tally reports...")
+    vouchers = fetch_vouchers_standard_report(start_date, end_date)
+    if not vouchers:
+        log("❌ Failed to fetch vouchers")
+        return None
+    ledgers = fetch_ledgers_standard_report()
+    if not ledgers:
+        log("❌ Failed to fetch ledgers")
+        return None
+    log("✅ Successfully fetched data using standard reports")
+    return {
+        "vouchers": vouchers,
+        "ledgers": ledgers
+    }
+
+# --- Legacy/compatibility fetch functions ---
+def fetch_daybook_data(start_date="20240401", end_date="20250630"):
+    """Legacy function - now uses standard Day Book report."""
+    return fetch_vouchers_standard_report(start_date, end_date)
+
+def fetch_ledger_details(start_date="20240401", end_date="20250630"):
+    """Legacy function - now uses standard Ledger report."""
+    return fetch_ledgers_standard_report()
+
+def fetch_tally_data() -> dict | None:
+    """Fetch basic Tally data for connectivity test."""
+    log("🔍 Fetching basic Tally data...")
+    company_name = get_company_name()
+    if company_name:
+        log(f"✅ Connected to company: {company_name}")
+    try:
+        basic_data = fetch_vouchers_standard_report("20240401", "20240430")
+        if basic_data:
+            log("✅ Successfully fetched basic voucher data")
+            return {"company_name": company_name, "sample_data": basic_data}
+        else:
+            log("❌ Failed to fetch basic voucher data")
+            return None
+    except Exception as e:
+        log(f"❌ Error fetching basic data: {e}")
+        return None
+
+# Optional: Add a CLI test runner similar to tally_tdl_test.py
+if __name__ == "__main__":
+    def test_basic_connection():
+        print("=" * 60)
+        print("TESTING BASIC TALLY CONNECTION")
+        print("=" * 60)
+        result = test_tally_connection()
+        if result:
+            print("✅ Basic connection to Tally successful!")
+            return True
+        else:
+            print("❌ Basic connection to Tally failed!")
+            return False
+
+    def test_company_info():
+        print("\n" + "=" * 60)
+        print("TESTING COMPANY INFO FETCH")
+        print("=" * 60)
+        try:
+            company_name = get_company_name()
+            if company_name:
+                print(f"✅ Company Name: {company_name}")
+                return True
+            else:
+                print("❌ Could not fetch company name")
+                return False
+        except Exception as e:
+            print(f"❌ Error fetching company info: {e}")
+            return False
+
+    def test_export_data_xml():
+        print("\n" + "=" * 60)
+        print("TESTING EXPORT DATA XML (TDL)")
+        print("=" * 60)
+        try:
+            start_date = "20240401"
+            end_date = "20240430"
+            print(f"Testing with date range: {start_date} to {end_date}")
+            data = fetch_export_data(start_date, end_date)
+            if data:
+                print("✅ Export Data XML successful!")
+                print("\n📊 DATA STRUCTURE ANALYSIS:")
+                print("-" * 30)
+                if isinstance(data, dict):
+                    for key, value in data.items():
+                        if isinstance(value, dict):
+                            print(f"📁 {key}: {len(value)} sub-elements")
+                            for sub_key in list(value.keys())[:5]:
+                                print(f"   └── {sub_key}")
+                            if len(value) > 5:
+                                print(f"   └── ... and {len(value) - 5} more")
+                        elif isinstance(value, list):
+                            print(f"📄 {key}: {len(value)} items")
+                        else:
+                            print(f"📝 {key}: {str(value)[:50]}...")
+                return True
+            else:
+                print("❌ Export Data XML failed - no data returned")
+                return False
+        except Exception as e:
+            print(f"❌ Error testing Export Data XML: {e}")
+            return False
+
+    def test_export_data_json():
+        print("\n" + "=" * 60)
+        print("TESTING EXPORT DATA XML (JSON CONVERSION)")
+        print("=" * 60)
+        try:
+            start_date = "20240401"
+            end_date = "20240430"
+            print(f"Testing JSON conversion with date range: {start_date} to {end_date}")
+            data = fetch_export_data_json(start_date, end_date)
+            if data:
+                print("✅ Export Data XML to JSON successful!")
+                print("\n📊 JSON STRUCTURE ANALYSIS:")
+                print("-" * 30)
+                if isinstance(data, dict):
+                    for key, value in data.items():
+                        if isinstance(value, dict):
+                            print(f"📁 {key}: {len(value)} sub-elements")
+                            for sub_key in list(value.keys())[:5]:
+                                print(f"   └── {sub_key}")
+                            if len(value) > 5:
+                                print(f"   └── ... and {len(value) - 5} more")
+                        elif isinstance(value, list):
+                            print(f"📄 {key}: {len(value)} items")
+                        else:
+                            print(f"📝 {key}: {str(value)[:50]}...")
+                return True
+            else:
+                print("❌ Export Data XML to JSON failed - no data returned")
+                return False
+        except Exception as e:
+            print(f"❌ Error testing Export Data XML to JSON: {e}")
+            return False
+
+    def main():
+        print("🚀 STARTING TALLY TDL TESTING")
+        print("=" * 60)
+        tests = [
+            ("Basic Connection", test_basic_connection),
+            ("Company Info", test_company_info),
+            ("Export Data XML", test_export_data_xml),
+            ("Export Data JSON", test_export_data_json)
+        ]
+        results = {}
+        for test_name, test_func in tests:
+            try:
+                results[test_name] = test_func()
+            except Exception as e:
+                print(f"❌ {test_name} failed with exception: {e}")
+                results[test_name] = False
+        print("\n" + "=" * 60)
+        print("TEST SUMMARY")
+        print("=" * 60)
+        for test_name, result in results.items():
+            status = "✅ PASSED" if result else "❌ FAILED"
+            print(f"{test_name:25} : {status}")
+        passed = sum(1 for result in results.values() if result)
+        total = len(results)
+        print(f"\nOverall: {passed}/{total} tests passed")
+        if passed == total:
+            print("🎉 All tests passed! Your TDL integration is working correctly.")
+        else:
+            print("⚠️  Some tests failed. Check the logs above for details.")
+        return passed == total
+
+    success = main()
+    sys.exit(0 if success else 1)
+

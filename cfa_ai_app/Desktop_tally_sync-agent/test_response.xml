@@ -1,0 +1,11 @@
+<ENVELOPE>
+ <HEADER>
+  <VERSION>1</VERSION>
+  <STATUS>0</STATUS>
+ </HEADER>
+ <BODY>
+  <DATA>
+   <LINEERROR>Could not find Report &apos;CompanyInfo&apos;!</LINEERROR>
+  </DATA>
+ </BODY>
+</ENVELOPE>

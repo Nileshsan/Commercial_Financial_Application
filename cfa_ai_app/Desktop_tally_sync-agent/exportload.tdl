@@ -1,0 +1,26 @@
+[#Menu: Gateway of Tally]
+    Add: Item: Before: End: Export Company Name : Display : Export Company Name XML
+
+[Report: Export Company Name XML]
+    Form: ExportCompanyNameForm
+    Collection: CompanyNameCollection
+
+[Collection: CompanyNameCollection]
+    Type: Company
+    Fetch: Name
+
+[Form: ExportCompanyNameForm]
+    Part: CompanyNamePart
+
+[Part: CompanyNamePart]
+    Line: CompanyNameLine
+    Repeat: CompanyNameLine : CompanyNameCollection
+
+[Line: CompanyNameLine]
+    Field: CompanyNameField
+
+[Field: CompanyNameField]
+    Set as: $Name
+
+[System: Formulae]
+    ; No extra formula needed for just the name

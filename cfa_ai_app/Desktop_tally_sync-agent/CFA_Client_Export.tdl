@@ -1,0 +1,194 @@
+;; CFA Client Data Export TDL
+;; Specialized for extracting client transaction details for AI analysis
+;; Author: CFA AI System
+;; Date: 2025
+
+[#Menu: Gateway of Tally]
+    Add: Item: Before: @@locQuit : CFA Client Export : Call : CFAClientExportFunction
+
+[Function: CFAClientExportFunction]
+    01 : Set : SVExportFormat : "XML"
+    02 : Set : SVFileName : "C:\TallyExports\CFA_Client_Export.xml"
+    03 : Display : "CFA Client Export"
+
+[Report: CFA Client Export]
+    Form: CFA Client Export Form
+    Use: DSP Default
+    Variable: SVExportFormat : String : "XML"
+    Variable: SVFromDate : Date : $$MonthStart:$$YearStart:$$Today
+    Variable: SVToDate : Date : $$Today
+    Variable: ExplodeFlag : String : "Yes"
+    Set: SVExportFormat : "XML"
+    Set: SVFromDate : $$MonthStart:$$YearStart:$$Today
+    Set: SVToDate : $$Today
+
+[Form: CFA Client Export Form]
+    Use: DSP Default
+    Parts: CFA Client Export Part
+    Local: Field: Default: Align: Left
+    Width: 100% Screen
+    Height: 100% Screen
+    
+[Part: CFA Client Export Part]
+    Use: DSP Default
+    Lines: XML Header, Data Header, Company Section Header, Company Data Line
+    Lines: Company Section Footer, Transactions Section Header, Transaction Data Line
+    Lines: Transactions Section Footer, Data Footer
+    Local: Field: Default: Align: Left
+
+[Line: XML Header]
+    Use: DSP Default
+    Local: Field: Default: Align: Left
+    Fields: XML Header Field
+
+[Field: XML Header Field]
+    Use: Name Field
+    Set as: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+
+[Line: Data Header]
+    Use: DSP Default
+    Local: Field: Default: Align: Left
+    Fields: Data Header Field
+
+[Field: Data Header Field]
+    Use: Name Field
+    Set as: "<CFATRANSACTIONS>"
+
+[Line: Company Section Header]
+    Use: DSP Default
+    Local: Field: Default: Align: Left
+    Fields: Company Section Header Field
+
+[Field: Company Section Header Field]
+    Use: Name Field
+    Set as: "<COMPANYINFO>"
+
+[Line: Company Data Line]
+    Use: DSP Default
+    Local: Field: Default: Align: Left
+    Fields: Company Data Field
+
+[Field: Company Data Field]
+    Use: Name Field
+    Set as: "<COMPANYNAME>" + $$Company + "</COMPANYNAME>" + $$NewLine +
+            "<FINANCIALYEARFROM>" + $$String:$$Year:$$PeriodFrom + "</FINANCIALYEARFROM>" + $$NewLine +
+            "<FINANCIALYEARTO>" + $$String:$$Year:$$PeriodTo + "</FINANCIALYEARTO>" + $$NewLine +
+            "<EXPORTDATE>" + $$String:$$Today + "</EXPORTDATE>" + $$NewLine +
+            "<EXPORTTIME>" + $$String:$$Time + "</EXPORTTIME>" + $$NewLine +
+            "<DATEFROM>" + $$String:@@SVFromDate + "</DATEFROM>" + $$NewLine +
+            "<DATETO>" + $$String:@@SVToDate + "</DATETO>"
+
+[Line: Company Section Footer]
+    Use: DSP Default
+    Local: Field: Default: Align: Left
+    Fields: Company Section Footer Field
+
+[Field: Company Section Footer Field]
+    Use: Name Field
+    Set as: "</COMPANYINFO>"
+
+[Line: Transactions Section Header]
+    Use: DSP Default
+    Local: Field: Default: Align: Left
+    Fields: Transactions Section Header Field
+
+[Field: Transactions Section Header Field]
+    Use: Name Field
+    Set as: "<TRANSACTIONS>"
+
+[Line: Transaction Data Line]
+    Use: DSP Default
+    Local: Field: Default: Align: Left
+    Fields: Transaction XML Field
+    Repeat: Transaction XML Field : CFATransactionCollection
+
+[Field: Transaction XML Field]
+    Use: Name Field
+    Set as: "<TRANSACTION>" + $$NewLine +
+            "<VOUCHER_NO>" + $VoucherNumber + "</VOUCHER_NO>" + $$NewLine +
+            "<DATE>" + $$String:$Date + "</DATE>" + $$NewLine +
+            "<PARTY_NAME>" + $PartyLedgerName + "</PARTY_NAME>" + $$NewLine +
+            "<NARRATION>" + $$If:$$IsEmpty:$Narration:"":$Narration + "</NARRATION>" + $$NewLine +
+            "<AMOUNT>" + $$String:$$Number:$Amount + "</AMOUNT>" + $$NewLine +
+            "<REGISTER_TYPE>" + $VoucherTypeName + "</REGISTER_TYPE>" + $$NewLine +
+            "<DEBIT_AMOUNT>" + $$String:$$Number:$DebitAmount + "</DEBIT_AMOUNT>" + $$NewLine +
+            "<CREDIT_AMOUNT>" + $$String:$$Number:$CreditAmount + "</CREDIT_AMOUNT>" + $$NewLine +
+            "<BALANCE>" + $$String:$$Number:$Balance + "</BALANCE>" + $$NewLine +
+            "<BALANCE_TYPE>" + $$If:$$IsDebit:$Balance:"DR":"CR" + "</BALANCE_TYPE>" + $$NewLine +
+            "</TRANSACTION>"
+
+[Line: Transactions Section Footer]
+    Use: DSP Default
+    Local: Field: Default: Align: Left
+    Fields: Transactions Section Footer Field
+
+[Field: Transactions Section Footer Field]
+    Use: Name Field
+    Set as: "</TRANSACTIONS>"
+
+[Line: Data Footer]
+    Use: DSP Default
+    Local: Field: Default: Align: Left
+    Fields: Data Footer Field
+
+[Field: Data Footer Field]
+    Use: Name Field
+    Set as: "</CFATRANSACTIONS>"
+
+;; Main Collection for CFA Transaction Data
+;; This collection fetches all relevant voucher types for client analysis
+[Collection: CFATransactionCollection]
+    Type: Voucher
+    Child Of: $$VchTypeSales, $$VchTypePurchase, $$VchTypeReceipt, $$VchTypePayment, $$VchTypeJournal, $$VchTypeCreditNote, $$VchTypeDebitNote
+    Filter: $$IsSuch:$Date:@@SVFromDate:@@SVToDate AND NOT $$IsEmpty:$PartyLedgerName
+    Fetch: VoucherNumber, Date, PartyLedgerName, Narration, Amount, VoucherTypeName, DebitAmount, CreditAmount, Balance
+
+;; Specialized collections for each register type
+[Collection: SalesCollection]
+    Type: Voucher
+    Child Of: $$VchTypeSales
+    Filter: $$IsSuch:$Date:@@SVFromDate:@@SVToDate AND NOT $$IsEmpty:$PartyLedgerName
+    Fetch: VoucherNumber, Date, PartyLedgerName, Narration, Amount, VoucherTypeName, DebitAmount, CreditAmount, Balance
+
+[Collection: PurchaseCollection]
+    Type: Voucher
+    Child Of: $$VchTypePurchase
+    Filter: $$IsSuch:$Date:@@SVFromDate:@@SVToDate AND NOT $$IsEmpty:$PartyLedgerName
+    Fetch: VoucherNumber, Date, PartyLedgerName, Narration, Amount, VoucherTypeName, DebitAmount, CreditAmount, Balance
+
+[Collection: ReceiptCollection]
+    Type: Voucher
+    Child Of: $$VchTypeReceipt
+    Filter: $$IsSuch:$Date:@@SVFromDate:@@SVToDate AND NOT $$IsEmpty:$PartyLedgerName
+    Fetch: VoucherNumber, Date, PartyLedgerName, Narration, Amount, VoucherTypeName, DebitAmount, CreditAmount, Balance
+
+[Collection: PaymentCollection]
+    Type: Voucher
+    Child Of: $$VchTypePayment
+    Filter: $$IsSuch:$Date:@@SVFromDate:@@SVToDate AND NOT $$IsEmpty:$PartyLedgerName
+    Fetch: VoucherNumber, Date, PartyLedgerName, Narration, Amount, VoucherTypeName, DebitAmount, CreditAmount, Balance
+
+[Collection: JournalCollection]
+    Type: Voucher
+    Child Of: $$VchTypeJournal
+    Filter: $$IsSuch:$Date:@@SVFromDate:@@SVToDate AND NOT $$IsEmpty:$PartyLedgerName
+    Fetch: VoucherNumber, Date, PartyLedgerName, Narration, Amount, VoucherTypeName, DebitAmount, CreditAmount, Balance
+
+[Collection: CreditNoteCollection]
+    Type: Voucher
+    Child Of: $$VchTypeCreditNote
+    Filter: $$IsSuch:$Date:@@SVFromDate:@@SVToDate AND NOT $$IsEmpty:$PartyLedgerName
+    Fetch: VoucherNumber, Date, PartyLedgerName, Narration, Amount, VoucherTypeName, DebitAmount, CreditAmount, Balance
+
+[Collection: DebitNoteCollection]
+    Type: Voucher
+    Child Of: $$VchTypeDebitNote
+    Filter: $$IsSuch:$Date:@@SVFromDate:@@SVToDate AND NOT $$IsEmpty:$PartyLedgerName
+    Fetch: VoucherNumber, Date, PartyLedgerName, Narration, Amount, VoucherTypeName, DebitAmount, CreditAmount, Balance
+
+;; Client ledger collection for additional client information
+[Collection: ClientLedgerCollection]
+    Type: Ledger
+    Child Of: $$GroupSundryDebtors, $$GroupSundryCreditors
+    Filter: NOT $$IsEmpty:$Name
+    Fetch: Name, Parent, OpeningBalance, ClosingBalance 
