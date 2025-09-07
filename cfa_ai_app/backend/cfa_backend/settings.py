@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,15 +23,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-rzncfab_$tqb+00sssy9ilh@+0+(3lkjc(q-ciy$#^6qf55y43'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True  # Temporarily set to True to see detailed errors
 
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    '10.0.2.2',  # Android emulator IP for accessing host machine
-    '192.168.0.104',  # Your local network IP
-    '*',  # Allow all hosts in development (remove in production)
+    '168.231.121.11',
+    '*',  # Temporarily allow all hosts
 ]
+
+# Security settings
+SECURE_PROXY_SSL_HEADER = None
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+SECURE_SSL_REDIRECT = False
 
 # Application definition
 
@@ -42,12 +48,48 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_bootstrap5',
+    'widget_tweaks',
+    'django_filters',
+    'corsheaders',  # CORS support
     'rest_framework.authtoken',  # token authentication
     'rest_framework_simplejwt',
-    'corsheaders',  # CORS support
     'core',
     'transactions',
     'accounts',
+]
+
+# REST Framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 100,
+}
+
+# CORS settings
+CORS_ALLOW_ALL_ORIGINS = True  # For development only
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://168.231.121.11:8000",
+]
+
+# CORS Allow Methods
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
 ]
 
 # Logging Configuration
@@ -235,19 +277,50 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Custom user model
 AUTH_USER_MODEL = 'accounts.User'
 
+# OAuth / Social client config (read from environment in development)
+GOOGLE_OAUTH_CONFIG = {
+    'web_client_id': os.environ.get('GOOGLE_WEB_CLIENT_ID'),
+    'android_client_id': os.environ.get('GOOGLE_ANDROID_CLIENT_ID', '695786750606-a1054qioo3rjmggghgkg7gn52mq37rtv.apps.googleusercontent.com'),
+    'ios_client_id': os.environ.get('GOOGLE_IOS_CLIENT_ID'),
+    'web_client_secret': os.environ.get('GOOGLE_WEB_CLIENT_SECRET'),
+    'authorized_redirect_uris': [
+        'https://auth.expo.io/@nileshsan/cfa-mobile',
+        'cfa-ai-app://',
+        'com.googleusercontent.apps.695786750606-a1054qioo3rjmggghgkg7gn52mq37rtv:/oauth2redirect'
+    ]
+}
+
+# For backward compatibility
+SOCIAL_GOOGLE_CLIENT_ID = GOOGLE_OAUTH_CONFIG['web_client_id']
+SOCIAL_GOOGLE_CLIENT_SECRET = GOOGLE_OAUTH_CONFIG['web_client_secret']
+
 AUTHENTICATION_BACKENDS = [
     'accounts.backends.CustomUserBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+# Media files configuration
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# File upload settings
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
 
 # REST Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'accounts.authentication.BearerTokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',  # Change to require authentication by default
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
     ],
     'EXCEPTION_HANDLER': 'accounts.exceptions.custom_exception_handler',
     'DEFAULT_THROTTLE_CLASSES': [
@@ -257,7 +330,9 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '100/day',
         'user': '1000/day'
-    }
+    },
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
 }
 
 # Logging configuration to show INFO-level logs for custom loggers in the console

@@ -16,13 +16,27 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from core.views import CustomLoginView
+from django.conf import settings
+from django.conf.urls.static import static
+from core.auth_views import CustomLoginView
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django.contrib.auth import views as auth_views
+
+def root_view(request):
+    if request.user.is_authenticated:
+        return redirect('profile')
+    return redirect('login')
 
 urlpatterns = [
-    path('', CustomLoginView.as_view(), name='login'),
+    path('', root_view, name='root'),
+    path('login/', CustomLoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     path('admin/', admin.site.urls),
-    path('', include('accounts.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/', include('accounts.urls')),
     path('', include('core.urls')),
-    # Add authentication endpoints
-    path('auth/', include('accounts.urls')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

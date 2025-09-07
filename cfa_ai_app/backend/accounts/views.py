@@ -8,11 +8,14 @@ from rest_framework.views import APIView
 from django.db import transaction
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
+import requests
 import math
 from datetime import datetime
 import os
 import json
 import logging
+from django.conf import settings
+from urllib.parse import urlparse, parse_qs
 from .models import (
     Company, Client, LedgerGroup, LedgerBalance, LedgerOpeningBalance, UserCompany
 )
@@ -45,6 +48,24 @@ def login_view(request):
         user = authenticate(username=username, password=password)
         
         if not user:
+            # Try to give a clearer diagnostic: does the email exist but is inactive?
+            try:
+                User = get_user_model()
+                existing = User.objects.filter(email=username).first()
+                if existing and not existing.is_active:
+                    return Response({
+                        'status': 'error',
+                        'message': 'Account exists but is not active. Please verify your email or contact support.'
+                    }, status=status.HTTP_403_FORBIDDEN)
+                elif existing:
+                    return Response({
+                        'status': 'error',
+                        'message': 'Invalid credentials. Please check your email and password.'
+                    }, status=status.HTTP_401_UNAUTHORIZED)
+            except Exception:
+                # Fall back to generic message on any error
+                pass
+
             return Response({
                 'status': 'error',
                 'message': 'Invalid credentials'
@@ -194,6 +215,261 @@ def logout_view(request):
     if request.auth:
         request.auth.delete()
     return Response({'status': 'success'})
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def social_login(request):
+    """
+    Social login endpoint. Expects JSON: { provider: 'google', accessToken: '...', profile: {...} }
+    Only allows login for existing users in the database. Returns DRF token on success.
+    """
+    try:
+        provider = request.data.get('provider')
+        access_token = request.data.get('accessToken') or request.data.get('access_token')
+        profile = request.data.get('profile') or {}
+
+        if provider != 'google':
+            return Response({'status': 'error', 'message': 'Unsupported provider'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # If access token provided, verify it with Google
+        email = None
+        if access_token:
+            try:
+                # Validate token and fetch profile from Google
+                resp = requests.get('https://www.googleapis.com/oauth2/v2/userinfo', headers={
+                    'Authorization': f'Bearer {access_token}'
+                }, timeout=5)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    email = data.get('email')
+                    # merge profile keys if not provided
+                    if not profile:
+                        profile = data
+                else:
+                    return Response({'status': 'error', 'message': 'Invalid Google access token'}, status=status.HTTP_400_BAD_REQUEST)
+            except Exception as e:
+                return Response({'status': 'error', 'message': f'Failed to validate token: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            # fallback to profile email if provided by client
+            email = profile.get('email') if isinstance(profile, dict) else None
+
+        if not email:
+            return Response({'status': 'error', 'message': 'Email not available from provider'}, status=status.HTTP_400_BAD_REQUEST)
+
+        User = get_user_model()
+        user = User.objects.filter(email__iexact=email).first()
+        if not user:
+            return Response({'status': 'error', 'message': 'This email is not registered with CFA'}, status=status.HTTP_403_FORBIDDEN)
+
+        if not user.is_active:
+            return Response({'status': 'error', 'message': 'Account exists but is not active. Please verify your email or contact support.'}, status=status.HTTP_403_FORBIDDEN)
+
+        # Issue or recreate token
+        token, created = Token.objects.get_or_create(user=user)
+        if not created:
+            token.delete()
+            token = Token.objects.create(user=user)
+
+        return Response({'status': 'success', 'data': {'token': token.key, 'user': {
+            'id': user.id,
+            'username': getattr(user, 'username', ''),
+            'email': user.email,
+            'company_id': user.company.id if getattr(user, 'company', None) else None,
+            'company_name': user.company.name if getattr(user, 'company', None) else None,
+            'user_company_name': user.user_company.name if getattr(user, 'user_company', None) else None,
+            'role': getattr(user, 'role', None)
+        } }}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def exchange_google_code(request):
+    """
+    Exchange an authorization code (from Google OAuth2) for tokens.
+    Expects JSON: { code: '...', redirect_uri: 'https://auth.expo.io/@owner/slug' }
+    Returns: { status: 'success', token_data: { access_token, id_token, refresh_token?, ... } }
+    """
+    logger = logging.getLogger('accounts')
+    
+    # Get Google OAuth client IDs from settings
+    web_client_id = getattr(settings, 'GOOGLE_WEB_CLIENT_ID', '')
+    android_client_id = getattr(settings, 'GOOGLE_ANDROID_CLIENT_ID', '')
+    client_secret = getattr(settings, 'GOOGLE_CLIENT_SECRET', '')
+    
+    try:
+        # Log incoming request (safely)
+        safe_data = {k: '***' if k in ['code', 'client_secret'] else v 
+                    for k, v in request.data.items()}
+        logger.info('exchange_google_code called; payload=%s', json.dumps(safe_data))
+        
+        # Validate request has required data
+        if not request.data:
+            return Response(
+                {'status': 'error', 'message': 'No data provided'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        # Accept either direct code or a pasted full redirect URL
+        code = request.data.get('code') or ''
+        redirect_uri = request.data.get('redirect_uri') or ''
+        pasted = request.data.get('input') or request.data.get('url') or ''
+
+        if not code and pasted:
+            # try to extract code from a full URL
+            try:
+                parsed = urlparse(pasted)
+                qs = parse_qs(parsed.query)
+                code = qs.get('code', [None])[0]
+                if not redirect_uri:
+                    # reconstruct redirect_uri from origin + path
+                    redirect_uri = f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
+            except Exception:
+                code = None
+
+        if not code:
+            logger.error('No authorization code provided')
+            return Response({
+                'status': 'error', 
+                'message': 'No authorization code provided'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Validate redirect URI
+        if not redirect_uri:
+            logger.error('No redirect_uri provided')
+            return Response({
+                'status': 'error',
+                'message': 'redirect_uri is required'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get client credentials from settings based on platform
+        google_config = settings.GOOGLE_OAUTH_CONFIG
+        authorized_uris = google_config['authorized_redirect_uris']
+        user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
+        client_secret = google_config['web_client_secret']
+
+        # Determine client ID based on user agent
+        if 'android' in user_agent:
+            client_id = google_config.get('android_client_id')
+            logger.info('Using Android client ID for token exchange')
+        else:
+            client_id = google_config.get('web_client_id')
+            logger.info('Using Web client ID for token exchange')
+
+        # Log the client ID being used (first 10 chars)
+        logger.info('Selected client ID: %s...', client_id[:10] if client_id else 'None')
+
+        # Validate redirect URI is authorized
+        if redirect_uri not in authorized_uris:
+            logger.error('Unauthorized redirect_uri: %s (allowed: %s)', 
+                      redirect_uri, ', '.join(authorized_uris))
+            return Response({
+                'status': 'error',
+                'message': 'Invalid redirect_uri',
+                'details': f'The provided redirect_uri is not authorized. Allowed URIs: {", ".join(authorized_uris)}'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Log debug info (safely)
+        logger.info('Starting token exchange with client_id: %s, redirect_uri: %s', 
+                   client_id, redirect_uri)
+
+        if not client_id or not client_secret:
+            logger.error('OAuth credentials not configured')
+            return Response({
+                'status': 'error',
+                'message': 'Server OAuth configuration missing',
+                'details': 'Google OAuth credentials are not properly configured on the server'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        # Prepare token exchange
+        token_endpoint = 'https://oauth2.googleapis.com/token'
+        payload = {
+            'code': code,
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'redirect_uri': redirect_uri,
+            'grant_type': 'authorization_code'
+        }
+
+        try:
+            # Exchange code for tokens with Google
+            logger.info('Exchanging code for tokens with Google...')
+            response = requests.post(
+                token_endpoint,
+                data=payload,
+                timeout=10,
+                headers={'Content-Type': 'application/x-www-form-urlencoded'}
+            )
+
+            # Log response (safely)
+            logger.info('Google token endpoint response status: %d', response.status_code)
+            if response.status_code != 200:
+                logger.error('Token exchange failed: %s', response.text)
+                
+            response.raise_for_status()
+            token_data = response.json()
+
+            # Validate token response
+            if 'access_token' not in token_data:
+                logger.error('No access_token in response: %s', 
+                           {k: '***' if k in ['id_token', 'access_token'] else v 
+                            for k, v in token_data.items()})
+                raise ValueError('Invalid token response from Google')
+
+            return Response({
+                'status': 'success',
+                'token_data': token_data
+            })
+
+        except requests.exceptions.RequestException as e:
+            logger.exception('Failed to exchange token with Google')
+            return Response({
+                'status': 'error',
+                'message': 'Failed to exchange code with Google',
+                'details': str(e)
+            }, status=status.HTTP_502_BAD_GATEWAY)
+            
+        except ValueError as e:
+            logger.exception('Invalid response from Google')
+            return Response({
+                'status': 'error',
+                'message': str(e)
+            }, status=status.HTTP_502_BAD_GATEWAY)
+        except Exception as e:
+            # Attempt to extract the response body if the response object exists in locals
+            resp_obj = locals().get('response')
+            if resp_obj is not None:
+                try:
+                    data = resp_obj.json()
+                except Exception:
+                    data = {'raw_text': getattr(resp_obj, 'text', '')}
+            else:
+                # No response object; capture the exception message
+                data = {'error': str(e)}
+            logger.exception('Unexpected error during token exchange: %s', str(e))
+
+        # Log Google's response for debugging
+        try:
+            resp_obj = locals().get('response')
+            if resp_obj is not None:
+                logger.info('Google token endpoint response status=%s data=%s', resp_obj.status_code, json.dumps(data))
+            else:
+                logger.info('No response object available; error data=%s', json.dumps(data))
+        except Exception:
+            resp_obj = locals().get('response')
+            if resp_obj is not None:
+                logger.info('Google token endpoint response status=%s', resp_obj.status_code)
+            else:
+                logger.info('No response object available for logging')
+
+        if resp_obj is not None and resp_obj.status_code != 200:
+            return Response({'status': 'error', 'message': 'Token exchange failed', 'details': data}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Return token response to the client so it can finish login locally
+        return Response({'status': 'success', 'token_data': data}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class CompanyAuthMixin:
     """

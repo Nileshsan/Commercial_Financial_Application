@@ -25,22 +25,27 @@ class CompanyAdmin(admin.ModelAdmin):
     list_filter = ('user_company',)
     fields = ('name', 'user_company', 'api_key', 'address')
 
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-
 # TallyTransactionAdmin moved to transactions/admin.py
 
 class UserAdmin(BaseUserAdmin):
     inlines = [TokenInline]
     fieldsets = (
-        (None, {'fields': ('email', 'username', 'password', 'user_company', 'company', 'client', 'role')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        ('Important dates', {'fields': ('last_login',)}),
+        (None, {'fields': ('email', 'username', 'password', 'user_company', 'company', 'client', 'role'),
+               'description': 'Basic user information and associations'}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+                      'description': 'User permissions and access control'}),
+        ('Important dates', {'fields': ('last_login', 'date_joined'),
+                         'description': 'Account activity timestamps'}),
     )
     readonly_fields = ('date_joined',)
+    list_display = ('email', 'username', 'user_company', 'company', 'client', 'role', 'is_staff', 'is_active')
+    search_fields = ('email', 'username', 'user_company__name', 'company__name')
+    ordering = ('email',)
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
             'fields': ('email', 'username', 'password1', 'password2', 'user_company', 'company', 'client', 'role', 'is_staff', 'is_active'),
+            'description': 'Create a new user with basic information and permissions',
         }),
     )
     list_display = ('email', 'username', 'user_company', 'company', 'client', 'role', 'is_staff', 'is_active')
@@ -62,24 +67,24 @@ class LedgerBalanceAdmin(admin.ModelAdmin):
         return super().get_queryset(request).select_related('group', 'company')
 
 # Customize the TokenAdmin
-class CustomTokenAdmin(TokenAdmin):
-    list_display = ('key', 'user', 'user_company', 'created')
+class TokenAdmin(admin.ModelAdmin):
+    list_display = ('key', 'user', 'get_user_company', 'created')
     search_fields = ('user__username', 'user__email', 'key')
     list_filter = ('created',)
+    raw_id_fields = ('user',)
 
-    def user_company(self, obj):
+    def get_user_company(self, obj):
         return obj.user.user_company if obj.user else None
-    user_company.short_description = 'User Company'
+    get_user_company.short_description = 'User Company'
 
     def save_model(self, request, obj, form, change):
         if not change:  # Only for new tokens
             obj.save()  # This will automatically generate the key
 
-admin.site.register(Client)
-admin.site.register(User, UserAdmin)
-admin.site.register(Company, CompanyAdmin)
-admin.site.register(LedgerGroup, LedgerGroupAdmin)
-admin.site.register(LedgerBalance, LedgerBalanceAdmin)
+class ClientAdmin(admin.ModelAdmin):
+    list_display = ('name', 'address', 'created_at')
+    search_fields = ('name', 'address')
+    list_filter = ('created_at',)
 
 class LedgerOpeningBalanceAdmin(admin.ModelAdmin):
     list_display = ('ledger_name', 'company', 'opening_balance', 'group')
@@ -89,6 +94,10 @@ class LedgerOpeningBalanceAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return super().get_queryset(request).select_related('company')
 
-# Register Token with our custom admin
-admin.site.register(Token, CustomTokenAdmin)
-admin.site.register(LedgerOpeningBalance, LedgerOpeningBalanceAdmin)
+# Register all models in a logical order
+admin.site.register(Client, ClientAdmin)  # Top-level organization
+admin.site.register(User, UserAdmin)      # Users and authentication
+admin.site.register(Company, CompanyAdmin) # Business entities
+admin.site.register(LedgerGroup, LedgerGroupAdmin)      # Financial records
+admin.site.register(LedgerBalance, LedgerBalanceAdmin)
+admin.site.register(LedgerOpeningBalance, LedgerOpeningBalanceAdmin)  # Opening balances

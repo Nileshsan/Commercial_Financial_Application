@@ -7,6 +7,15 @@ from .views import (
     receive_opening_balances, login_view, logout_view,
     get_user_api_token
 )
+from .views.profile_view import profile_view
+from .views.edit_profile_view import edit_profile
+from .views.client_views import ClientRegistrationViewSet
+from .views.web_views import (
+    ClientListView, ClientCreateView,
+    ClientDetailView, ClientUpdateView
+)
+from .views.home_view import HomeView
+from .views import exchange_google_code
 from .party_analysis import PartyTransactionAnalysisView
 from .model_training import ModelTrainingView
 from .model_views import model_status, train_model
@@ -25,11 +34,20 @@ from .urls_cashflow import urlpatterns as cashflow_urls
 # Create a router for viewsets
 router = DefaultRouter()
 router.register(r'tally-import', TallyDataImportView, basename='tally-import')
+router.register(r'api/clients', ClientRegistrationViewSet, basename='client-registration')
 
 urlpatterns = [
+    # Web Views
+    path('home/', HomeView.as_view(), name='home'),
+    path('profile/', profile_view, name='profile'),
+    path('profile/edit/', edit_profile, name='edit_profile'),
+    path('clients/', ClientListView.as_view(), name='client_list'),
+    path('clients/register/', ClientCreateView.as_view(), name='client_register'),
+    path('clients/<int:pk>/', ClientDetailView.as_view(), name='client_detail'),
+    path('clients/<int:pk>/edit/', ClientUpdateView.as_view(), name='client_update'),
     # Authentication endpoints
-    path('api/login/', login_view, name='login'),
-    path('api/logout/', logout_view, name='logout'),
+    path('api/login/', login_view, name='api_login'),
+    path('api/logout/', logout_view, name='api_logout'),
     path('api/transactions/normalize-transactions/', normalize_transactions, name='normalize-transactions'),
     
     # Router URLs (includes tally-import endpoints)
@@ -61,5 +79,7 @@ urlpatterns = [
     path('api/payment-predictions/', get_payment_predictions, name='payment_predictions'),
     path('api/data-status/', check_data_status, name='data-status'),
     path('api/bank-balance/', manage_bank_balance, name='bank_balance'),
+    # OAuth helper for development: exchange Google auth code for tokens
+    path('api/auth/google/exchange_code/', exchange_google_code, name='exchange_google_code'),
 ]
 urlpatterns += cashflow_urls

@@ -3,11 +3,12 @@ Description=gunicorn daemon for CFA
 After=network.target
 
 [Service]
-User=www-data
-Group=www-data
-WorkingDirectory=/path/to/your/cfa_ai_app/backend
-ExecStart=/path/to/your/env/bin/gunicorn \
-          --access-logfile - \
+User=root
+Group=root
+WorkingDirectory=/opt/cfa-backend
+ExecStart=/opt/cfa-backend/venv/bin/gunicorn \
+          --access-logfile /opt/cfa-backend/logs/gunicorn-access.log \
+          --error-logfile /opt/cfa-backend/logs/gunicorn-error.log \
           --workers 3 \
           --bind unix:/run/gunicorn.sock \
           cfa_backend.wsgi:application

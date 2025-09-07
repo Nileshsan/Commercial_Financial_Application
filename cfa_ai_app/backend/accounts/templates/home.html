@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}CFA - Commercial Financial Application{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h1 class="display-4">Welcome to CFA</h1>
+            <p class="lead">Your Complete Commercial Financial Management Solution</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Client Management Card -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Client Management</h5>
+                    <p class="card-text">Manage your clients, track their information, and monitor their activities.</p>
+                    <div class="mt-3">
+                        <a href="{% url 'client_list' %}" class="btn btn-primary">View Clients</a>
+                        <a href="{% url 'client_register' %}" class="btn btn-outline-primary">Add Client</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Analysis Card -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Financial Analysis</h5>
+                    <p class="card-text">Track transactions, analyze payment patterns, and manage cash flow.</p>
+                    <div class="mt-3">
+                        <a href="/transactions/" class="btn btn-primary">View Transactions</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tally Integration Card -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Tally Integration</h5>
+                    <p class="card-text">Seamlessly sync your Tally data and manage your business finances.</p>
+                    <div class="mt-3">
+                        <a href="/api/tally-import/" class="btn btn-primary">Import Data</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2 class="h3 mb-4">Quick Overview</h2>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-light">
+                <div class="card-body">
+                    <h3 class="h2 text-primary">{{ total_clients }}</h3>
+                    <p class="mb-0">Total Clients</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-light">
+                <div class="card-body">
+                    <h3 class="h2 text-success">{{ active_clients }}</h3>
+                    <p class="mb-0">Active Clients</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-light">
+                <div class="card-body">
+                    <h3 class="h2 text-info">{{ total_transactions }}</h3>
+                    <p class="mb-0">Transactions</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-light">
+                <div class="card-body">
+                    <h3 class="h2 text-warning">{{ pending_amount }}</h3>
+                    <p class="mb-0">Pending Amount</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.card {
+    transition: transform 0.2s;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.btn {
+    margin-right: 0.5rem;
+}
+.display-4 {
+    color: var(--primary-color);
+}
+</style>
+{% endblock %}

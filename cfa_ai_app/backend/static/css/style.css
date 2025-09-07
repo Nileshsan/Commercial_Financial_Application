@@ -1,0 +1,134 @@
+/* Custom styles for CFA Client Management */
+
+:root {
+    --primary-color: #2e7d32;
+    --secondary-color: #1b5e20;
+    --success-color: #43a047;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-bg: #f8f9fa;
+}
+
+/* Navigation */
+.navbar-custom {
+    background-color: var(--primary-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-custom .navbar-brand,
+.navbar-custom .nav-link {
+    color: white !important;
+}
+
+.navbar-custom .nav-link:hover {
+    color: rgba(255,255,255,0.8) !important;
+}
+
+/* Cards */
+.card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Forms */
+.form-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.required-field::after {
+    content: "*";
+    color: var(--danger-color);
+    margin-left: 4px;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+/* Risk Badges */
+.risk-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.risk-LOW {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.risk-MEDIUM {
+    background-color: var(--warning-color);
+    color: #212529;
+}
+
+.risk-HIGH {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+/* Document Section */
+.document-entry {
+    background-color: var(--light-bg);
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+/* Client List Filters */
+.filters-container {
+    background-color: var(--light-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Pagination */
+.pagination .page-link {
+    color: var(--primary-color);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 1rem;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .filters-container {
+        padding: 1rem;
+    }
+}
