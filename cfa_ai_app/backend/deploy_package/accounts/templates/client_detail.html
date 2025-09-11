@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ client.company_name }} - Client Details{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Client Details</h1>
+        <div>
+            <a href="{% url 'client_update' client.pk %}" class="btn btn-primary">
+                <i class="bi bi-pencil"></i> Edit
+            </a>
+            <a href="{% url 'client_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Basic Information Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Basic Information</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Company Name</dt>
+                        <dd class="col-sm-8">{{ client.company_name }}</dd>
+
+                        <dt class="col-sm-4">Contact Person</dt>
+                        <dd class="col-sm-8">{{ client.name }}</dd>
+
+                        <dt class="col-sm-4">Email</dt>
+                        <dd class="col-sm-8">
+                            <a href="mailto:{{ client.email }}">{{ client.email }}</a>
+                        </dd>
+
+                        <dt class="col-sm-4">Phone</dt>
+                        <dd class="col-sm-8">
+                            <a href="tel:{{ client.phone }}">{{ client.phone }}</a>
+                        </dd>
+
+                        <dt class="col-sm-4">Address</dt>
+                        <dd class="col-sm-8">{{ client.address|linebreaks }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business Information Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Business Information</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Client Type</dt>
+                        <dd class="col-sm-8">{{ client.get_client_type_display }}</dd>
+
+                        <dt class="col-sm-4">Category</dt>
+                        <dd class="col-sm-8">{{ client.category|default:"Not Assigned" }}</dd>
+
+                        <dt class="col-sm-4">Tax Number</dt>
+                        <dd class="col-sm-8">{{ client.tax_number|default:"Not provided" }}</dd>
+
+                        <dt class="col-sm-4">Website</dt>
+                        <dd class="col-sm-8">
+                            {% if client.website %}
+                                <a href="{{ client.website }}" target="_blank">{{ client.website }}</a>
+                            {% else %}
+                                Not provided
+                            {% endif %}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Information Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Financial Information</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Annual Revenue</dt>
+                        <dd class="col-sm-8">
+                            {% if client.annual_revenue %}
+                                ₹{{ client.annual_revenue|floatformat:2 }}
+                            {% else %}
+                                Not provided
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">Risk Level</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge {% if client.risk_level == 'HIGH' %}bg-danger{% elif client.risk_level == 'MEDIUM' %}bg-warning{% else %}bg-success{% endif %}">
+                                {{ client.get_risk_level_display }}
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4">Credit Limit</dt>
+                        <dd class="col-sm-8">
+                            {% if client.credit_limit %}
+                                ₹{{ client.credit_limit|floatformat:2 }}
+                            {% else %}
+                                Not set
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">Employee Count</dt>
+                        <dd class="col-sm-8">{{ client.employee_count|default:"Not provided" }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documents Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Documents</h5>
+                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#uploadDocumentModal">
+                        <i class="bi bi-upload"></i> Upload
+                    </button>
+                </div>
+                <div class="card-body">
+                    {% if client.documents.all %}
+                        <div class="list-group">
+                            {% for doc in client.documents.all %}
+                                <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ doc.get_document_type_display }}</h6>
+                                        <small class="text-muted">Uploaded {{ doc.uploaded_at|date:"M d, Y" }}</small>
+                                    </div>
+                                    <div>
+                                        <a href="{{ doc.file.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                            <i class="bi bi-download"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center my-3">No documents uploaded yet</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Recent Activities</h5>
+        </div>
+        <div class="card-body">
+            {% if client.activities.all %}
+                <div class="timeline">
+                    {% for activity in client.activities.all|slice:":10" %}
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h6 class="mb-0">{{ activity.get_activity_type_display }}</h6>
+                                <p class="mb-0">{{ activity.description }}</p>
+                                <small class="text-muted">
+                                    {{ activity.performed_at|date:"M d, Y H:i" }}
+                                    {% if activity.performed_by %}
+                                        by {{ activity.performed_by }}
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted text-center my-3">No activities recorded yet</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Document Upload Modal -->
+<div class="modal fade" id="uploadDocumentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload Document</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="{% url 'client_upload_document' client.pk %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="document_type" class="form-label">Document Type</label>
+                        <select class="form-select" id="document_type" name="document_type" required>
+                            <option value="">Select document type...</option>
+                            {% for type, label in document_types %}
+                                <option value="{{ type }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="file" class="form-label">File</label>
+                        <input type="file" class="form-control" id="file" name="file" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.timeline {
+    position: relative;
+    padding: 20px 0;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 40px;
+    margin-bottom: 20px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.timeline-item:not(:last-child):before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 12px;
+    height: calc(100% + 8px);
+    width: 2px;
+    background-color: #e9ecef;
+}
+
+.badge {
+    padding: 0.5em 1em;
+}
+</style>
+{% endblock %}

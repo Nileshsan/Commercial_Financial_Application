@@ -77,8 +77,9 @@ def get_api_key(request):
     user = request.user
     company = getattr(user, 'company', None)
     if company and company.api_key:
-        return Response({'api_key': company.api_key})
-    return Response({'error': 'API key not found for this user/company.'}, status=404)
+        # Return wrapper expected by mobile client: { status: 'success', data: { api_token: ..., token: ... } }
+        return Response({'status': 'success', 'data': {'api_token': company.api_key, 'token': company.api_key}})
+    return Response({'status': 'error', 'message': 'API key not found for this user/company.'}, status=404)
 
 def admin_frontend(request):
     return render(request, 'admin_frontend.html')

@@ -3,19 +3,34 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
-      "services/*": ["./services/*"],
-      "components/*": ["./app/components/*"]
+      "@/*": [
+        "./*"
+      ],
+      "services/*": [
+        "./services/*"
+      ],
+      "components/*": [
+        "./app/components/*"
+      ]
     },
     "jsx": "react-native",
-    "types": ["react", "react-native"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
+    "types": [
+      "react",
+      "react-native",
+      "node",
+      "@expo/vector-icons"
+    ],
     "moduleResolution": "bundler",
-    "lib": ["es2020", "dom"],
+    "module": "esnext",
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "noEmit": true,
     "isolatedModules": true,
     "strict": false,
@@ -24,6 +39,13 @@
     "emitDecoratorMetadata": true,
     "target": "ESNext"
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "types.d.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "types.d.ts",
+    "src/types/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

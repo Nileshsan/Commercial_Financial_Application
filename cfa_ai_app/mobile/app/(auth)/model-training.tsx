@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { api } from '@/services/api';
+import NetworkService from '@/services/NetworkService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AnimatedGradient } from '../../components/AnimatedGradient';
 
@@ -16,8 +17,10 @@ export default function ModelTrainingScreen() {
   const progressAnim = new Animated.Value(0);
   const scaleAnim = new Animated.Value(1);
 
+  const [trainingReason, setTrainingReason] = useState<string>('');
+
   useEffect(() => {
-    startTraining();
+    checkTrainingStatus();
   }, []);
 
   useEffect(() => {
@@ -29,6 +32,39 @@ export default function ModelTrainingScreen() {
     }).start();
   }, [progress]);
 
+  const checkTrainingStatus = async () => {
+    try {
+      const networkService = NetworkService.getInstance();
+      const response = await networkService.request({
+        method: 'GET',
+        url: 'model/status/'
+      });
+      const {
+        isReady,
+        lastTrainingDate,
+        dataLastModifiedDate,
+        hasTrainingData
+      } = response.data || {};
+
+      let reason = '';
+      if (!isReady) {
+        reason = 'Initial model setup required';
+      } else if (!lastTrainingDate) {
+        reason = 'First-time training needed';
+      } else if (dataLastModifiedDate && new Date(dataLastModifiedDate) > new Date(lastTrainingDate)) {
+        reason = 'Data has been modified since last training';
+      } else if (!hasTrainingData) {
+        reason = 'No training data available';
+      }
+
+      setTrainingReason(reason);
+      startTraining();
+    } catch (error) {
+      console.error('Error checking training status:', error);
+      setError('Failed to check training status');
+    }
+  };
+
 
   const startTraining = async () => {
     try {
@@ -36,20 +72,41 @@ export default function ModelTrainingScreen() {
       setError(null);
 
       // Get company ID and session token
-      const companyId = await AsyncStorage.getItem('companyId');
-      const sessionToken = await AsyncStorage.getItem('sessionToken');
+      const [companyId, sessionToken] = await Promise.all([
+        AsyncStorage.getItem('companyId'),
+        AsyncStorage.getItem('sessionToken')
+      ]);
+
+      console.log('Training with companyId:', companyId);
+      console.log('Training with sessionToken:', sessionToken);
       
       if (!companyId || !sessionToken) {
+        console.error('Missing data:', { companyId, sessionToken });
         throw new Error('Company ID or session token not found. Please login again.');
       }
 
-  // Initialize api client and set token
-  await api.init();
-  await api.setAuthToken(sessionToken);
+      // Initialize api client and set token
+      await api.init();
+      await api.setAuthToken(sessionToken);
 
-      // Check if we have any transaction data before starting
+      // Check model status and data availability
       try {
         console.debug('[ModelTraining] companyId=', companyId, 'sessionTokenPresent=', !!sessionToken);
+        
+        // First check if we have a trained model
+        const modelStatus = await api.checkModelStatus();
+        const hasTrainedModel = modelStatus?.data?.status === 'trained';
+        const hasNewData = modelStatus?.data?.has_new_data;
+        
+        // If we have trained model but no new data, use existing predictions
+        if (hasTrainedModel && !hasNewData) {
+          console.log('Using existing model - no new data available');
+          setProgress(100);
+          setStatus('completed');
+          return;
+        }
+        
+        // Check if we have any transaction data before starting new training
         const dataCheckResponse = await api.getCashflowPredictions(parseInt(companyId, 10), 1);
         if (dataCheckResponse.status === 'error' || !dataCheckResponse.data) {
           throw new Error('No transaction data found. Please import your Tally data first.');
@@ -76,7 +133,22 @@ export default function ModelTrainingScreen() {
           status: error.response?.status,
           company: companyId
         });
-        throw new Error(error.response?.data?.message || 'Failed to load data. Please ensure you have transaction data available.');
+        
+        // Check response for detailed status
+        const response = error.response?.data;
+        if (response?.data?.using_cached) {
+          console.log('Using cached data - no new transactions to process');
+          setProgress(100);
+          setStatus('completed');
+          return;
+        }
+        
+        // If we have a specific backend message, use it
+        if (response?.message) {
+          throw new Error(response.message);
+        }
+        
+        throw new Error('Failed to load data. Please ensure you have transaction data available.');
       }
 
       // Step 2: Analyze payment patterns
@@ -218,6 +290,11 @@ export default function ModelTrainingScreen() {
         return (
           <>
             <View style={styles.progressContainer}>
+              {trainingReason && (
+                <Text style={[styles.progressText, { marginBottom: 20, fontStyle: 'italic' }]}>
+                  {trainingReason}
+                </Text>
+              )}
               <ActivityIndicator size="large" color="#2e7d32" style={styles.spinner} />
               <Text style={styles.progressText}>{Math.round(progress)}% Complete</Text>
               

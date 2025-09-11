@@ -1,4 +1,12 @@
-// Allow importing image files (png, jpg, jpeg, gif, svg) in TypeScript
+// Allow importing various file types and modules in TypeScript
+
+declare module '@expo/vector-icons' {
+  export * from '@expo/vector-icons';
+}
+
+declare module 'expo-network' {
+  export * from 'expo-network';
+}
 
 declare module '*.png' {
   const value: any;

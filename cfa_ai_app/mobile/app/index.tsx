@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, Easing, Dimensions, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons';
 import LogoImage from '../assets/images/converted-image.png';
 
 const { width, height } = Dimensions.get('window');
@@ -34,44 +34,44 @@ export default function SplashScreen() {
           toValue: 1,
           duration: 1200,
           easing: Easing.elastic(1.2),
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
         Animated.timing(logoOpacity, {
           toValue: 1,
           duration: 800,
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
         Animated.timing(logoRotate, {
           toValue: 1,
           duration: 1200,
           easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
       ]),
       Animated.parallel([
         Animated.timing(titleOpacity, {
           toValue: 1,
           duration: 600,
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
         Animated.timing(titleTranslateY, {
           toValue: 0,
           duration: 600,
           easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
       ]),
       Animated.parallel([
         Animated.timing(subtitleOpacity, {
           toValue: 1,
           duration: 500,
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
         Animated.timing(subtitleTranslateY, {
           toValue: 0,
           duration: 500,
           easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
       ]),
     ]);
@@ -82,7 +82,7 @@ export default function SplashScreen() {
         toValue: 1,
         duration: 2000,
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver: false,
       })
     );
 
@@ -290,9 +290,11 @@ const styles = StyleSheet.create({
     color: '#40916c',
     letterSpacing: 2,
     textAlign: 'center',
-    textShadowColor: 'rgba(0,0,0,0.10)',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 8,
+    shadowColor: 'rgba(0,0,0,0.10)',
+    shadowOffset: { width: 2, height: 2 },
+    shadowRadius: 8,
+    shadowOpacity: 1,
+    elevation: 5,
   },
   titleUnderline: {
     height: 4,

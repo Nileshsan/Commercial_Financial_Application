@@ -7,7 +7,6 @@ Assign clients to users in Django admin for proper sync functionality.
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from rest_framework.authtoken.models import Token
-from rest_framework.authtoken.admin import TokenAdmin
 from .models import (
     Client, User, Company, LedgerGroup, 
     LedgerBalance, LedgerOpeningBalance

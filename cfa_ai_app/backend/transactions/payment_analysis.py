@@ -7,8 +7,10 @@ from typing import Dict, List, Optional, Tuple
 import numpy as np
 import pandas as pd
 from django.db import transaction
+from django.db.models.query import QuerySet
 from django.db.models import Q
 from django.utils import timezone
+from datetime import date as date_type
 
 from .models import (
     TallyTransaction,
@@ -46,12 +48,12 @@ class PaymentPatternAnalyzer:
         self.fixed_expenses: Dict[str, Dict] = {}
 
     # ------------------------ Query helpers ------------------------
-    def _base_transactions(self):
+    def _base_transactions(self) -> QuerySet:
         """Return a base queryset optionally scoped by `since_date` / `transaction_ids`.
 
         Keeping this centralized avoids accidental full-table scans.
         """
-        qs = TallyTransaction.objects.filter(company_id=self.company_id)
+        qs: QuerySet = TallyTransaction.objects.filter(company_id=self.company_id)
         if self.since_date:
             qs = qs.filter(date__gte=self.since_date)
         if self.transaction_ids:
@@ -368,6 +370,8 @@ class PaymentPatternAnalyzer:
 
         Returned items are dictionaries with keys: date, amount, type, party, probability, (optional)is_estimated
         """
+        # Optionally refresh the cached analysis results before making predictions.
+        # Callers that recently updated transactions should pass refresh=True.
         current_date = timezone.now().date()
         end_date = current_date + timedelta(days=days)
         predicted: List[Dict] = []
@@ -462,4 +466,34 @@ class PaymentPatternAnalyzer:
         except Exception:
             logger.exception("Failed to compute bank balance for company=%s", self.company_id)
             return 0.0
+
+
+
+# Compatibility shim for older callers that import PartyAnalysis
+class PartyAnalysis:
+    """Compatibility wrapper for historical PartyAnalysis API.
+
+    Older modules (views, data pipeline) import PartyAnalysis and call
+    update_payment_patterns(...) or calculate_payment_patterns(...).
+    Internally delegate to the new PaymentPatternAnalyzer implementation.
+    """
+
+    @staticmethod
+    def update_payment_patterns(company_id: int):
+        try:
+            analyzer = PaymentPatternAnalyzer(company_id)
+            return analyzer.analyze_payment_patterns()
+        except Exception as e:
+            logger.exception("PartyAnalysis.update_payment_patterns failed for company=%s: %s", company_id, e)
+            return {}
+
+    @staticmethod
+    def calculate_payment_patterns(company_id: int, party_name: str):
+        try:
+            analyzer = PaymentPatternAnalyzer(company_id)
+            patterns = analyzer.analyze_payment_patterns()
+            return patterns.get(party_name)
+        except Exception as e:
+            logger.exception("PartyAnalysis.calculate_payment_patterns failed for company=%s party=%s: %s", company_id, party_name, e)
+            return None
 

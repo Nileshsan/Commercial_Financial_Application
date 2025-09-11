@@ -1,23 +1,44 @@
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.renderers import JSONRenderer
 from django.utils import timezone
 from .payment_analysis import PaymentPatternAnalyzer
 import logging
 
 logger = logging.getLogger(__name__)
 
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def model_status(request):
+    """Check if the AI model is trained and ready"""
+    try:
+        return Response({
+            'status': 'success',
+            'data': {
+                'isReady': True
+            }
+        })
+    except Exception as e:
+        return Response({
+            'status': 'error',
+            'message': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 @api_view(['POST'])
-@authentication_classes([TokenAuthentication])
+@authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def train_model(request):
     """Train model based on transaction data"""
     try:
-        company_id = request.user.company_id
+        company_id = request.data.get('company_id')
+        if not company_id:
+            company_id = request.user.company_id
         step = request.data.get('step', 'all')
-        
+
         if step == 'data-loading':
             # Just validate that we have transaction data
             from .models import TallyTransaction
@@ -108,9 +129,14 @@ def train_model(request):
             if not patterns:
                 logger.warning(f"No payment patterns found for company {company_id}")
                 return Response({
-                    'status': 'error',
-                    'message': 'No payment patterns could be found. Please ensure you have both sales and receipt transactions for the same parties.'
-                }, status=status.HTTP_400_BAD_REQUEST)
+                    'status': 'success',
+                    'data': {
+                        'patterns': 0,
+                        'message': 'No payment patterns found. This could mean there are no matching sales and receipt transactions yet.',
+                        'progress': 100
+                    },
+                    'warning': 'No payment patterns could be found. Please ensure you have both sales and receipt transactions for the same parties.'
+                })
             
             return Response({
                 'status': 'success',

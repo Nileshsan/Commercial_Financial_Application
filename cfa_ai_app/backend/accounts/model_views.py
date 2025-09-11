@@ -30,21 +30,30 @@ def model_status(request):
                     'message': 'Company ID is required'
                 }, status=status.HTTP_400_BAD_REQUEST)
 
+        company = Company.objects.get(id=company_id)
+        
         # Check if we have raw transaction data
         has_transactions = TallyTransaction.objects.filter(company_id=company_id).exists()
+        has_patterns = PaymentPattern.objects.filter(company_id=company_id).exists()
+        
+        # Get latest transaction and model training dates
+        latest_transaction = TallyTransaction.objects.filter(company_id=company_id).order_by('-date').first()
+        latest_pattern = PaymentPattern.objects.filter(company_id=company_id).order_by('-last_updated').first()
+        
+        data_status = {
+            'isReady': has_patterns,
+            'lastTrainingDate': latest_pattern.last_updated.isoformat() if latest_pattern else None,
+            'dataLastModifiedDate': latest_transaction.date.isoformat() if latest_transaction else None,
+            'hasTrainingData': has_transactions,
+        }
+        
         if not has_transactions:
-            return Response({
-                'status': 'success',
-                'data': {
-                    'isReady': False,
-                    'message': 'No transaction data found. Please sync data from Tally first.',
-                    'details': {
-                        'has_transactions': False,
-                        'patterns_available': False,
-                        'expenses_available': False
-                    }
-                }
-            })
+            data_status['message'] = 'No transaction data found. Please sync data from Tally first.'
+            
+        return Response({
+            'status': 'success',
+            'data': data_status
+        })
 
         # Check for essential transaction types
         has_sales = TallyTransaction.objects.filter(
@@ -92,7 +101,7 @@ def train_model(request):
         logger.info(f"Training progress - Step: {step}, Status: {status}, Progress: {progress}/{total} - {message}")
         
     try:
-        # Debug: log incoming Authorization header to help diagnose 401s from the mobile client
+        # Debug: log incoming Authorization header
         auth_header = request.META.get('HTTP_AUTHORIZATION')
         logger.debug(f"Incoming Authorization header: {auth_header}")
 
@@ -101,10 +110,23 @@ def train_model(request):
             company_id = request.GET.get('company_id') or request.user.company_id
             has_patterns = PaymentPattern.objects.filter(company_id=company_id).exists()
             has_expenses = FixedExpense.objects.filter(company_id=company_id).exists()
+            
+            # Check if there are new transactions since last training
+            company = Company.objects.get(id=company_id)
+            last_training = company.last_data_processing if company.last_data_processing else None
+            
+            new_transactions = False
+            if last_training:
+                new_transactions = TallyTransaction.objects.filter(
+                    company_id=company_id,
+                    created_at__gt=last_training
+                ).exists()
+            
             return Response({
                 'status': 'success',
                 'data': {
                     'status': 'trained' if (has_patterns and has_expenses) else 'untrained',
+                    'has_new_data': new_transactions,
                     'patterns_available': has_patterns,
                     'expenses_available': has_expenses
                 }

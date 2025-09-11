@@ -1,0 +1,2 @@
+cfa_ai_app/Desktop_tally_sync-agent/sync_log.txt filter=lfs diff=lfs merge=lfs -text
+cfa_ai_app/Desktop_tally_sync-agent/file_backend/*.json filter=lfs diff=lfs merge=lfs -text

@@ -1,3 +1,30 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7bf7d78a60630626ff7bd234b12d999429437dd85bafe21f9df62c435d2370f7
-size 970
+{
+  "expo": {
+    "name": "CFA Mobile",
+    "slug": "cfa-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

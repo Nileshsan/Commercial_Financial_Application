@@ -34,10 +34,22 @@ export default function LoginScreen() {
 
       // Store auth data
       try {
+        // Get raw token without any prefix
+        let token = response.data?.token || response.data?.api_token;
+        if (!token) {
+          throw new Error('No token received from server');
+        }
+        // Remove any existing prefixes before storing
+        token = token.replace(/^(Bearer|Token)\s+/i, '');
+
         await AsyncStorage.multiSet([
-          ['sessionToken', response.data.token],
+          ['sessionToken', token],
           ['userInfo', JSON.stringify(response.data.user)],
         ]);
+        
+        // Update the API client's token
+        await api.setAuthToken(token);
+        
         console.log('Authentication data stored successfully');
       } catch (storageError) {
         console.error('Failed to store auth data:', storageError);
@@ -62,15 +74,34 @@ export default function LoginScreen() {
         const modelStatusResponse = await api.checkModelStatus();
         console.log('Model status response:', modelStatusResponse);
         
-        // Store model status
-        await AsyncStorage.setItem('modelTrained', String(modelStatusResponse.isReady));
+        const {
+          isReady,
+          lastTrainingDate,
+          dataLastModifiedDate,
+          hasTrainingData
+        } = modelStatusResponse.data || {};
         
-        // Navigate based on model status
-        if (modelStatusResponse.isReady) {
+        // Check if model needs training
+        const needsTraining = !isReady || 
+          !lastTrainingDate || 
+          (dataLastModifiedDate && new Date(dataLastModifiedDate) > new Date(lastTrainingDate)) ||
+          !hasTrainingData;
+
+        // Store model status and dates
+        await AsyncStorage.setItem('modelTrained', String(!needsTraining));
+        await AsyncStorage.setItem('lastTrainingDate', lastTrainingDate || '');
+        await AsyncStorage.setItem('dataLastModifiedDate', dataLastModifiedDate || '');
+        
+        if (!needsTraining) {
           console.log('Model is ready, navigating to app');
           router.replace('/(app)');
         } else {
-          console.log('Model needs training, navigating to training screen');
+          console.log('Model needs training. Reason:', {
+            isReady,
+            lastTrainingDate,
+            dataLastModifiedDate,
+            hasTrainingData
+          });
           router.replace('/(auth)/model-training');
         }
       } catch (modelError) {

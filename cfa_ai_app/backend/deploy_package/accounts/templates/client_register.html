@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block title %}Register New Client - CFA{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title mb-4">Register New Client</h2>
+            <form method="post" enctype="multipart/form-data" id="clientForm">
+                {% csrf_token %}
+                
+                <!-- Basic Information -->
+                <div class="mb-4">
+                    <h4>Basic Information</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label required-field">Client Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label required-field">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label required-field">Phone</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="client_type" class="form-label required-field">Client Type</label>
+                            <select class="form-select" id="client_type" name="client_type" required>
+                                <option value="">Select Type</option>
+                                <option value="INDIVIDUAL">Individual</option>
+                                <option value="BUSINESS">Business</option>
+                                <option value="CORPORATION">Corporation</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <textarea class="form-control" id="address" name="address" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <!-- Business Information -->
+                <div class="mb-4">
+                    <h4>Business Information</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="company_name" class="form-label required-field">Company Name</label>
+                            <input type="text" class="form-control" id="company_name" name="company_name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="tax_number" class="form-label">Tax Number</label>
+                            <input type="text" class="form-control" id="tax_number" name="tax_number">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="annual_revenue" class="form-label">Annual Revenue</label>
+                            <input type="number" class="form-control" id="annual_revenue" name="annual_revenue">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="employee_count" class="form-label">Number of Employees</label>
+                            <input type="number" class="form-control" id="employee_count" name="employee_count">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="website" class="form-label">Website</label>
+                        <input type="url" class="form-control" id="website" name="website">
+                    </div>
+                </div>
+
+                <!-- Risk Assessment -->
+                <div class="mb-4">
+                    <h4>Risk Assessment</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="risk_level" class="form-label required-field">Risk Level</label>
+                            <select class="form-select" id="risk_level" name="risk_level" required>
+                                <option value="LOW">Low Risk</option>
+                                <option value="MEDIUM" selected>Medium Risk</option>
+                                <option value="HIGH">High Risk</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="credit_limit" class="form-label">Credit Limit</label>
+                            <input type="number" class="form-control" id="credit_limit" name="credit_limit">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents -->
+                <div class="mb-4">
+                    <h4>Documents</h4>
+                    <div class="document-container">
+                        <div class="document-entry mb-3">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="form-label">Document Type</label>
+                                    <select class="form-select" name="document_type[]">
+                                        <option value="ID_PROOF">ID Proof</option>
+                                        <option value="ADDRESS_PROOF">Address Proof</option>
+                                        <option value="BUSINESS_PROOF">Business Proof</option>
+                                        <option value="TAX_DOCUMENT">Tax Document</option>
+                                        <option value="OTHER">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">File</label>
+                                    <input type="file" class="form-control" name="document_file[]">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">&nbsp;</label>
+                                    <button type="button" class="btn btn-danger w-100">Remove</button>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Notes</label>
+                                <textarea class="form-control" name="document_notes[]" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary" id="addDocument">Add Document</button>
+                </div>
+
+                <div class="text-end">
+                    <button type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Register Client</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const addDocumentBtn = document.getElementById('addDocument');
+    const documentContainer = document.querySelector('.document-container');
+    const firstDocument = document.querySelector('.document-entry');
+
+    // Add new document entry
+    addDocumentBtn.addEventListener('click', function() {
+        const newDocument = firstDocument.cloneNode(true);
+        newDocument.querySelectorAll('input, textarea').forEach(input => {
+            input.value = '';
+        });
+        documentContainer.appendChild(newDocument);
+    });
+
+    // Remove document entry
+    documentContainer.addEventListener('click', function(e) {
+        if (e.target.classList.contains('btn-danger')) {
+            const documents = document.querySelectorAll('.document-entry');
+            if (documents.length > 1) {
+                e.target.closest('.document-entry').remove();
+            }
+        }
+    });
+
+    // Form validation and submission
+    const clientForm = document.getElementById('clientForm');
+    clientForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Validate required fields
+        const requiredFields = clientForm.querySelectorAll('[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            if (!field.value) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                field.classList.remove('is-invalid');
+            }
+        });
+
+        if (isValid) {
+            const formData = new FormData(clientForm);
+            fetch('/api/clients/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.href = '/clients/' + data.data.id;
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting the form');
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

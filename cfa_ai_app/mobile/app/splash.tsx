@@ -3,8 +3,7 @@ import { View, Text, StyleSheet, Animated, Easing, Dimensions, Image } from 'rea
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Ionicons } from '@expo/vector-icons';
-import LogoImage from '../assets/images/converted-image.png';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const { width, height } = Dimensions.get('window');
 
@@ -163,7 +162,7 @@ export default function SplashScreen() {
           >
             {/* CFA Logo Image */}
             <Image
-              source={LogoImage}
+              source={require('../assets/images/converted-image.png')}
               style={styles.logoImage}
               resizeMode="contain"
             />

@@ -71,7 +71,10 @@ export default function APITokenScreen() {
   return (
     <View style={styles.container}>
       <AnimatedGradient />
-      <View style={styles.card}>
+      <View style={[
+        styles.card,
+        Platform.OS === 'web' ? ({ backdropFilter: 'blur(12px)' } as any) : {}
+      ]}>
         <View style={styles.header}>
           <Ionicons name="key-outline" size={32} color="#2e7d32" />
           <Text style={styles.title}>Your Authentication Token</Text>
@@ -147,7 +150,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 24,
     elevation: 12,
-    backdropFilter: Platform.OS === 'web' ? 'blur(12px)' : undefined,
   },
   header: {
     alignItems: 'center',

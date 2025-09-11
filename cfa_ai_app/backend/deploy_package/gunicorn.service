@@ -1,0 +1,17 @@
+[Unit]
+Description=gunicorn daemon for CFA
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/opt/cfa-backend
+ExecStart=/opt/cfa-backend/venv/bin/gunicorn \
+          --access-logfile /opt/cfa-backend/logs/gunicorn-access.log \
+          --error-logfile /opt/cfa-backend/logs/gunicorn-error.log \
+          --workers 3 \
+          --bind unix:/run/gunicorn.sock \
+          cfa_backend.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

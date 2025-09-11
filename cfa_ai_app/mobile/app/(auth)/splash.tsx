@@ -2,9 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, Easing, Dimensions, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { api } from '@/services/api';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const { width, height } = Dimensions.get('window');
 
@@ -28,33 +27,7 @@ export default function SplashScreen() {
   const shimmerAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Check if user is logged in
-    const checkAuth = async () => {
-      try {
-  const token = await AsyncStorage.getItem('sessionToken');
-        const hasApiToken = await AsyncStorage.getItem('apiToken');
-        const isModelTrained = await AsyncStorage.getItem('modelTrained');
-
-      // After animations, navigate based on auth state
-      setTimeout(() => {
-        if (!token) {
-          router.replace('/(auth)/login');
-        } else if (!hasApiToken) {
-          router.replace('/(auth)/api-token');
-        } else if (!isModelTrained) {
-          router.replace('/(auth)/model-training');
-        } else {
-          router.replace('/(app)');
-        }
-      }, 3000); // Wait for animations to complete
-
-      } catch (error) {
-        console.error('Error checking auth status:', error);
-        router.replace('/(auth)/login');
-      }
-    };
-
-    // Start animations sequence and check auth
+    // Start animations sequence
     const animationSequence = Animated.sequence([
       Animated.parallel([
         Animated.timing(logoScale, {
@@ -115,9 +88,30 @@ export default function SplashScreen() {
 
     animationSequence.start();
     shimmerAnimation.start();
-    checkAuth();
+
+    // After animations complete, check auth status and navigate
+    const timer = setTimeout(async () => {
+      try {
+        const sessionToken = await AsyncStorage.getItem('sessionToken');
+        const apiToken = await AsyncStorage.getItem('apiToken');
+        const modelTrained = await AsyncStorage.getItem('modelTrained');
+
+        if (!sessionToken) {
+          router.replace('/(auth)/login');
+        } else if (!apiToken) {
+          router.replace('/(auth)/api-token');
+        } else if (!modelTrained || modelTrained === 'false') {
+          router.replace('/(auth)/model-training');
+        } else {
+          router.replace('/(app)');
+        }
+      } catch (error) {
+        router.replace('/(auth)/login');
+      }
+    }, 3000); // Wait for 3 seconds after animation
 
     return () => {
+      clearTimeout(timer);
       shimmerAnimation.stop();
     };
   }, []);
@@ -166,12 +160,11 @@ export default function SplashScreen() {
             colors={[WHITE, GREEN, BEIGE]}
             style={styles.logoBackground}
           >
-            {/* CFA Logo Icon */}
-            <Ionicons 
-              name="analytics" 
-              size={80} 
-              color={DARK_GREEN}
-              style={styles.logoIcon}
+            {/* CFA Logo Image */}
+            <Image
+              source={require('../../assets/images/converted-image.png')}
+              style={styles.logoImage}
+              resizeMode="contain"
             />
           </LinearGradient>
 
@@ -288,9 +281,10 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.18)',
     backgroundColor: '#fff',
   },
-  logoIcon: {
+  logoImage: {
     width: 80,
     height: 80,
+    borderRadius: 40,
   },
   shimmer: {
     position: 'absolute',

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, Easing, Dimensions, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons  from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LogoImage from '../assets/images/converted-image.png';
 import { api } from '../services/api';

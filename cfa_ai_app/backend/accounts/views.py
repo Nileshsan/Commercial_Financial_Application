@@ -23,16 +23,27 @@ from transactions.models import LedgerEntry
 from transactions.models import TallyTransaction
 from .authentication import CompanyAPIKeyAuthentication, BearerTokenAuthentication
 
+from django.views.decorators.csrf import csrf_exempt
+
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import authentication_classes
+
+@csrf_exempt
 @api_view(['POST', 'OPTIONS'])
 @permission_classes([AllowAny])
+@authentication_classes([])
 def login_view(request):
     """
     Login endpoint that returns authentication token and user info
     """
     if request.method == 'OPTIONS':
-        return Response(status=status.HTTP_200_OK)
+        response = Response(status=status.HTTP_200_OK)
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+        response["Access-Control-Allow-Headers"] = "*"
+        return response
 
-    # Extract credentials
+    # Get credentials from request data
     username = request.data.get('username', '').strip()
     password = request.data.get('password', '')
 
@@ -44,32 +55,29 @@ def login_view(request):
         }, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        # Authenticate user
+        # Try to authenticate with username first
         user = authenticate(username=username, password=password)
         
         if not user:
-            # Try to give a clearer diagnostic: does the email exist but is inactive?
-            try:
-                User = get_user_model()
-                existing = User.objects.filter(email=username).first()
-                if existing and not existing.is_active:
+            # If username auth fails, try email
+            User = get_user_model()
+            user_by_email = User.objects.filter(email=username).first()
+            
+            if user_by_email:
+                # Found user by email, try to authenticate
+                user = authenticate(username=user_by_email.username, password=password)
+                if not user and not user_by_email.is_active:
                     return Response({
                         'status': 'error',
                         'message': 'Account exists but is not active. Please verify your email or contact support.'
                     }, status=status.HTTP_403_FORBIDDEN)
-                elif existing:
-                    return Response({
-                        'status': 'error',
-                        'message': 'Invalid credentials. Please check your email and password.'
-                    }, status=status.HTTP_401_UNAUTHORIZED)
-            except Exception:
-                # Fall back to generic message on any error
-                pass
-
-            return Response({
-                'status': 'error',
-                'message': 'Invalid credentials'
-            }, status=status.HTTP_401_UNAUTHORIZED)
+            
+            if not user:
+                # No valid user found
+                return Response({
+                    'status': 'error',
+                    'message': 'Invalid credentials'
+                }, status=status.HTTP_401_UNAUTHORIZED)
 
         if not user.is_active:
             return Response({
@@ -92,13 +100,15 @@ def login_view(request):
         response_data = {
             'status': 'success',
             'data': {
-                'token': auth_token.key,
+                'token': auth_token.key,  # Main token for auth
+                'api_token': company.api_key if company else None,  # Company API key if available
                 'user': {
                     'id': user.id,
                     'username': user.username,
                     'email': user.email,
                     'company_id': company.id if company else None,
                     'company_name': company.name if company else None,
+                    'user_company_id': user_company.id if user_company else None,
                     'user_company_name': user_company.name if user_company else None,
                     'role': user.role
                 }
@@ -144,6 +154,7 @@ def get_user_api_token(request):
             'status': 'success',
             'data': {
                 'api_token': company.api_key,
+                'token': company.api_key,
                 'company_name': company.name,
                 'user_company_name': user_company.name if user_company else None
             }
@@ -159,6 +170,7 @@ def get_user_api_token(request):
             'status': 'success',
             'data': {
                 'api_token': api_token,
+                'token': api_token,
                 'company_name': company.name,
                 'user_company_name': company.user_company.name
             }
@@ -265,21 +277,21 @@ def social_login(request):
         if not user.is_active:
             return Response({'status': 'error', 'message': 'Account exists but is not active. Please verify your email or contact support.'}, status=status.HTTP_403_FORBIDDEN)
 
-        # Issue or recreate token
-        token, created = Token.objects.get_or_create(user=user)
-        if not created:
-            token.delete()
-            token = Token.objects.create(user=user)
+            # Issue or recreate token
+            token, created = Token.objects.get_or_create(user=user)
+            if not created:
+                token.delete()
+                token = Token.objects.create(user=user)
 
-        return Response({'status': 'success', 'data': {'token': token.key, 'user': {
-            'id': user.id,
-            'username': getattr(user, 'username', ''),
-            'email': user.email,
-            'company_id': user.company.id if getattr(user, 'company', None) else None,
-            'company_name': user.company.name if getattr(user, 'company', None) else None,
-            'user_company_name': user.user_company.name if getattr(user, 'user_company', None) else None,
-            'role': getattr(user, 'role', None)
-        } }}, status=status.HTTP_200_OK)
+            return Response({'status': 'success', 'data': {'api_token': token.key, 'user': {
+                'id': user.id,
+                'username': getattr(user, 'username', ''),
+                'email': user.email,
+                'company_id': user.company.id if getattr(user, 'company', None) else None,
+                'company_name': user.company.name if getattr(user, 'company', None) else None,
+                'user_company_name': user.user_company.name if getattr(user, 'user_company', None) else None,
+                'role': getattr(user, 'role', None)
+            } }}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

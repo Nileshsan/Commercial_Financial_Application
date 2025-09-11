@@ -2,31 +2,89 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetworkService from './NetworkService';
 import { NetworkError, ApiError, AuthenticationError, OfflineError } from './errors';
 
-// Consolidated, single Api client for the mobile app.
-// Key points:
-// - Single AsyncStorage token key: 'sessionToken'
-// - Use NetworkService.getInstance() for requests and for setting default header
-// - Consistent endpoints (match backend `accounts/urls.py` which exposes `/api/...` paths)
-
 interface ApiResponse<T = any> {
   status: 'success' | 'error';
-  data?: T;
+  data?: T & {
+    token?: string;
+    api_token?: string;
+    user?: User;
+  };
   message?: string;
+}
+
+interface UserCompany {
+  id: number;
+  name: string;
+  address?: string;
+}
+
+interface Company {
+  id: number;
+  name: string;
+  address?: string;
+  api_key?: string;
+  user_company_id: number;
+}
+
+interface User {
+  id: number;
+  username: string;
+  email: string;
+  user_company: UserCompany;
+  companies: Company[];
+  active_company?: Company;
+}
+
+interface LoginResponse {
+  token: string;
+  user: User;
+}
+
+interface PartyBalance {
+  party_name: string;
+  balance: number;
+  last_transaction_date?: string;
+  prediction?: number;
+  confidence?: number;
+}
+
+interface BankBalance {
+  balance: number;
+  as_of_date: string;
+  account_name: string;
 }
 
 class ApiClient {
   private static instance: ApiClient;
   private ns = NetworkService.getInstance();
   private authToken: string | null = null;
+  private initialized = false;
 
-  private constructor() {}
+  private constructor() {
+    // Bind methods to preserve this context
+    this.handle = this.handle.bind(this);
+    this.getAuthHeaders = this.getAuthHeaders.bind(this);
+    this.setAuthToken = this.setAuthToken.bind(this);
+    // Initialize with stored auth token
+    this.initialize();
+  }
+
+  private async initialize() {
+    if (this.initialized) return;
+    
+    try {
+      this.authToken = await AsyncStorage.getItem('@auth_token');
+      this.initialized = true;
+    } catch (error) {
+      console.error('Failed to initialize API client:', error);
+    }
+  }
 
   public static getInstance() {
     if (!ApiClient.instance) ApiClient.instance = new ApiClient();
     return ApiClient.instance;
   }
 
-  // load token from storage into memory and network service
   public async init(): Promise<void> {
     const token = await AsyncStorage.getItem('sessionToken');
     if (token) {
@@ -35,167 +93,287 @@ class ApiClient {
     }
   }
 
+  private async persistUserSession(userData: any, token: string) {
+    try {
+      await Promise.all([
+        AsyncStorage.setItem('sessionToken', token),
+        AsyncStorage.setItem('userId', userData.id.toString()),
+        AsyncStorage.setItem('username', userData.username),
+        AsyncStorage.setItem('userEmail', userData.email),
+        AsyncStorage.setItem('companyId', userData.company_id?.toString() || ''),
+        AsyncStorage.setItem('companyName', userData.company_name || ''),
+        AsyncStorage.setItem('userCompanyId', userData.user_company_id?.toString() || ''),
+        AsyncStorage.setItem('userCompanyName', userData.user_company_name || ''),
+        AsyncStorage.setItem('lastLoginTime', Date.now().toString()),
+      ]);
+    } catch (error) {
+      console.error('Error persisting user session:', error);
+    }
+  }
+
   public async setAuthToken(token: string | null) {
-    // Accept values like 'Token xxx' or 'Bearer xxx' or raw token
     if (token === null) {
       this.authToken = null;
-      await AsyncStorage.removeItem('sessionToken');
+      // Clear all session data
+      const keysToRemove = [
+        'sessionToken',
+        'refreshToken',
+        'userId',
+        'username',
+        'userEmail',
+        'companyId',
+        'companyName',
+        'userCompanyId',
+        'userCompanyName',
+        'lastLoginTime'
+      ];
+      await Promise.all(keysToRemove.map(key => AsyncStorage.removeItem(key)));
       try { this.ns.clearAuthToken(); } catch (e) { /* ignore */ }
       return;
     }
 
-    // normalize token
-    let raw = token;
-    if (raw.startsWith('Token ')) raw = raw.replace(/^Token\s+/i, '');
-    if (raw.startsWith('Bearer ')) raw = raw.replace(/^Bearer\s+/i, '');
-
-    this.authToken = raw;
-    await AsyncStorage.setItem('sessionToken', raw);
-    try { this.ns.setAuthToken(raw); } catch (e) { /* ignore */ }
+    // Remove any existing prefixes and store clean token
+    let cleanToken = token.replace(/^(Bearer|Token)\s+/i, '');
+    this.authToken = cleanToken;
+    await AsyncStorage.setItem('sessionToken', cleanToken);
+    try { this.ns.setAuthToken(cleanToken); } catch (e) { /* ignore */ }
   }
 
   private getAuthHeaders(): Record<string, string> | undefined {
-    return this.authToken ? { Authorization: `Token ${this.authToken}` } : undefined;
+    if (!this.authToken) return undefined;
+    return { Authorization: `Bearer ${this.authToken}` };
   }
 
   private async handle<T>(op: string, fn: () => Promise<T>): Promise<T> {
     try {
-      return await fn();
+      const result = await fn();
+      // Basic type validation for ApiResponse
+      if (result && typeof result === 'object' && 'status' in result) {
+        const apiRes = result as ApiResponse<any>;
+        if (apiRes.status === 'error') {
+          throw new ApiError(apiRes.message || 'Unknown error', 400, apiRes);
+        }
+      }
+      return result;
     } catch (err) {
-      console.error(`${op} failed:`, err);
-      if (err instanceof OfflineError || err instanceof NetworkError || err instanceof ApiError || err instanceof AuthenticationError) throw err;
-      throw err instanceof Error ? err : new Error(`${op} failed`);
+      console.error(`[ApiClient] ${op} failed:`, err);
+      
+      // Handle known error types
+      if (
+        err instanceof OfflineError ||
+        err instanceof NetworkError ||
+        err instanceof ApiError ||
+        err instanceof AuthenticationError
+      ) {
+        throw err;
+      }
+
+      // Handle axios errors through NetworkService
+      if (err?.response?.status === 401) {
+        await this.clearAuthToken();
+        throw new AuthenticationError('Session expired');
+      }
+
+      // Throw with improved context
+      throw err instanceof Error 
+        ? Object.assign(err, { operation: op })
+        : new Error(`${op} failed: ${err?.message || 'Unknown error'}`);
     }
   }
 
-  // Authentication
   public async login(username: string, password: string): Promise<ApiResponse<{ token: string; user: any }>> {
     return this.handle('login', async () => {
-      // Perform login without sending Authorization header
-      const res = await this.ns.post<ApiResponse<{ token: string; user: any }>>('/api/login/', { username, password });
-      console.log('Login response:', res); // Debug log
-      
-      if (res.status === 'success' && res.data?.token) {
-        // Ensure token is properly formatted
-        const token = res.data.token.startsWith('Token ') ? res.data.token : `Token ${res.data.token}`;
-        await this.setAuthToken(token);
-        // store company context if present
-        if (res.data.user) {
-          await AsyncStorage.setItem('companyId', String(res.data.user.company_id ?? ''));
-          if (res.data.user.company_name) await AsyncStorage.setItem('companyName', res.data.user.company_name);
-          if (res.data.user.user_company_name) await AsyncStorage.setItem('userCompanyName', res.data.user.user_company_name);
+      console.log('==== Login Request Debug ====');
+      console.log('API Base URL:', this.ns.getBaseUrl());
+      console.log('Attempting login with username:', username);
+
+      const payload = { username, password };
+      let res: any = null;
+
+      try {
+        // Only attempt login endpoint, don't try token endpoints
+        res = await this.ns.post('login/', payload);
+        if (!res || res.status === 'error') {
+          throw new Error(res?.message || 'Login failed');
         }
+      } catch (err) {
+        throw new Error(err?.message || 'Login failed');
       }
-      return res;
+
+      console.log('Login response:', res);
+
+      // Handle various token response formats
+      let raw: string | null = null;
+      let userData = null;
+
+      try {
+        // Handle JWT response (access_token + refresh_token)
+        if (res?.access_token || res?.refresh_token || res?.access || res?.refresh) {
+          raw = res.access_token || res.access;
+          const refreshToken = res.refresh_token || res.refresh;
+          
+          // Store both access and refresh tokens
+          await AsyncStorage.setItem('refreshToken', refreshToken);
+          await AsyncStorage.setItem('sessionToken', raw);
+          
+          userData = {
+            id: res.id || res.user_id,
+            username: res.username,
+            email: res.email,
+            user_company: res.user_company || null,
+            companies: res.companies || [],
+            active_company: res.active_company || res.companies?.[0] || null
+          };
+        }
+        // Handle legacy token response
+        else if (res?.status === 'success' && res?.data?.token) {
+          raw = res.data.token;
+          // Remove any existing prefixes
+          raw = raw.replace(/^(Bearer|Token)\s+/i, '');
+          userData = res.data.user || null;
+          if (userData) {
+            // Store company information
+            await AsyncStorage.setItem('companyId', userData.company_id?.toString() || '');
+            await AsyncStorage.setItem('companyName', userData.company_name || '');
+            await AsyncStorage.setItem('userCompanyId', userData.user_company_id?.toString() || '');
+            await AsyncStorage.setItem('userCompanyName', userData.user_company_name || '');
+            await AsyncStorage.setItem('sessionToken', raw);
+            
+            userData.user_company = {
+              id: userData.user_company_id,
+              name: userData.user_company_name
+            };
+            userData.companies = [{
+              id: userData.company_id,
+              name: userData.company_name,
+              user_company_id: userData.user_company_id
+            }];
+            userData.active_company = userData.companies[0];
+          }
+        }
+        // Handle simple token response
+        else if (res?.token) {
+          raw = res.token;
+          userData = res.user || null;
+        }
+
+        if (!raw) {
+          throw new Error('No valid token found in response');
+        }
+
+        // Set the auth token first
+        await this.setAuthToken(raw);
+
+        // Store user information if available
+        if (userData) {
+          const userInfo = {
+            username: userData.username || '',
+            userId: String(userData.id || userData.user_id || ''),
+            email: userData.email || '',
+            companyId: String(userData.company_id || ''),
+            companyName: userData.company_name || '',
+            userCompanyId: String(userData.user_company_id || ''),
+            userCompanyName: userData.user_company_name || ''
+          };
+
+          // Write only valid values to AsyncStorage. AsyncStorage rejects null/undefined values.
+          const storagePromises: Promise<any>[] = [];
+
+          if (userData.username != null) storagePromises.push(AsyncStorage.setItem('username', String(userData.username)));
+          else storagePromises.push(AsyncStorage.removeItem('username'));
+
+          if (userData.id != null) storagePromises.push(AsyncStorage.setItem('userId', String(userData.id)));
+          else storagePromises.push(AsyncStorage.removeItem('userId'));
+
+          if (userData.email != null) storagePromises.push(AsyncStorage.setItem('email', String(userData.email)));
+          else storagePromises.push(AsyncStorage.removeItem('email'));
+
+          if (userData.user_company != null) storagePromises.push(AsyncStorage.setItem('userCompany', JSON.stringify(userData.user_company)));
+          else storagePromises.push(AsyncStorage.removeItem('userCompany'));
+
+          if (userData.companies != null) storagePromises.push(AsyncStorage.setItem('companies', JSON.stringify(userData.companies)));
+          else storagePromises.push(AsyncStorage.removeItem('companies'));
+
+          if (userData.active_company != null) storagePromises.push(AsyncStorage.setItem('activeCompany', JSON.stringify(userData.active_company)));
+          else storagePromises.push(AsyncStorage.removeItem('activeCompany'));
+
+          await Promise.all(storagePromises);
+        }
+
+        return {
+          status: 'success',
+          data: {
+            token: raw,
+            user: userData
+          },
+          message: res.message || 'Login successful'
+        };
+
+      } catch (e) {
+        console.error('Failed to process login response:', e);
+        throw new Error('Login failed: Invalid server response');
+      }
     });
   }
 
   public async logout() {
     await this.setAuthToken(null);
-    await AsyncStorage.multiRemove(['companyId', 'companyName', 'userCompanyName']);
+    // Clear all user-related data
+    await AsyncStorage.multiRemove([
+      'sessionToken',
+      'apiToken',
+      'username',
+      'userId',
+      'email',
+      'companyId',
+      'companyName',
+      'userCompanyId',
+      'userCompanyName'
+    ]);
   }
 
-  // Simple wrappers for commonly used endpoints (consistent paths)
   public async getApiToken() {
     return this.handle('getApiToken', async () => {
-      return this.ns.get<ApiResponse<any>>('/api/user/api-token/', undefined, this.getAuthHeaders() as any);
+      return this.ns.get<ApiResponse<any>>('user/api-token/', undefined, this.getAuthHeaders() as any);
     });
   }
 
   public async fetchPaymentPredictions(companyId: string | number, days = 90) {
     return this.handle('fetchPaymentPredictions', async () => {
-      return this.ns.get('/api/payment-predictions/', { company_id: companyId, days, include_stats: true }, this.getAuthHeaders() as any);
+      return this.ns.get('payment-predictions/', { company_id: companyId, days, include_stats: true }, this.getAuthHeaders() as any);
     });
   }
 
   public async fetchPartyBalances(companyId: string | number) {
     return this.handle('fetchPartyBalances', async () => {
-      return this.ns.get('/api/party-balances/', { company_id: companyId }, this.getAuthHeaders() as any);
-    });
-  }
-
-  // These methods are now deprecated, use getUnpaidSales and getPaymentAnalysisSummary instead
-  public async fetchUnpaidSales(companyId: string | number) {
-    return this.getUnpaidSales(Number(companyId));
-  }
-
-  public async fetchPaymentAnalysisSummary(companyId: string | number) {
-    return this.getPaymentAnalysisSummary(Number(companyId));
-  }
-
-  // Model training endpoints
-  public async trainModel(step: 'data-loading' | 'payment-patterns' | 'fixed-expenses' | 'cashflow-setup', companyId: number, onProgress?: (p: number) => void) {
-    return this.handle('trainModel', async () => {
-      const res = await this.ns.post('/api/model/train/', { company_id: companyId, step, force_update: true }, this.getAuthHeaders() as any);
-      if (res.status === 'success') {
-        if (onProgress) onProgress(res.data?.progress ?? 100);
-      }
-      return res;
-    });
-  }
-
-  public async getModelStatus(companyId?: number) {
-    const cid = companyId ?? Number(await AsyncStorage.getItem('companyId'));
-    if (!cid) throw new Error('Company ID not found');
-    return this.handle('getModelStatus', async () => {
-      return this.ns.get('/api/model/status/', { company_id: cid }, this.getAuthHeaders() as any);
-    });
-  }
-
-  // Backwards-compatible alias used in some older screens
-  public async checkModelStatus(companyId?: number) {
-    return this.getModelStatus(companyId);
-  }
-
-  // Cashflow endpoints
-  public async getCashflowPredictions(companyId?: number, days = 30) {
-    const cid = companyId ?? Number(await AsyncStorage.getItem('companyId'));
-    if (!cid) throw new Error('Company ID not found');
-    return this.handle('getCashflowPredictions', async () => {
-      const res = await this.ns.get('/api/payment-predictions/', { company_id: cid, days, include_stats: true }, this.getAuthHeaders() as any);
-      return res;
-    });
-  }
-
-  public async updateBankBalance(companyId: number, balance: number, bankAccount = 'default') {
-    return this.handle('updateBankBalance', async () => {
-      return this.ns.post(`/transactions/cashflow/${companyId}/update_bank_balance/`, { balance: Number(balance), bank_account: bankAccount, force_update: true }, this.getAuthHeaders() as any);
-    });
-  }
-
-  // Party and analysis
-  public async getPaymentBehavior(partyName: string) {
-    return this.handle('getPaymentBehavior', async () => {
-      return this.ns.get(`/api/payment-behavior/${encodeURIComponent(partyName)}/`, undefined, this.getAuthHeaders() as any);
+      return this.ns.get('party-balances/', { company_id: companyId }, this.getAuthHeaders() as any);
     });
   }
 
   public async getPaymentPredictions(companyId: number, days = 90) {
     return this.handle('getPaymentPredictions', async () => {
-      return this.ns.get('/api/payment-predictions/', { company_id: companyId, days }, this.getAuthHeaders() as any);
+      return this.ns.get('payment-predictions/', { company_id: companyId, days }, this.getAuthHeaders() as any);
     });
   }
 
   public async getUnpaidSales(companyId: number) {
     return this.handle('getUnpaidSales', async () => {
-      return this.ns.get('/api/unpaid-sales/', { company_id: companyId }, this.getAuthHeaders() as any);
+      return this.ns.get('unpaid-sales/', { company_id: companyId }, this.getAuthHeaders() as any);
     });
   }
 
   public async getPartyBalances(companyId: number) {
     return this.handle('getPartyBalances', async () => {
-      return this.ns.get('/api/party-balances/', { company_id: companyId }, this.getAuthHeaders() as any);
+      return this.ns.get('party-balances/', { company_id: companyId }, this.getAuthHeaders() as any);
     });
   }
 
   public async getPaymentAnalysisSummary(companyId: number) {
     return this.handle('getPaymentAnalysisSummary', async () => {
-      return this.ns.get('/api/payment-analysis-summary/', { company_id: companyId }, this.getAuthHeaders() as any);
+      return this.ns.get('payment-analysis-summary/', { company_id: companyId }, this.getAuthHeaders() as any);
     });
   }
 
-  // Compatibility wrappers for removed/renamed functions elsewhere in the app
-  // These keep older call sites working and forward to the new canonical methods.
   public async generateApiToken(): Promise<string> {
     const res = await this.getApiToken();
     const token = (res?.data as any)?.api_token || (res?.data as any)?.token || '';
@@ -206,28 +384,67 @@ class ApiClient {
 
   public async getBankBalance(companyId?: number) {
     const cid = companyId ?? Number(await AsyncStorage.getItem('companyId'));
-    if (!cid) throw new Error('Company ID not found');
+    if (!cid || isNaN(cid)) throw new Error('Valid company ID not found');
     return this.handle('getBankBalance', async () => {
-      return this.ns.get('/api/bank-balance/', { company_id: cid, account_name: 'default' }, this.getAuthHeaders() as any);
+      return this.ns.get('bank-balance/', { company_id: cid, account_name: 'default' }, this.getAuthHeaders());
     });
   }
 
   public async getDebtorBalances(companyId: number, asOfDate?: string) {
+    if (!companyId || isNaN(companyId)) throw new Error('Valid company ID required');
     return this.handle('getDebtorBalances', async () => {
-      const params = asOfDate ? { as_of_date: asOfDate } : undefined;
-      return this.ns.get(`/transactions/cashflow/${companyId}/get_debtor_balances/`, params, this.getAuthHeaders() as any);
+      const params = { company_id: companyId, ...(asOfDate ? { as_of_date: asOfDate } : {}) };
+      return this.ns.get('transactions/debtor-balances/', params, this.getAuthHeaders());
     });
   }
 
   public async updatePartyBalance(companyId: number, partyBalance: any) {
+    if (!companyId || isNaN(companyId)) throw new Error('Valid company ID required');
+    if (!partyBalance) throw new Error('Party balance data required');
     return this.handle('updatePartyBalance', async () => {
-      return this.ns.post(`/transactions/cashflow/${companyId}/update_party_balance/`, partyBalance, this.getAuthHeaders() as any);
+      return this.ns.post('transactions/party-balance/', 
+        { company_id: companyId, ...partyBalance },
+        this.getAuthHeaders()
+      );
     });
   }
 
   public async getPartyAnalysis(companyId: number, partyName: string) {
+    if (!companyId || isNaN(companyId)) throw new Error('Valid company ID required');
+    if (!partyName) throw new Error('Party name required');
     return this.handle('getPartyAnalysis', async () => {
-      return this.ns.get(`/transactions/cashflow/${companyId}/get_party_analysis/`, { party_name: partyName }, this.getAuthHeaders() as any);
+      return this.ns.get('transactions/party-analysis/', 
+        { company_id: companyId, party_name: partyName },
+        this.getAuthHeaders()
+      );
+    });
+  }
+
+  // Backwards-compatible aliases and additional endpoints expected by the app
+  public async getCashflowPredictions(companyId: number, days = 90) {
+    // older code expects this name; delegate to payment-predictions
+    return this.getPaymentPredictions(companyId, days);
+  }
+
+  public async updateBankBalance(companyId: number, balance: number, bankAccount = 'default') {
+    return this.handle('updateBankBalance', async () => {
+      return this.ns.post(`transactions/cashflow/${companyId}/update_bank_balance/`, { balance, bank_account: bankAccount }, this.getAuthHeaders() as any);
+    });
+  }
+
+  public async checkModelStatus() {
+    return this.handle('checkModelStatus', async () => {
+      return this.ns.get('model/status/', undefined, this.getAuthHeaders() as any);
+    });
+  }
+
+  public async trainModel(action: string, companyId?: number, onProgress?: (p: number) => void) {
+    // action: 'data-loading' | 'payment-patterns' | ...
+    return this.handle('trainModel', async () => {
+      const payload: any = { action };
+      if (companyId) payload.company_id = companyId;
+      // onProgress is not yet used (server doesn't stream progress in this setup)
+      return this.ns.post('model/train/', payload, this.getAuthHeaders() as any);
     });
   }
 
@@ -244,7 +461,5 @@ class ApiClient {
 
 const api = ApiClient.getInstance();
 export default api;
-// Backwards-compatible named export used across the codebase
 export { api };
 export type { ApiClient };
-

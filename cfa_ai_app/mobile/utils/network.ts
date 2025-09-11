@@ -1,10 +1,15 @@
-import * as Network from 'expo-network';
+import NetInfo, { NetInfoState, NetInfoStateType } from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getAuthToken, API_KEY } from './auth';
 
 interface NetworkStatus {
   isConnected: boolean;
-  type: string;
-  details: any;
+  type: NetInfoState['type'];
+  details: {
+    isConnected: boolean;
+    isInternetReachable: boolean | null;
+    type: NetInfoState['type'];
+  };
   serverReachable: boolean;
   lastChecked: number;
 }
@@ -23,9 +28,9 @@ export const checkNetworkConnectivity = async (forceCheck: boolean = false): Pro
   }
 
   try {
-    const state = await Network.getNetworkStateAsync();
-    const isConnected = state.isConnected;
-    const type = state.type;
+    const networkState = await NetInfo.fetch();
+    const isConnected = networkState.isConnected || false;
+    const type = networkState.type;
     
     // Load config and log it
     const { API_BASE_URL } = await import('../config');
@@ -43,8 +48,12 @@ export const checkNetworkConnectivity = async (forceCheck: boolean = false): Pro
 
     cachedStatus = {
       isConnected: !!isConnected,
-      type: type || 'unknown',
-      details: { apiUrl: API_BASE_URL },
+      type: type || NetInfoStateType.none,
+      details: {
+        isConnected: !!isConnected,
+        isInternetReachable: isConnected,
+        type: type || NetInfoStateType.unknown
+      },
       serverReachable,
       lastChecked: Date.now()
     };
@@ -54,7 +63,7 @@ export const checkNetworkConnectivity = async (forceCheck: boolean = false): Pro
     console.error('Network check failed:', error);
     return {
       isConnected: false,
-      type: 'unknown',
+      type: NetInfoStateType.unknown,
       details: null,
       serverReachable: false,
       lastChecked: Date.now()

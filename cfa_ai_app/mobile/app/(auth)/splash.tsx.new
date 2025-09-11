@@ -1,0 +1,308 @@
+import React, { useEffect, useRef } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  Animated, 
+  Easing, 
+  Dimensions, 
+  Image,
+  StatusBar,
+  Platform,
+  ImageSourcePropType
+} from 'react-native';
+import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const { width, height } = Dimensions.get('window');
+
+// Brand Colors
+const COLORS = {
+  primary: '#40916c',
+  secondary: '#b7e4c7',
+  background: '#ffffff',
+  backgroundGradient: ['#ffffff', '#f5f5f5'],
+  text: '#2d3436',
+  textLight: '#636e72',
+} as const;
+
+// App Configuration
+const APP_CONFIG = {
+  name: 'CFA',
+  fullName: 'Commercial Financial Application',
+  version: '1.0.0',
+  logoSize: Math.min(width * 0.4, 200),
+} as const;
+
+interface AnimationProps {
+  value: Animated.Value;
+  toValue: number;
+  duration: number;
+  delay?: number;
+  easing?: (value: number) => number;
+  useNativeDriver?: boolean;
+}
+
+const SplashScreen: React.FC = () => {
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
+
+  // Animation values
+  const animations = {
+    logo: {
+      scale: useRef(new Animated.Value(0.3)).current,
+      opacity: useRef(new Animated.Value(0)).current,
+      rotate: useRef(new Animated.Value(0)).current,
+    },
+    title: {
+      opacity: useRef(new Animated.Value(0)).current,
+      translateY: useRef(new Animated.Value(50)).current,
+    },
+    subtitle: {
+      opacity: useRef(new Animated.Value(0)).current,
+      translateY: useRef(new Animated.Value(30)).current,
+    },
+    shine: useRef(new Animated.Value(0)).current,
+  };
+
+  const createAnimation = ({ value, toValue, duration, delay = 0, easing = Easing.out(Easing.ease), useNativeDriver = true }: AnimationProps) => {
+    return Animated.timing(value, {
+      toValue,
+      duration,
+      delay,
+      easing,
+      useNativeDriver,
+    });
+  };
+
+  const startAnimations = () => {
+    const { logo, title, subtitle, shine } = animations;
+
+    Animated.parallel([
+      // Logo animations
+      createAnimation({ value: logo.scale, toValue: 1, duration: 1000, easing: Easing.elastic(1) }),
+      createAnimation({ value: logo.opacity, toValue: 1, duration: 800 }),
+      createAnimation({ value: logo.rotate, toValue: 1, duration: 1000 }),
+      
+      // Title animations
+      Animated.sequence([
+        Animated.delay(400),
+        Animated.parallel([
+          createAnimation({ value: title.opacity, toValue: 1, duration: 800 }),
+          createAnimation({ value: title.translateY, toValue: 0, duration: 800 }),
+        ]),
+      ]),
+      
+      // Subtitle animations
+      Animated.sequence([
+        Animated.delay(600),
+        Animated.parallel([
+          createAnimation({ value: subtitle.opacity, toValue: 1, duration: 800 }),
+          createAnimation({ value: subtitle.translateY, toValue: 0, duration: 800 }),
+        ]),
+      ]),
+
+      // Shine effect
+      Animated.loop(
+        Animated.sequence([
+          createAnimation({ value: shine, toValue: 1, duration: 1500 }),
+          createAnimation({ value: shine, toValue: 0, duration: 1500 }),
+        ])
+      ),
+    ]).start();
+  };
+
+  const checkAuthAndNavigate = async () => {
+    try {
+      const [token, apiToken, modelTrained] = await Promise.all([
+        AsyncStorage.getItem('sessionToken'),
+        AsyncStorage.getItem('apiToken'),
+        AsyncStorage.getItem('modelTrained'),
+      ]);
+
+      // Wait for animations to complete
+      setTimeout(() => {
+        if (!token) {
+          router.replace('/(auth)/login');
+        } else if (!apiToken) {
+          router.replace('/(auth)/api-token');
+        } else if (!modelTrained) {
+          router.replace('/(auth)/model-training');
+        } else {
+          router.replace('/(app)/dashboard');
+        }
+      }, 2500);
+    } catch (error) {
+      console.error('Error checking auth state:', error);
+      router.replace('/(auth)/login');
+    }
+  };
+
+  useEffect(() => {
+    startAnimations();
+    checkAuthAndNavigate();
+  }, [router]);
+
+  // Animation interpolations
+  const spin = animations.logo.rotate.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
+  const shineTranslate = animations.shine.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-width, width],
+  });
+
+  return (
+    <View style={styles.container}>
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="dark-content"
+      />
+      <LinearGradient
+        colors={COLORS.backgroundGradient}
+        style={[styles.gradient, { paddingTop: insets.top }]}
+      >
+        <View style={styles.content}>
+          {/* Logo Section */}
+          <Animated.View
+            style={[
+              styles.logoContainer,
+              {
+                opacity: animations.logo.opacity,
+                transform: [
+                  { scale: animations.logo.scale },
+                  { rotate: spin }
+                ],
+              },
+            ]}
+          >
+            <Image
+              source={require('../../assets/images/logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+            {/* Shine effect */}
+            <Animated.View
+              style={[
+                styles.shine,
+                {
+                  transform: [{ translateX: shineTranslate }],
+                },
+              ]}
+            />
+          </Animated.View>
+
+          {/* Title Section */}
+          <Animated.Text
+            style={[
+              styles.title,
+              {
+                opacity: animations.title.opacity,
+                transform: [{ translateY: animations.title.translateY }],
+              },
+            ]}
+          >
+            {APP_CONFIG.name}
+          </Animated.Text>
+
+          {/* Subtitle Section */}
+          <Animated.Text
+            style={[
+              styles.subtitle,
+              {
+                opacity: animations.subtitle.opacity,
+                transform: [{ translateY: animations.subtitle.translateY }],
+              },
+            ]}
+          >
+            {APP_CONFIG.fullName}
+          </Animated.Text>
+        </View>
+
+        {/* Footer Section */}
+        <View style={[styles.footer, { paddingBottom: insets.bottom + 20 }]}>
+          <Text style={styles.version}>Version {APP_CONFIG.version}</Text>
+        </View>
+      </LinearGradient>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
+  gradient: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  content: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 30,
+    overflow: 'hidden',
+  },
+  logo: {
+    width: APP_CONFIG.logoSize,
+    height: APP_CONFIG.logoSize,
+  },
+  shine: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    transform: [{ skewX: '-20deg' }],
+    width: 40,
+  },
+  title: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+    marginBottom: 10,
+    ...Platform.select({
+      ios: {
+        fontFamily: 'System',
+      },
+      android: {
+        fontFamily: 'sans-serif-medium',
+      },
+    }),
+  },
+  subtitle: {
+    fontSize: 16,
+    color: COLORS.textLight,
+    textAlign: 'center',
+    marginHorizontal: 40,
+    ...Platform.select({
+      ios: {
+        fontFamily: 'System',
+      },
+      android: {
+        fontFamily: 'sans-serif',
+      },
+    }),
+  },
+  footer: {
+    alignItems: 'center',
+  },
+  version: {
+    fontSize: 14,
+    color: COLORS.textLight,
+    opacity: 0.8,
+  },
+});
+
+export default SplashScreen;

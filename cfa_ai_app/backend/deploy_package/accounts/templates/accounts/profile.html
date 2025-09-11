@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">Profile Information</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Full Name</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ user.get_full_name|default:user.username }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Email</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ user.email }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Username</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ user.username }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Last Login</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ user.last_login|date:"F j, Y, g:i a" }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9">
+                            <a class="btn btn-primary px-4" href="{% url 'edit_profile' %}">
+                                <i class="bi bi-pencil"></i> Edit Profile
+                            </a>
+                            <a class="btn btn-outline-primary px-4 ms-2" href="{% url 'password_change' %}">
+                                <i class="bi bi-key"></i> Change Password
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

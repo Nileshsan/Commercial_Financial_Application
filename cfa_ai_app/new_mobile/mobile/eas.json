@@ -1,0 +1,18 @@
+{
+    "cli":  {
+                "version":  "\u003e= 5.9.1",
+                "requireCommit":  false
+            },
+    "build":  {
+                  "production":  {
+                                     "android":  {
+                                                     "buildType":  "apk"
+                                                 }
+                                 },
+                  "preview":  {
+                                  "android":  {
+                                                  "buildType":  "apk"
+                                              }
+                              }
+              }
+}
