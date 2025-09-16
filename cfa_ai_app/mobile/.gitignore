@@ -15,7 +15,7 @@ expo-env.d.ts
 *.jks
 *.p8
 *.p12
-***REMOVED***
+*.key
 *.mobileprovision
 
 # Metro
@@ -28,7 +28,7 @@ yarn-error.*
 
 # macOS
 .DS_Store
-***REMOVED***
+*.pem
 
 # local env files
 .env*.local
